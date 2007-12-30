@@ -8,7 +8,7 @@ class TestDaemon < Test::Unit::TestCase
       interval = 0.00001
       with_fake_owserver do
         d = SAAL::Daemon.new(:interval => interval, :db => TEST_DBFILE, 
-                            :conf => TEST_SENSOR_FILE2)
+                            :conf => TEST_SENSOR_FILE1)
         pid = d.run
         sleep nsecs # Potential timing bug when the system is under load
         Process.kill(signal, pid)
