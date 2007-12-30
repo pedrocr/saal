@@ -13,7 +13,7 @@ task :default => ['test']
 TEST_FILES = 'test/**/*.rb'
 EXTRA_TEST_FILES = 'test/**/*.yml'
 CODE_FILES = 'lib/**/*.rb'
-BIN_FILES = ['bin/saal_daemon', 'bin/dump_database']
+BIN_FILES = ['bin/saal_daemon', 'bin/saal_dump_database']
 
 PKG_FILES = FileList[TEST_FILES,
                      EXTRA_TEST_FILES,
@@ -35,7 +35,7 @@ spec = Gem::Specification.new do |s|
   s.email = 'pedro@pedrocr.net'
   s.requirements << 'ownet'
   s.bindir = "bin"
-  s.executables = ["saal_daemon"]
+  s.executables = ["saal_daemon", "saal_dump_database"]
   s.require_path = 'lib'
   s.autorequire = 'rake'
   s.files = PKG_FILES
