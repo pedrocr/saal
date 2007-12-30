@@ -1,10 +1,10 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 require 'time'
 
-class TestSensors < Test::Unit::TestCase
+class TestDaemon < Test::Unit::TestCase
   def test_daemon
     ["TERM", "INT"].each do |signal|
-      nsecs = 0.1
+      nsecs = 0.5
       interval = 0.00001
       with_fake_owserver do
         d = SAAL::Daemon.new(:interval => interval, :db => TEST_DBFILE, 
