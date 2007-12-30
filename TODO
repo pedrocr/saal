@@ -10,6 +10,7 @@ TODO
 - Find a better way to handle stdin, stdout, stderr for tests (an option maybe)
 - Split classes into one per file with corresponding test (rails style)
 - Make the server bind only to a certain interface
+- Write client library for server part of daemon
 DONE
 - Make sensor reads uncached
 - Refactor daemon.rb to pull out its daemon creating code from the process 
