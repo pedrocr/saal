@@ -1,4 +1,6 @@
+TODO
 - Add logging to the daemon
 - Refactor daemon.rb to pull out its daemon creating code from the process
 - Make sensor reads uncached
 - Create a client/server framework to ask the server for values
+- Change the sensor configuration to be a ruby DSL
