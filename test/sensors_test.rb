@@ -28,7 +28,7 @@ class TestSensors < Test::Unit::TestCase
       assert_raise(NoMethodError) { @sensors.no_such_name.read_uncached }
     end
   end
-  
+    
   def test_each
     expected = @defs.map{ |name, value| [name, value['name']]}
     assert_equal expected, @sensors.map {|name, sensor| [name, sensor.name]}
