@@ -20,6 +20,15 @@ class TestSensors < Test::Unit::TestCase
       assert_raise(NoMethodError) { @sensors.no_such_name.read }
     end
   end
+
+# Currently disabled because owserver --fake doesn't support /uncached/  
+# def test_read_uncached
+#   with_fake_owserver do
+#     assert_instance_of Float, @sensors.fake_temp.read_uncached
+#     assert_nil @sensors.non_existant.read_uncached
+#     assert_raise(NoMethodError) { @sensors.no_such_name.read_uncached }
+#   end
+# end
   
   def test_each
     expected = @defs.map{ |name, value| [name, value['name']]}

@@ -38,5 +38,14 @@ module SAAL
         nil
       end
     end
+
+    def read_uncached
+      #begin
+        OWNet::Connection.new.read('/uncached/'+@serial)
+      #rescue Exception
+      #  nil
+      #end
+    end
+
   end
 end

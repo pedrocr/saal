@@ -25,7 +25,7 @@ module SAAL
         begin
           t = Time.now.utc.to_i
           @sensors.each do |name, sensor|
-            @fstore.write(name, t, sensor.read)
+            @fstore.write(name, t, sensor.read_uncached)
           end
           select [@rd],[],[],@interval
         end while !@stop_daemon
