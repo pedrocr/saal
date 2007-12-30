@@ -1,0 +1,5 @@
+require 'rubygems'
+require 'ownet'
+require File.dirname(__FILE__)+'/filestore.rb'
+require File.dirname(__FILE__)+'/sensors.rb'
+require File.dirname(__FILE__)+'/daemon.rb'

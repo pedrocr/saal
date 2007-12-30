@@ -1,0 +1,10 @@
+fake_temp:
+  name: "A fake temperature sensor"
+  onewire: 
+    serial: /10.4AEC29CDBAAB/temperature
+
+non_existant:
+  name: "A non-existant sensor"
+  onewire: 
+    serial: /10.A00000000000/temperature
+

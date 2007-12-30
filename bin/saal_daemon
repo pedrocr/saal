@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+SENSOR_INTERVAL = 60 # seconds between consecutive measurements of the sensors
+
+$: << File.dirname(__FILE__)+"/../lib/"
+require 'rubygems'
+require 'saal'
+
+if ARGV.size != 3
+  $stderr.puts "Usage: saal_daemon [db file] [sensor conf] [pidfile]"
+  exit 2
+else
+  db_file = ARGV[0]
+  sensor_conf = ARGV[1]
+  pidfile = ARGV[2]  
+  d = SAAL::Daemon.new(:interval => SENSOR_INTERVAL, 
+                       :db => db_file, 
+                       :conf => sensor_conf)
+  pid = d.run
+  File.open(pidfile, 'w') do |f|
+    f.write(pid)
+    f.close
+  end
+end

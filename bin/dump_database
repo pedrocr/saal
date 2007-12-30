@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+require 'sqlite3'
+
+if ARGV.size != 1
+  puts "Usage: dump_database [db file]"
+  exit 2
+else
+  db = SQLite3::Database.new(ARGV[0])
+  db.execute("select sensor, date, value from sensor_reads") do |row|
+    puts row.join(" ")
+  end
+end
