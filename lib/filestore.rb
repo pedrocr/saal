@@ -42,17 +42,5 @@ module SAAL
         ret
       end
     end
-    
-    # HACK: disable warnings when running any of the methods to work around
-    #       buggy sqlite
-    [:initialize, :write, :average, :close].each do |m|
-    old = instance_method(m)
-      define_method(m) do |*args| 
-        $-w = false
-        ret = old.bind(self).call(*args)
-        $-w = true
-        ret
-      end
-    end
   end
 end
