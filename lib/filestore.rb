@@ -8,6 +8,7 @@ module SAAL
       @db.type_translation = true
       @db.execute("create table if not exists sensor_reads
                     (sensor string, date integer, value real)")
+      @mutex = Mutex.new
     end
     
     def write(sensor, date, value)
@@ -30,6 +31,18 @@ module SAAL
       @db.close
     end
     
+    # Guard operations that access the database with a lock
+    [:write, :average, :close].each do |m|
+    old = instance_method(m)
+      define_method(m) do |*args|
+        ret = nil 
+        @mutex.synchronize do
+          ret = old.bind(self).call(*args)
+        end
+        ret
+      end
+    end
+    
     # HACK: disable warnings when running any of the methods to work around
     #       buggy sqlite
     [:initialize, :write, :average, :close].each do |m|
@@ -38,9 +51,8 @@ module SAAL
         $-w = false
         ret = old.bind(self).call(*args)
         $-w = true
-        return ret
+        ret
       end
     end
-
   end
 end
