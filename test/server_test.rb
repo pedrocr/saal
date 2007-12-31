@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 require 'time'
 
 class TestServer < Test::Unit::TestCase
-  TEST_PORT = 20500
+  TEST_PORT = 22500+rand(5000)
 
   def setup
     start_fake_owserver

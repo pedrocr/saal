@@ -6,11 +6,13 @@ require File.dirname(__FILE__)+'/sensors.rb'
 
 module SAAL
   class ForkedRunner
-    def self.run_as_fork
+    def self.run_as_fork(opts={})
       fork do
-        $stderr.reopen "/dev/null", "a"
-        $stdin.reopen "/dev/null", "a"
-        $stdout.reopen "/dev/null", "a"
+        if not opts[:keep_stdin]
+          $stderr.reopen "/dev/null", "a"
+          $stdin.reopen "/dev/null", "a"
+          $stdout.reopen "/dev/null", "a"
+        end
         yield ForkedRunner.new
       end
     end
