@@ -11,13 +11,21 @@ module SAAL
     def read(sensor)
       @socket.write("GET #{sensor}\n")
       result = @socket.readline.split(" ")
-      result[1].to_i
+      float_or_nil(result[1])
     end
     
     def average(sensor, from, to)
       @socket.write("AVERAGE #{sensor} #{from} #{to}\n")
       result = @socket.readline.split(" ")
-      result[1].to_i
+      float_or_nil(result[1])
+    end
+    
+    def float_or_nil(string)
+      begin
+        Float(string)
+      rescue ArgumentError, TypeError
+        nil
+      end
     end
     
     [:read, :average].each do |m|
