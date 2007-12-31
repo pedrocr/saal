@@ -4,7 +4,7 @@ $: << File.dirname(__FILE__)+"/../lib/"
 require 'saal'
 
 if ARGV.size != 1
-  $stderr.puts("Usage: gooogle_chart.rb <chart_file.png>")
+  $stderr.puts("Usage: saal_chart24hour <chart_file.png>")
   exit (2)
 end
 
