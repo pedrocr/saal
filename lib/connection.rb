@@ -14,7 +14,13 @@ module SAAL
       result[1].to_i
     end
     
-    [:read].each do |m|
+    def average(sensor, from, to)
+      @socket.write("AVERAGE #{sensor} #{from} #{to}\n")
+      result = @socket.readline.split(" ")
+      result[1].to_i
+    end
+    
+    [:read, :average].each do |m|
        old = instance_method(m)
        define_method(m) do |*args|
          @socket = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0)

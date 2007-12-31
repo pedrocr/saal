@@ -6,12 +6,13 @@ TODO
 - Find a better way to handle stdin, stdout, stderr for tests (an option maybe)
 - Split classes into one per file with corresponding test (rails style)
 - Make the server bind only to a certain interface
-- Write client library for server part of daemon
+- Verify inputs on the server to make sure it never crashes
 MAYBE
 - Implement GET_ALL
 - Multithread the server
 - Make connections persistant
 DONE
+- Write client library for server part of daemon
 - Implement AVERAGE
 - Make sensor reads uncached
 - Refactor daemon.rb to pull out its daemon creating code from the process 
