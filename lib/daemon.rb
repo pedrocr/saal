@@ -52,7 +52,8 @@ module SAAL
 
   class Daemon
     DEFAULT_PORT = 4500
-  
+    DEFAULT_INTERFACE = "127.0.0.1"
+    
     def initialize(opts={})
       @opts = opts
     end
@@ -83,10 +84,15 @@ module SAAL
     end
     
     def accept_requests(fr)
-      server = TCPServer.new(@opts[:port] || DEFAULT_PORT)
+      interface = @opts[:interface] || DEFAULT_INTERFACE
+      port = @opts[:port] || DEFAULT_PORT
+      server = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0 )
+      sockaddr = Socket.pack_sockaddr_in(port, interface)
+      server.bind sockaddr
+      server.listen 5
       begin
         if !fr.stop?
-          sock = server.accept_nonblock 
+          sock = server.accept_nonblock[0]
           RequestHandler.new(sock, @fstore, @sensors, fr).run
           sock.close
         end
