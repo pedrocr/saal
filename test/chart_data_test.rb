@@ -1,10 +1,10 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 require 'time'
 
-MOCK_AVERAGES = [40,30,50,60,300]
+MOCK_AVERAGES = [40.001,30.002,nil,60.004,300.005]
 MOCK_MAX = 215.3
 MOCK_MIN = 35.2
-NORMALIZED_MOCK_AVERAGES = [2.7,0.0,8.2,13.8,100.0]
+NORMALIZED_MOCK_AVERAGES = [2.7,0.0,-1.0,13.8,100.0]
 
 class MockConnection
   attr_reader :asked_averages

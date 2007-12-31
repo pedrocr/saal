@@ -15,7 +15,9 @@ module SAAL
     
     def normalize_data(data, min, max)
       data.map do |i|
-        if i < min
+        if i.nil?
+          -1.0
+        elsif i < min
           0.0
         elsif i > max
           100.0
