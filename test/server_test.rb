@@ -19,7 +19,7 @@ class TestServer < Test::Unit::TestCase
     result = @socket.readline
     values = result.split
     assert_equal 2, values.size
-    assert_in_delta Time.now.utc.to_i, values[0].to_i, 100
+    assert_equal "fake_temp", values[0]
     assert_in_delta 0, values[1].to_f, 200    
   end  
   

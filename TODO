@@ -1,17 +1,20 @@
 TODO
 - Add logging to the daemon
 - Change the sensor configuration to be a ruby DSL and make it a daemon config
-- Override OWNet::Connection with a mock object so that owserver needed to test
-- Make the date returned by GET the date of the last read
-- Implement GET_ALL, AVERAGE
-- Multithread the server
-- Make connections persistant
+- Override OWNet::Connection with a mock object so that owserver is not needed
+- Implement AVERAGE
 - Implement the charts
 - Find a better way to handle stdin, stdout, stderr for tests (an option maybe)
 - Split classes into one per file with corresponding test (rails style)
 - Make the server bind only to a certain interface
 - Write client library for server part of daemon
+MAYBE
+- Implement GET_ALL
+- Multithread the server
+- Make connections persistant
 DONE
 - Make sensor reads uncached
 - Refactor daemon.rb to pull out its daemon creating code from the process 
 - Create a client/server framework to ask the server for values
+- Make the date returned by GET the date of the last read (GET doesn't return
+  a date now

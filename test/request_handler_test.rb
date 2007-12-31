@@ -29,23 +29,17 @@ class TestRequestHandler < Test::Unit::TestCase
     
   def test_get
     @rhandler.handle_command("GET fake_temp\n")
-    values = @s.readline.split
-    assert_equal 2, values.size
-    assert_in_delta Time.now.utc.to_i, values[0].to_i, 100
-    assert_equal MOCK_TEMP, values[1].to_f
+    assert_equal "fake_temp #{MOCK_TEMP}\n", @s.readline
   end
-  
+    
   def test_wrong_command
     @rhandler.handle_command("WRONG_COMMAND fake_temp\n")
     assert_equal "No such command\n", @s.readline
   end
-  
+    
   def test_run
     @s.write("GET fake_temp\n")
     @rhandler.run
-    values = @s.readline.split
-    assert_equal 2, values.size
-    assert_in_delta Time.now.utc.to_i, values[0].to_i, 100
-    assert_equal MOCK_TEMP, values[1].to_f 
+    assert_equal "fake_temp #{MOCK_TEMP}\n", @s.readline
   end
 end

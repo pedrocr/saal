@@ -17,9 +17,8 @@ module SAAL
         when "GET"
           if check_num_args(scommand, 2)
             begin
-              time = Time.now.utc.to_i
               value = @sensors.send(scommand[1]).read
-              @socket.write "#{time} #{value}\n"
+              @socket.write "#{scommand[1]} #{value}\n"
             rescue NoMethodError
               @socket.write "ERROR: No such sensor"
             end
