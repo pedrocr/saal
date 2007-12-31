@@ -13,7 +13,7 @@ task :default => ['test']
 TEST_FILES = 'test/**/*.rb'
 EXTRA_TEST_FILES = 'test/**/*.yml'
 CODE_FILES = 'lib/**/*.rb'
-BIN_FILES = ['bin/saal_daemon', 'bin/saal_dump_database']
+BIN_FILES = ['bin/saal_daemon', 'bin/saal_dump_database', 'examples/google_chart']
 EXAMPLE_FILES = ['examples/*.rb']
 
 PKG_FILES = FileList[TEST_FILES,
