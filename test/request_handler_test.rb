@@ -2,8 +2,9 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 require 'time'
 
 MOCK_TEMP = 50
+
 class MockForkedRunner; end
-class MockFstore; end
+class MockFstore; def average(sensor,from,to); from+to; end; end
 class MockSensors;
   def fake_temp; MockFakeTemp.new; end 
   def non_existat; MockNonExistant.new; end
@@ -30,6 +31,11 @@ class TestRequestHandler < Test::Unit::TestCase
   def test_get
     @rhandler.handle_command("GET fake_temp\n")
     assert_equal "fake_temp #{MOCK_TEMP}\n", @s.readline
+  end
+  
+  def test_average
+    @rhandler.handle_command("AVERAGE fake_temp 10 20")
+    assert_equal "fake_temp 30\n", @s.readline
   end
     
   def test_wrong_command

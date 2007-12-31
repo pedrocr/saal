@@ -23,6 +23,13 @@ module SAAL
               @socket.write "ERROR: No such sensor"
             end
           end
+        when "AVERAGE"
+          if check_num_args(scommand, 4)
+            value = @filestore.average(scommand[1], 
+                                       scommand[2].to_i, 
+                                       scommand[3].to_i)
+            @socket.write "#{scommand[1]} #{value}\n"
+          end
         else
           @socket.write "No such command\n"
       end
