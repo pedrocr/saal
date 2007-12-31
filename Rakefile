@@ -1,5 +1,5 @@
 PKG_NAME = 'saal'
-PKG_VERSION = '0.0.1'
+PKG_VERSION = '0.0.2'
 
 require 'rake'
 require 'rake/testtask'
@@ -14,11 +14,13 @@ TEST_FILES = 'test/**/*.rb'
 EXTRA_TEST_FILES = 'test/**/*.yml'
 CODE_FILES = 'lib/**/*.rb'
 BIN_FILES = ['bin/saal_daemon', 'bin/saal_dump_database']
+EXAMPLE_FILES = ['examples/*.rb']
 
 PKG_FILES = FileList[TEST_FILES,
                      EXTRA_TEST_FILES,
                      CODE_FILES,
                      BIN_FILES,
+                     EXAMPLE_FILES,
                      'README*',
                      'LICENSE',
                      'Rakefile']
