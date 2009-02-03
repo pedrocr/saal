@@ -8,6 +8,10 @@ module SAAL
       @db.type_translation = true
       @db.execute("create table if not exists sensor_reads
                     (sensor string, date integer, value real)")
+      @db.execute("create index if not exists sensor_reads_sensor_index on
+                    sensor_reads(sensor)")
+      @db.execute("create index if not exists sensor_reads_date_index on
+                    sensor_reads(date)")
       @mutex = Mutex.new
     end
     
