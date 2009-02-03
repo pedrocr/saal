@@ -29,11 +29,14 @@ module SAAL
     def initialize(defs)
       @name = defs['name']
       @serial = defs['onewire']['serial']
+      @connect_opts = {}
+      @connect_opts[:server] = defs['onewire']['server'] if defs['onewire']['server']
+      @connect_opts[:port] = defs['onewire']['port'] if defs['onewire']['port']      
     end
     
     def read
       begin
-        OWNet::Connection.new.read(@serial)
+        OWNet::Connection.new(@connect_opts).read(@serial)
       rescue Exception
         nil
       end
