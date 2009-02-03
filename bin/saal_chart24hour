@@ -14,15 +14,16 @@ NUM_VALUES = 48
 @to = @time.to_i
 @from = @to - 60*60*24
 
-def create_data(sensor, min, max)
+def create_data(sensor, min, max, constant=0)
   d = @c.get_data(sensor, @from, @to, NUM_VALUES)
+  d = d.map{|num| num+constant}
   @c.normalize_data(d,min,max)
 end
 
 @data = [create_data('temp_exterior', -15, 45),
          create_data('temp_estufa', -15, 45),
          create_data('hum_exterior', 0, 100),
-         create_data('pressao', 950, 1050)]
+         create_data('pressao', 950, 1050, 0.54*33.86)] #Convert to pressure at sea level
 
 
 
