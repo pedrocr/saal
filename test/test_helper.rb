@@ -16,7 +16,7 @@ class Test::Unit::TestCase
   
   def start_fake_owserver
     @owserver_pid = fork do 
-      exec("/opt/bin/owserver", "--fake", "1F,10", "--foreground")
+      exec("owserver", "--fake", "1F,10", "--foreground")
     end
     sleep 1 # Potential timing bug when the system is under load
   end
