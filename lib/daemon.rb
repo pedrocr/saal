@@ -62,7 +62,7 @@ module SAAL
       ForkedRunner.run_as_fork do |forked_runner|
         @fstore = SAAL::FileStore.new(@opts)
         @sensors = SAAL::Sensors.new(@opts)
-        @interval = @opts[:interval] || 5
+        @interval = @opts[:interval] || 60
         writer = Thread.new {write_sensor_values(forked_runner)}
         server = Thread.new {accept_requests(forked_runner)}
         writer.join
