@@ -39,7 +39,7 @@ spec = Gem::Specification.new do |s|
   s.email = 'pedro@pedrocr.net'
   s.requirements << 'ownet'
   s.bindir = "bin"
-  s.executables = ["saal_daemon", "saal_dump_database", "saal_chart24hour"]
+  s.executables = ["saal_daemon", "saal_dump_database", "saal_chart24hour", "saal_chart24hour_temp"]
   s.require_path = 'lib'
   s.autorequire = 'rake'
   s.files = PKG_FILES
