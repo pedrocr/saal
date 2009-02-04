@@ -44,7 +44,7 @@ module SAAL
 
     def read_uncached
       begin
-        OWNet::Connection.new.read('/uncached'+@serial)
+        OWNet::Connection.new(@connect_opts).read('/uncached'+@serial)
       rescue Exception
         nil
       end
