@@ -1,4 +1,0 @@
-fake_temp:
-  name: "A fake temperature sensor"
-  onewire: 
-    serial: /10.4AEC29CDBAAB/temperature

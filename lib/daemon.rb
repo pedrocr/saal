@@ -53,16 +53,19 @@ module SAAL
     end
 
     def run
-      ForkedRunner.run_as_fork do |forked_runner|
+      ForkedRunner.run_as_fork(@opts) do |forked_runner|
         @dbstore = SAAL::DBStore.new(*([]+@opts[:dbconf].to_a))
         @sensors = SAAL::Sensors.new(*([]+@opts[:sensorconf].to_a))
         @interval = @opts[:interval] || 60
         begin
           time = Time.now.utc.to_i
-          @sensors.each {|name, s| @dbstore.write(name, time, s.read_uncached)}
+          @sensors.each do |name, sensor|
+            if res = sensor.read_uncached
+              @dbstore.write(name, time, res)
+            end
+          end
           forked_runner.sleep @interval
         end while !forked_runner.stop?
-        @dbstore.close
       end
     end
   end

@@ -4,8 +4,8 @@ require 'fileutils'
 require File.dirname(__FILE__)+'/../lib/saal.rb'
 
 class Test::Unit::TestCase
-  TEST_SENSOR_FILE1 = File.dirname(__FILE__)+'/sample_sensors.yml'
-  TEST_SENSOR_FILE2 = File.dirname(__FILE__)+'/sample_sensors2.yml'
+  TEST_SENSORS_FILE = File.dirname(__FILE__)+'/test_sensors.yml'
+  TEST_NONEXIST_SENSOR_FILE = File.dirname(__FILE__)+'/nonexistant_sensor.yml'
 
   def with_fake_owserver
     start_fake_owserver
