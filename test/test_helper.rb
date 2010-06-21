@@ -4,10 +4,9 @@ require 'fileutils'
 require File.dirname(__FILE__)+'/../lib/saal.rb'
 
 class Test::Unit::TestCase
-  TEST_DBFILE = File.dirname(__FILE__)+'/test.db'
   TEST_SENSOR_FILE1 = File.dirname(__FILE__)+'/sample_sensors.yml'
   TEST_SENSOR_FILE2 = File.dirname(__FILE__)+'/sample_sensors2.yml'
-  
+
   def with_fake_owserver
     start_fake_owserver
     yield
@@ -24,5 +23,26 @@ class Test::Unit::TestCase
   def stop_fake_owserver
     Process.kill("TERM", @owserver_pid)
     Process.waitpid(@owserver_pid)
+  end
+end
+
+module TestWithDB
+  TEST_DBOPTS = {:host => 'localhost',
+                 :user => 'sensor_reads',
+                 :pass => 'abcd',
+                 :db => 'sensor_reads_test'}
+
+  def setup
+    @dbstore = SAAL::DBStore.new(TEST_DBOPTS, true)
+    @dbstore.db_wipe
+    @dbstore.db_initialize
+  end
+
+  def db_test_query(query)  
+    db = Mysql.new(TEST_DBOPTS[:host],TEST_DBOPTS[:user],
+                   TEST_DBOPTS[:pass],TEST_DBOPTS[:db])
+    res = db.query(query)
+    yield res
+    db.close
   end
 end

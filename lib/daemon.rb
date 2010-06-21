@@ -54,8 +54,8 @@ module SAAL
 
     def run
       ForkedRunner.run_as_fork do |forked_runner|
-        @dbstore = SAAL::DBStore.new(@opts)
-        @sensors = SAAL::Sensors.new(@opts)
+        @dbstore = SAAL::DBStore.new(@opts[:db])
+        @sensors = SAAL::Sensors.new(@opts[:sensors])
         @interval = @opts[:interval] || 60
         begin
           time = Time.now.utc.to_i

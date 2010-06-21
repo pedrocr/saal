@@ -1,30 +1,17 @@
 require File.dirname(__FILE__)+'/test_helper.rb'
 
 class TestFileStore < Test::Unit::TestCase
-  TEST_DBOPTS = {:host => 'localhost',
-                 :user => 'sensor_reads',
-                 :pass => 'abcd',
-                 :db => 'sensor_reads_test'}
-  TEST_DBARGS = [TEST_DBOPTS[:host],TEST_DBOPTS[:user],
-                 TEST_DBOPTS[:pass],TEST_DBOPTS[:db]]
-
-
-  def setup
-    @dbstore = SAAL::DBStore.new(TEST_DBOPTS, true)
-    @dbstore.db_wipe
-    @dbstore.db_initialize
-  end
-
+  include TestWithDB
   def test_insert
     test_time = 1196024160
     test_value = 7.323
     
     @dbstore.write(:test_sensor, test_time, test_value)
     
-    db = Mysql.new(*TEST_DBARGS)
-    res = db.query("SELECT * FROM sensor_reads")
-    assert_equal 1, res.num_rows
-    assert_equal ["test_sensor", test_time.to_s, test_value.to_s], res.fetch_row
+    db_test_query("SELECT * FROM sensor_reads") do |res|
+      assert_equal 1, res.num_rows
+      assert_equal ["test_sensor", test_time.to_s, test_value.to_s], res.fetch_row
+    end
   end
   
   def test_average
