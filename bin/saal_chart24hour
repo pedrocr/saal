@@ -16,7 +16,7 @@ NUM_VALUES = 48
 
 def create_data(sensor, min, max, constant=0)
   d = @c.get_data(sensor, @from, @to, NUM_VALUES)
-  d = d.map{|num| num+constant}
+  d = d.map{|num| num ? num+constant : nil}
   @c.normalize_data(d,min,max)
 end
 
