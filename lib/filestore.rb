@@ -35,8 +35,8 @@ module SAAL
       @db.close
     end
     
-    # Guard operations that access the database with a lock
-    [:write, :average, :close].each do |m|
+    # Guard operations that write to the database with a lock
+    [:write, :close].each do |m|
     old = instance_method(m)
       define_method(m) do |*args|
         ret = nil 
