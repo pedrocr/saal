@@ -2,8 +2,8 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 require 'time'
 
 class TestDaemon < Test::Unit::TestCase
-  include TestWithDB
   def test_working_daemon
+    db_setup
     nsecs = 0.5
     interval = 0.00001
     with_fake_owserver do
@@ -23,6 +23,7 @@ class TestDaemon < Test::Unit::TestCase
   end
 
   def test_empty_reads_daemon
+    db_setup
     nsecs = 0.5
     interval = 0.00001
     with_fake_owserver do

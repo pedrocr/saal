@@ -2,7 +2,7 @@ require "mysql"
 
 module SAAL
   class DBStore
-    def initialize(conffile="/etc/saal/database.yml")
+    def initialize(conffile)
       @dbopts = YAML::load(File.new(conffile))
       @db = nil
       db_initialize
@@ -20,6 +20,9 @@ module SAAL
     end
 
     def write(sensor, date, value)
+      raise ArgumentError, "Trying to store an empty sensor read" if !value
+      raise ArgumentError, "Trying to store an empty timestamp" if !date
+      raise ArgumentError, "Trying to store a timestamp <= 0" if date <= 0
       @db.query "INSERT INTO sensor_reads VALUES
                   ('"+@db.quote(sensor.to_s)+"',"+date.to_s+","+value.to_s+")"
     end

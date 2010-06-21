@@ -6,6 +6,8 @@ require File.dirname(__FILE__)+'/../lib/saal.rb'
 class Test::Unit::TestCase
   TEST_SENSORS_FILE = File.dirname(__FILE__)+'/test_sensors.yml'
   TEST_NONEXIST_SENSOR_FILE = File.dirname(__FILE__)+'/nonexistant_sensor.yml'
+  TEST_DBCONF = File.dirname(__FILE__)+'/test_db.yml'
+  TEST_DBOPTS = YAML::load(File.new(TEST_DBCONF))
 
   def with_fake_owserver
     start_fake_owserver
@@ -24,13 +26,8 @@ class Test::Unit::TestCase
     Process.kill("TERM", @owserver_pid)
     Process.waitpid(@owserver_pid)
   end
-end
 
-module TestWithDB
-  TEST_DBCONF = File.dirname(__FILE__)+'/test_db.yml'
-  TEST_DBOPTS = YAML::load(File.new(TEST_DBCONF))
-
-  def setup
+  def db_setup
     @dbstore = SAAL::DBStore.new(TEST_DBCONF)
     @dbstore.db_wipe
     @dbstore.db_initialize

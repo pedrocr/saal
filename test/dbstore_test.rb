@@ -1,8 +1,8 @@
 require File.dirname(__FILE__)+'/test_helper.rb'
 
 class TestFileStore < Test::Unit::TestCase
-  include TestWithDB
   def test_insert
+    db_setup
     test_time = 1196024160
     test_value = 7.323
     
@@ -13,8 +13,17 @@ class TestFileStore < Test::Unit::TestCase
       assert_equal ["test_sensor", test_time.to_s, test_value.to_s], res.fetch_row
     end
   end
+
+  def test_insert_nil
+    db_setup
+    
+    assert_raise(ArgumentError) {@dbstore.write(:test_sensor, 1, nil)}
+    assert_raise(ArgumentError) {@dbstore.write(:test_sensor, 0, 1)}
+    assert_raise(ArgumentError) {@dbstore.write(:test_sensor, nil, 1)}
+  end
   
   def test_average
+    db_setup
     test_values = [[10, 7.323],[12, 5.432],[23, -2.125], [44, 0.123]]
     test_average = (5.432 - 2.125)/2.0
     test_values.each do |values|
