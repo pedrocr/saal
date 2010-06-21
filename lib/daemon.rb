@@ -59,10 +59,11 @@ module SAAL
         @interval = @opts[:interval] || 60
         begin
           time = Time.now.utc.to_i
-          @sensors.each {|name, s| @dbstore.write(name, time, s.read_uncached)
+          @sensors.each {|name, s| @dbstore.write(name, time, s.read_uncached)}
           forked_runner.sleep @interval
         end while !forked_runner.stop?
         @dbstore.close
+      end
     end
   end
 end
