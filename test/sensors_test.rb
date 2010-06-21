@@ -3,7 +3,7 @@ require File.dirname(__FILE__)+'/test_helper.rb'
 class TestSensors < Test::Unit::TestCase
   def setup
     @defs = YAML::load File.new(TEST_SENSOR_FILE1)
-    @sensors = SAAL::Sensors.new(:conf => TEST_SENSOR_FILE1)
+    @sensors = SAAL::Sensors.new(TEST_SENSOR_FILE1)
   end
     
   def test_get_sensor

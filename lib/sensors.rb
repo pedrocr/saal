@@ -5,8 +5,8 @@ module SAAL
   class Sensors
     include Enumerable
     
-    def initialize(opts)
-      @defs = YAML::load(File.new(opts[:conf]))
+    def initialize(conffile="/etc/saal/sensors.yml")
+      @defs = YAML::load(File.new(conffile))
     end
         
     # Implements the get methods to fetch a specific sensor
@@ -49,6 +49,5 @@ module SAAL
         nil
       end
     end
-
   end
 end

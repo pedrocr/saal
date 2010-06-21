@@ -27,20 +27,18 @@ class Test::Unit::TestCase
 end
 
 module TestWithDB
-  TEST_DBOPTS = {:host => 'localhost',
-                 :user => 'sensor_reads',
-                 :pass => 'abcd',
-                 :db => 'sensor_reads_test'}
+  TEST_DBCONF = File.dirname(__FILE__)+'/test_db.yml'
+  TEST_DBOPTS = YAML::load(File.new(TEST_DBCONF))
 
   def setup
-    @dbstore = SAAL::DBStore.new(TEST_DBOPTS, true)
+    @dbstore = SAAL::DBStore.new(TEST_DBCONF)
     @dbstore.db_wipe
     @dbstore.db_initialize
   end
 
   def db_test_query(query)  
-    db = Mysql.new(TEST_DBOPTS[:host],TEST_DBOPTS[:user],
-                   TEST_DBOPTS[:pass],TEST_DBOPTS[:db])
+    db = Mysql.new(TEST_DBOPTS['host'],TEST_DBOPTS['user'],
+                   TEST_DBOPTS['pass'],TEST_DBOPTS['db'])
     res = db.query(query)
     yield res
     db.close

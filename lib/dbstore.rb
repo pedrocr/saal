@@ -2,9 +2,10 @@ require "mysql"
 
 module SAAL
   class DBStore
-    def initialize(dbopts, initialize=false)
-      @dbopts = dbopts
-      db_initialize if initialize
+    def initialize(conffile="/etc/saal/database.yml")
+      @dbopts = YAML::load(File.new(conffile))
+      @db = nil
+      db_initialize
     end
 
     def db_initialize
@@ -39,9 +40,9 @@ module SAAL
         ret = nil 
         begin
           # connect to the MySQL server
-          @db = Mysql.new(@dbopts[:host],@dbopts[:user],@dbopts[:pass],
-                          @dbopts[:db],@dbopts[:port],@dbopts[:socket],
-                          @dbopts[:flags])
+          @db = Mysql.new(@dbopts['host'],@dbopts['user'],@dbopts['pass'],
+                          @dbopts['db'],@dbopts['port'],@dbopts['socket'],
+                          @dbopts['flags'])
           ret = old.bind(self).call(*args)
         rescue Mysql::Error => e
           $stderr.puts "MySQL Error #{e.errno}: #{e.error}"
