@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby 
+
+require 'rubygems'
+require 'saal'
+
+begin
+  dbstore = SAAL::DBStore.new
+  
+  nrows = 0
+  while not $stdin.eof?
+    values = $stdin.readline.split("|").map{|s| s.strip}
+    if values[2] != ""
+      dbstore.write(values[0], values[1].to_i, values[2].to_f)
+      nrows += 1
+    end
+  end
+  puts "Number of rows inserted: #{nrows}"
+end
+

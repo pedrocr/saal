@@ -2,7 +2,7 @@ require "mysql"
 
 module SAAL
   class DBStore
-    def initialize(conffile)
+    def initialize(conffile=DBCONF)
       @dbopts = YAML::load(File.new(conffile))
       @db = nil
       db_initialize

@@ -16,7 +16,9 @@ EXTRA_TEST_FILES = 'test/**/*.yml'
 CODE_FILES = 'lib/**/*.rb'
 BIN_FILES = ['bin/saal_daemon', 
              'bin/saal_dump_database', 
-             'bin/saal_chart24hour']
+             'bin/saal_chart24hour',
+             'bin/saal_import_mysql']
+
 EXAMPLE_FILES = ['examples/*.rb']
 
 PKG_FILES = FileList[TEST_FILES,
@@ -40,7 +42,7 @@ spec = Gem::Specification.new do |s|
   s.email = 'pedro@pedrocr.net'
   s.requirements << 'ownet'
   s.bindir = "bin"
-  s.executables = ["saal_daemon", "saal_dump_database", "saal_chart24hour", "saal_chart24hour_temp"]
+  s.executables = BIN_FILES.map{|f| f.gsub('bin/','')}
   s.require_path = 'lib'
   s.autorequire = 'rake'
   s.files = PKG_FILES

@@ -5,7 +5,7 @@ module SAAL
   class Sensors
     include Enumerable
     
-    def initialize(conffile, dbconffile)
+    def initialize(conffile=SENSORSCONF, dbconffile=DBCONF)
       @defs = YAML::load(File.new(conffile))
       @dbstore = DBStore.new(dbconffile)
     end
