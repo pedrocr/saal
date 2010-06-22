@@ -16,7 +16,7 @@ EXTRA_TEST_FILES = 'test/**/*.yml'
 CODE_FILES = 'lib/**/*.rb'
 BIN_FILES = ['bin/saal_daemon', 
              'bin/saal_dump_database', 
-             'bin/saal_chart24hour',
+             'bin/saal_chart',
              'bin/saal_import_mysql']
 
 EXAMPLE_FILES = ['examples/*.rb']
