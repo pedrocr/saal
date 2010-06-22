@@ -18,11 +18,11 @@ NUM_VALUES = 48
 def create_data(sensor, min, max, constant=0)
   @c = SAAL::ChartData.new(@sensors.send(sensor))
   d = @c.get_data(@from, @to, NUM_VALUES)
-  d = d.map{|num| num+constant}
+  d = d.map{|num| num ? num+constant : num}
   @c.normalize_data(d,min,max)
 end
 
-@data = [create_data(@sensors.temp_exterior, -15, 45),
+@data = [create_data('temp_exterior', -15, 45),
          create_data('temp_estufa', -15, 45),
          create_data('hum_exterior', 0, 100),
          create_data('pressao', 950, 1050, 0.54*33.86)] #Convert to pressure at sea level

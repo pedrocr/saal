@@ -1,11 +1,8 @@
-require 'yaml'
-require 'ownet'
-
 module SAAL
   class Sensors
     include Enumerable
     
-    def initialize(conffile=SENSORSCONF, dbconffile=DBCONF)
+    def initialize(conffile=SAAL::SENSORSCONF, dbconffile=SAAL::DBCONF)
       @defs = YAML::load(File.new(conffile))
       @dbstore = DBStore.new(dbconffile)
     end

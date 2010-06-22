@@ -1,8 +1,6 @@
-require "mysql"
-
 module SAAL
   class DBStore
-    def initialize(conffile=DBCONF)
+    def initialize(conffile=SAAL::DBCONF)
       @dbopts = YAML::load(File.new(conffile))
       @db = nil
       db_initialize
@@ -12,7 +10,9 @@ module SAAL
       @db.query "CREATE TABLE IF NOT EXISTS sensor_reads
                    (sensor VARCHAR(100), 
                     date INT, 
-                    value FLOAT)"
+                    value FLOAT,
+                    INDEX USING HASH (sensor),
+                    INDEX USING BTREE (date))"
     end
     
     def db_wipe
@@ -32,7 +32,12 @@ module SAAL
                        WHERE sensor = '#{@db.quote(sensor.to_s)}' 
                          AND date >= #{from.to_s} 
                          AND date <= #{to.to_s}"
-      r.num_rows > 0 ? r.fetch_row[0] : nil
+      if r.num_rows == 0 
+        nil
+      else
+        row = r.fetch_row
+        row[0] ? row[0].to_f : nil
+      end
     end
 
     

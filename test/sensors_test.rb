@@ -43,6 +43,7 @@ class TestSensors < Test::Unit::TestCase
       @dbstore.write(:fake_temp, *values)
     end
     
+    assert_instance_of Float, @sensors.fake_temp.average(11, 25)
     assert_in_delta test_average, @sensors.fake_temp.average(11, 25), 0.001
     assert_in_delta test_average, @sensors.fake_temp.average(12, 25), 0.001
     assert_in_delta test_average, @sensors.fake_temp.average(11, 23), 0.001

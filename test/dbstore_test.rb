@@ -30,6 +30,7 @@ class TestFileStore < Test::Unit::TestCase
       @dbstore.write(:test_sensor, *values)
     end
     
+    assert_instance_of Float, @dbstore.average(:test_sensor, 11, 25)
     assert_in_delta test_average, @dbstore.average(:test_sensor, 11, 25), 0.001
     assert_in_delta test_average, @dbstore.average(:test_sensor, 12, 25), 0.001
     assert_in_delta test_average, @dbstore.average(:test_sensor, 12, 23), 0.001

@@ -1,6 +1,3 @@
-#!/usr/bin/env ruby
-$-w = true
-
 module SAAL
   class ForkedRunner
     def self.run_as_fork(opts={})

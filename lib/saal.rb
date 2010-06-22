@@ -1,10 +1,14 @@
 require 'rubygems'
+require 'yaml'
+require "mysql"
 require 'ownet'
 
+$-w = true
+
 module SAAL
-  CONFDIR = "/etc/saal/"
-  SENSORCONF = CONFDIR+"sensors.yml"
-  DBCONF = CONFDIR+"database.yml"
+    CONFDIR = "/etc/saal/"
+    SENSORSCONF = CONFDIR+"sensors.yml"
+    DBCONF = CONFDIR+"database.yml"
 end
 
 require File.dirname(__FILE__)+'/dbstore.rb'
