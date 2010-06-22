@@ -14,7 +14,7 @@ end
 
 @now = Time.now.utc
 
-NUM_VALUES = 60
+NUM_VALUES = 500
 case ARGV[0]
 when 'day' then
   PERIODNAMES = (0..23).map{|i| ((@now.hour - i)%24).to_s}.reverse
@@ -71,16 +71,28 @@ end
 
 @dataurl = @data.map {|values| values.join(",")}.join('|')
 
+r = {}
 case ALIGNNAMES
 when :center
   @periodnamesurl = "||"+PERIODNAMES.join('||')+"||"
 when :left
   @periodnamesurl = "|"+PERIODNAMES.join('|')+"||"
-  @extra = "&chxs=0,555555,11,-1,lt"
+  r[:chxs] = "0,555555,11,-1,lt"
 end
-
 @xincr = 100.0/NUMPERIODS.to_f*10000.truncate.to_f/10000
 
-@url = "http://chart.apis.google.com/chart?chof=png&chs=700x300&cht=lc&chco=00ff00,ff0000,0000ff,ffff00&chxt=x,y,y,r&chxl=0:#{@periodnamesurl}1:|-15ºC||0||15||30||45ºC|2:|0%|25|50|75|100%|3:|950||975||1000||1025||1050 hPa&chg=#{@xincr},12.5,1,5&chd=t:#{@dataurl}#{@extra}"
-system "wget \"#{@url}\" -O #{ARGV[1]}"
+r[:chof] = "png"
+r[:chs] = "700x300"
+r[:cht] = "lc"
+r[:chco] = "00ff00,ff0000,0000ff,ffff00"
+r[:chxt] = "x,y,y,r"
+r[:chxl] = "0:#{@periodnamesurl}1:|-15ºC||0||15||30||45ºC|2:|0%|25|50|75|100%|3:|950||975||1000||1025||1050 hPa"
+r[:chg] = "#{@xincr},12.5,1,5"
+r[:chd] = "t:#{@dataurl}"
+
+@url = "http://chart.apis.google.com/chart?&"
+@postdata = r.map{|k,v| k.to_s+"="+v}.join("&")
+
+
+system "wget --quiet \"#{@url}\" --post-data=\"#{@postdata}\" -O #{ARGV[1]}"
 
