@@ -79,12 +79,7 @@ when :left
   @extra = "&chxs=0,555555,11,-1,lt"
 end
 
-p @periodnamesurl
-
 @xincr = 100.0/NUMPERIODS.to_f*10000.truncate.to_f/10000
-
-#&chxp=#{@xposurl}
-#&chxs=,,,-1,
 
 @url = "http://chart.apis.google.com/chart?chof=png&chs=700x300&cht=lc&chco=00ff00,ff0000,0000ff,ffff00&chxt=x,y,y,r&chxl=0:#{@periodnamesurl}1:|-15ºC||0||15||30||45ºC|2:|0%|25|50|75|100%|3:|950||975||1000||1025||1050 hPa&chg=#{@xincr},12.5,1,5&chd=t:#{@dataurl}#{@extra}"
 system "wget \"#{@url}\" -O #{ARGV[1]}"
