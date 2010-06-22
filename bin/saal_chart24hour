@@ -9,18 +9,20 @@ if ARGV.size != 1
 end
 
 NUM_VALUES = 48
-@c = SAAL::ChartData.new
+
+@sensors = SAAL::Sensors.new
 @time = Time.now.utc
 @to = @time.to_i
 @from = @to - 60*60*24
 
 def create_data(sensor, min, max, constant=0)
-  d = @c.get_data(sensor, @from, @to, NUM_VALUES)
-  d = d.map{|num| num ? num+constant : nil}
+  @c = SAAL::ChartData.new(@sensors.send(sensor))
+  d = @c.get_data(@from, @to, NUM_VALUES)
+  d = d.map{|num| num+constant}
   @c.normalize_data(d,min,max)
 end
 
-@data = [create_data('temp_exterior', -15, 45),
+@data = [create_data(@sensors.temp_exterior, -15, 45),
          create_data('temp_estufa', -15, 45),
          create_data('hum_exterior', 0, 100),
          create_data('pressao', 950, 1050, 0.54*33.86)] #Convert to pressure at sea level

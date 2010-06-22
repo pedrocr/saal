@@ -1,7 +1,7 @@
 module SAAL
   class ChartData
-    def initialize(opts = {})
-      @sensor = opts[:sensor]
+    def initialize(sensor)
+      @sensor = sensor
     end
     
     def get_data(from, to, num)

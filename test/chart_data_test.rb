@@ -21,7 +21,7 @@ end
 class TestChartData < Test::Unit::TestCase
   def test_get_data
     sensor = MockSensor.new
-    c = SAAL::ChartData.new(:sensor => sensor)
+    c = SAAL::ChartData.new(sensor)
     assert_equal MOCK_AVERAGES, c.get_data(0, 1000, 5)
     assert_equal([[0,199],[200,399],[400,599],[600,799],[800,1000]],
                  sensor.asked_averages)
@@ -29,7 +29,7 @@ class TestChartData < Test::Unit::TestCase
   
   def test_normalize_data
     sensor = MockSensor.new
-    c = SAAL::ChartData.new(:sensor => sensor)
+    c = SAAL::ChartData.new(sensor)
     d = c.get_data(0, 1000, 5)
     assert_equal NORMALIZED_MOCK_AVERAGES, 
                  c.normalize_data(d, MOCK_MIN, MOCK_MAX)
