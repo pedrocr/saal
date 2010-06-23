@@ -55,7 +55,9 @@ class TestSensors < Test::Unit::TestCase
   def test_store_value
     db_setup
     
-    @sensors.fake_temp.store_value
+    with_fake_owserver do
+      @sensors.fake_temp.store_value
+    end
 
     db_test_query("SELECT * FROM sensor_reads") do |res|
       assert_equal 1, res.num_rows
