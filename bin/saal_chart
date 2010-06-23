@@ -4,7 +4,7 @@ $: << File.dirname(__FILE__)+"/../lib/"
 require 'saal'
 
 def usage
-  $stderr.puts("Usage: saal_chart7days <day|week|4week> <chart_file.png>")
+  $stderr.puts("Usage: saal_chart7days <day|week|4week|year> <chart_file.png>")
 end
 
 if ARGV.size != 2
@@ -37,6 +37,13 @@ when '4week' then
   ALIGNMENT = :week
   NUMDAYS = 28
   ALIGNNAMES = :left
+when 'year' then
+  monthnames = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Sep","Out","Nov","Dez"]
+  initial = @now.to_i - (@now.wday-1)*24*60*60
+  PERIODNAMES = (1..12).map{|i| (@now.month - i)%12}.map{|m| monthnames[m]}.reverse
+  ALIGNMENT = :month
+  NUMDAYS = 356
+  ALIGNNAMES = :center
 else
   usage
   exit(3)
