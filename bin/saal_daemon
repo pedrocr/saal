@@ -8,7 +8,7 @@ $: << File.dirname(__FILE__)+"/../lib/"
 require 'rubygems'
 require 'saal'
 
-if ARGV.size != 3
+if ARGV.size != 1
   $stderr.puts "Usage: saal_daemon [pidfile]"
   exit 2
 else
