@@ -62,7 +62,7 @@ align = {:year => [12,31,23,59,59],
          :hour => [59,59]}
 
 args = [@now.year, @now.month, @now.day, @now.hour, @now.min, @now.sec]
-args.pop(align[ALIGNMENT].size)
+args = args[0..-(align[ALIGNMENT].size+1)]
 args += align[ALIGNMENT]
 @to = Time.utc(*args).to_i
 @to += (6-@now.wday)*60*60*24 if ALIGNMENT == :week
