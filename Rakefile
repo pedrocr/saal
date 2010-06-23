@@ -1,5 +1,4 @@
 PKG_NAME = 'saal'
-PKG_VERSION = '0.0.4'
 PKG_VERSION = '0.0.5'
 
 require 'rake'
