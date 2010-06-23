@@ -7,6 +7,15 @@ fake:
 
 fake2:
   name: "A fake temperature sensor"
+  max_value: 500
+  max_correctable: 550
+  min_value: 100
+  min_correctable: 50
+  onewire: 
+    serial: /10.4AEC29CDBAAB/temperature
+
+fake3:
+  name: "A fake temperature sensor"
   onewire: 
     serial: /10.4AEC29CDBAAB/temperature
 

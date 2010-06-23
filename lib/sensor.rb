@@ -5,7 +5,9 @@ module SAAL
       @dbstore = dbstore
       @name = name
       @max_value = defs['max_value']
+      @max_correctable = defs['max_correctable']
       @min_value = defs['min_value']
+      @min_correctable = defs['min_correctable']
       @description = defs['name']
       @serial = defs['onewire']['serial']
       @connect_opts = {}
@@ -45,9 +47,10 @@ module SAAL
     end
     
     def normalize(value)
-      if (@max_value and value > @max_value) or 
-         (@min_value and value < @min_value)
-        nil
+      if @max_value and value > @max_value
+        (@max_correctable and value <= @max_correctable) ? @max_value : nil
+      elsif @min_value and value < @min_value
+        (@min_correctable and value >= @min_correctable) ? @min_value : nil
       else
         value
       end
