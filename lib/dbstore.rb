@@ -8,7 +8,7 @@ module SAAL
     end
 
     def db_initialize
-      @db.query "CREATE TABLE IF NOT EXISTS sensor_reads
+      db_query "CREATE TABLE IF NOT EXISTS sensor_reads
                    (sensor VARCHAR(100), 
                     date INT, 
                     value FLOAT,
@@ -17,58 +17,59 @@ module SAAL
     end
     
     def db_wipe
-      @db.query "DROP TABLE sensor_reads"
+      db_query "DROP TABLE sensor_reads"
     end
 
     def write(sensor, date, value)
       raise ArgumentError, "Trying to store an empty sensor read" if !value
       raise ArgumentError, "Trying to store an empty timestamp" if !date
       raise ArgumentError, "Trying to store a timestamp <= 0" if date <= 0
-      @db.query "INSERT INTO sensor_reads VALUES
-                  ('"+@db.quote(sensor.to_s)+"',"+date.to_s+","+value.to_s+")"
+      db_query "INSERT INTO sensor_reads VALUES
+                  ('"+db_quote(sensor.to_s)+"',"+date.to_s+","+value.to_s+")"
     end
     
     def average(sensor, from, to)     
-      r = @db.query "SELECT AVG(value) AS average FROM sensor_reads
-                       WHERE sensor = '#{@db.quote(sensor.to_s)}' 
+      db_query "SELECT AVG(value) AS average FROM sensor_reads
+                       WHERE sensor = '#{db_quote(sensor.to_s)}' 
                          AND date >= #{from.to_s} 
-                         AND date <= #{to.to_s}"
-      if r.num_rows == 0 
-        nil
-      else
-        row = r.fetch_row
-        row[0] ? row[0].to_f : nil
+                         AND date <= #{to.to_s}" do |r|
+        if r.num_rows == 0 
+          nil
+        else
+          row = r.fetch_row
+          row[0] ? row[0].to_f : nil
+        end
       end
     end
 
     def each
-      r = @db.query "SELECT sensor,date,value FROM sensor_reads"  
-      r.num_rows.times do
-        row = r.fetch_row
-        yield [row[0],row[1].to_i, row[2].to_f]
+      db_query "SELECT sensor,date,value FROM sensor_reads" do |r|
+        r.num_rows.times do
+          row = r.fetch_row
+          yield [row[0],row[1].to_i, row[2].to_f]
+        end
       end
     end
     
-    # Add database connection to methods
-    [:db_initialize, :db_wipe, :write, :average, :each].each do |m|
-      alias_method "orig_"+m.to_s, m
-      class_eval %{
-        def #{m} (*args, &block)
-          ret = nil 
-          begin
-            \# connect to the MySQL server
-            @db = Mysql.new(@dbopts['host'],@dbopts['user'],@dbopts['pass'],
-                            @dbopts['db'],@dbopts['port'],@dbopts['socket'],
-                            @dbopts['flags'])
-            ret = orig_#{m}(*args,&block)
-          rescue Mysql::Error => e
-            $stderr.puts "MySQL Error \#{e.errno}: \#{e.error}"
-          ensure
-            @db.close if @db
-          end
-          ret
-        end      
-      }
+    private
+    def db_quote(text)
+      Mysql.quote(text)
     end
+
+    def db_query(query)
+      db = nil
+      begin
+        # connect to the MySQL server
+        db = Mysql.new(@dbopts['host'],@dbopts['user'],@dbopts['pass'],
+                       @dbopts['db'],@dbopts['port'],@dbopts['socket'],
+                       @dbopts['flags'])
+        res = db.query(query)
+        yield res if block_given?
+      rescue Mysql::Error => e
+        $stderr.puts "MySQL Error \#{e.errno}: \#{e.error}"
+      ensure
+        db.close if db
+      end
+    end      
   end
 end
