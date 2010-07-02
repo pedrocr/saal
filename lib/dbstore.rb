@@ -1,5 +1,6 @@
 module SAAL
   class DBStore
+    include Enumerable
     def initialize(conffile=SAAL::DBCONF)
       @dbopts = YAML::load(File.new(conffile))
       @db = nil
@@ -40,25 +41,34 @@ module SAAL
       end
     end
 
+    def each
+      r = @db.query "SELECT sensor,date,value FROM sensor_reads"  
+      r.num_rows.times do
+        row = r.fetch_row
+        yield [row[0],row[1].to_i, row[2].to_f]
+      end
+    end
     
     # Add database connection to methods
-    [:db_initialize, :db_wipe, :write, :average].each do |m|
-      old = instance_method(m)
-      define_method(m) do |*args|
-        ret = nil 
-        begin
-          # connect to the MySQL server
-          @db = Mysql.new(@dbopts['host'],@dbopts['user'],@dbopts['pass'],
-                          @dbopts['db'],@dbopts['port'],@dbopts['socket'],
-                          @dbopts['flags'])
-          ret = old.bind(self).call(*args)
-        rescue Mysql::Error => e
-          $stderr.puts "MySQL Error #{e.errno}: #{e.error}"
-        ensure
-          @db.close if @db
-        end
-        ret
-      end
+    [:db_initialize, :db_wipe, :write, :average, :each].each do |m|
+      alias_method "orig_"+m.to_s, m
+      class_eval %{
+        def #{m} (*args, &block)
+          ret = nil 
+          begin
+            \# connect to the MySQL server
+            @db = Mysql.new(@dbopts['host'],@dbopts['user'],@dbopts['pass'],
+                            @dbopts['db'],@dbopts['port'],@dbopts['socket'],
+                            @dbopts['flags'])
+            ret = orig_#{m}(*args,&block)
+          rescue Mysql::Error => e
+            $stderr.puts "MySQL Error \#{e.errno}: \#{e.error}"
+          ensure
+            @db.close if @db
+          end
+          ret
+        end      
+      }
     end
   end
 end

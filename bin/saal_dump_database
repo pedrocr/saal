@@ -1,13 +1,12 @@
 #!/usr/bin/env ruby
 
-require 'sqlite3'
+require 'rubygems'
+require 'saal'
 
-if ARGV.size != 1
-  puts "Usage: dump_database [db file]"
+if ARGV.size != 0
+  puts "Usage: saal_dump_database"
   exit 2
 else
-  db = SQLite3::Database.new(ARGV[0])
-  db.execute("select sensor, date, value from sensor_reads") do |row|
-    puts row.join(" ")
-  end
+  dbstore = SAAL::DBStore.new
+  dbstore.each {|sensor,date,value| puts "#{sensor} #{date} #{value}"}
 end

@@ -38,4 +38,15 @@ class TestFileStore < Test::Unit::TestCase
     # when there are no points it's nil
     assert_nil @dbstore.average(:test_sensor, 50, 60)
   end
+
+  def test_enumerable
+    db_setup
+    test_time = 1196024160
+    test_value = 7.323
+    n = 5
+    
+    n.times {@dbstore.write(:test_sensor, test_time, test_value)}
+    assert_equal [["test_sensor", test_time, test_value]]*n,
+                 @dbstore.map{|sensor,time,value| [sensor,time,value]}   
+  end
 end
