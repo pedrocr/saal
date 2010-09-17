@@ -30,8 +30,8 @@ class TestSensors < Test::Unit::TestCase
   end
     
   def test_each
-    expected = @defs.map{ |name, value| [name, value['name']]}
-    assert_equal expected, @sensors.map {|name, sensor| [name, sensor.description]}
+    expected = @defs.map{ |name, value| value['name']}
+    assert_equal expected, @sensors.map {|sensor| sensor.description}
   end
 
   def test_average

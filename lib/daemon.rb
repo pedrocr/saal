@@ -54,7 +54,7 @@ module SAAL
         @sensors = SAAL::Sensors.new(@opts[:sensorconf], @opts[:dbconf])
         @interval = @opts[:interval] || 60
         begin
-          @sensors.each {|name, sensor| sensor.store_value}
+          @sensors.each {|sensor| sensor.store_value}
           forked_runner.sleep @interval
         end while !forked_runner.stop?
       end

@@ -27,7 +27,8 @@ Define your sensors in /etc/saal/sensors.yml.
 This gives you one available sensor:
 
   require 'saal'
-  SAAL::Sensors.new.each do {|name, sensor| puts name} # => fake_temp
+  SAAL::Sensors.new.each do {|sensor| puts sensor.name} 
+  # "fake_temp"
 
 Now if you run owserver in test mode:
   

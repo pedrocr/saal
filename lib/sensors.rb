@@ -18,7 +18,7 @@ module SAAL
     end
     
     def each
-      @defs.each{ |name, value| yield name, Sensor.new(@dbstore, name, value)}
+      @defs.each{ |name, value| yield Sensor.new(@dbstore, name, value)}
     end
   end
 end
