@@ -4,7 +4,7 @@ $: << File.dirname(__FILE__)+"/../lib/"
 require 'saal'
 
 def usage
-  $stderr.puts("Usage: saal_chart7days <day|week|4week|year|4year> <chart_file.png>")
+  $stderr.puts("Usage: saal_chart <day|week|4week|year|4year> <chart_file.png>")
 end
 
 if ARGV.size != 2
