@@ -29,8 +29,8 @@ PKG_FILES = FileList[TEST_FILES,
                      'LICENSE',
                      'Rakefile']
 
-RDOC_OPTIONS = ['-S', '-w 2', '-N']
-RDOC_EXTRA_FILES = ['README']
+RDOC_OPTIONS = ['-S', '-w 2', '-N', '-c utf8']
+RDOC_EXTRA_FILES = ['README.rdoc']
 
 spec = Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
@@ -56,8 +56,6 @@ EOF
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|
-  pkg.need_zip = true
-  pkg.need_tar = true
 end
 
 Rake::TestTask.new do |t|
@@ -66,10 +64,10 @@ Rake::TestTask.new do |t|
 end
 
 Rake::RDocTask.new do |rd|
-  rd.main = "README"
+  rd.main = "README.rdoc"
   rd.name = :docs
   rd.rdoc_files.include(RDOC_EXTRA_FILES, CODE_FILES)
-  rd.rdoc_dir = 'web/doc'
+  rd.rdoc_dir = 'doc'
   rd.title = "#{PKG_NAME} API"
   rd.options = RDOC_OPTIONS
 end

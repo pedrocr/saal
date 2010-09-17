@@ -1,0 +1,75 @@
+= saal
+
+saal stands for Sensor and Actuator Abstraction Layer, and it aims to handle the mechanics of accessing sensors and actuators and logging their state over time. In its present state it is capable of reading from any set of one wire sensors attached one or more owserver processes from the owfs project. In the future other forms of sensors as well as actuators can be added.
+
+Based on a single definition of available sensors several features are available:
+
+* An API to read from the sensors
+* A daemon that periodically records all sensor values into a MySQL database
+* An API to interrogate the database of recorded values
+* A graphing API and example code to produce ongoing displays of the sensor reads
+
+An example of the usage of saal can be seen at http://www.corujas.net.
+
+== Basic Usage
+
+After you install the gem:
+
+  $ gem install saal
+
+Define your sensors in /etc/saal/sensors.yml.
+
+  fake_temp:
+    name: "A fake temperature sensor"
+    onewire: 
+      serial: /10.4AEC29CDBAAB/temperature
+
+This gives you one available sensor:
+
+  require 'saal'
+  SAAL::Sensors.new.each do {|name, sensor| puts name} # => fake_temp
+
+Now if you run owserver in test mode:
+  
+  owserver --fake 1F,10
+
+you can read from the sensor:
+
+  SAAL::Sensors.new.fake_temp.read # Returns a random value with owserver --fake
+  SAAL::Sensors.new.fake_temp.read_uncached # Forces an actual physical read of the sensor instead of using any cache
+
+== Sensor Logging
+
+To store readings you would need to setup an /etc/saal/database.yml. For example:
+
+  host: localhost
+  user: sensor_reads
+  pass: somepass
+  db: sensor_reads_production
+
+This sets up access to the 'sensor_reads_production' MySQL database on 'localhost', using user 'sensor_reads' and pass 'somepass'. With this in place you can now run the daemon to periodically store sensor values:
+
+  $ saal_daemon /var/run/saal.pid
+
+And then you can query the stored values:
+
+  SAAL::Sensors.new.fake_temp.average(0,Time.now.utc.to_i)
+
+Both arguments to average are unix timestamps in UTC timezone.
+
+== Charting
+
+SAAL::ChartData provides some helper methods to produce a time series of values for a sensor where each point is the average of the sensor reads for the interval:
+
+  saal = SAAL::Sensors.new
+  chart = SAAL::ChartData.new(saal.fake_temp)
+  now = Time.now.utc.to_i
+  # Average fake_temp over the last 10 minutes divided in 4 intervals
+  chart.get_data(now - 60*10, now, 4) 
+  #=> [19.1555206999183, 28.3404493331909, 56.4694658915202, 50.4347496032715]
+
+See saal_chart for an example of creating chart images over several time spans including serveral sensors using Google's chart API.
+
+== Author
+
+Pedro Côrte-Real <pedro@pedrocr.net>
