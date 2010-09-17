@@ -3,6 +3,8 @@ TODO
 ?- Change the sensor configuration to be a ruby DSL and make it a daemon config
 - Split classes into one per file with corresponding test (rails style)
 - Verify inputs on the server to make sure it never crashes
+- Remove the chart configuration options from the saal_chart script
+- Add an init.d file to the package (and possibly an installer script for ubuntu/debian)
 DONE
 X- Make the server bind only to a certain interface (not applicable)
 X- Override OWNet::Connection with a mock object so that owserver is not needed
