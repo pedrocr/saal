@@ -1,5 +1,5 @@
 PKG_NAME = 'saal'
-PKG_VERSION = '0.1.3'
+PKG_VERSION = '0.1.4'
 
 require 'rake'
 require 'rake/testtask'
