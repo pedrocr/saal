@@ -16,7 +16,7 @@ module SAAL
       @connect_opts[:server] = defs['onewire']['server'] if defs['onewire']['server']
       @connect_opts[:port] = defs['onewire']['port'] if defs['onewire']['port']
       @owconn = opts[:owconn]
-      @outliercache = !opts[:no_comp_cache] ? OutlierCache.new : nil
+      @outliercache = opts[:no_outliercache] ? nil : OutlierCache.new
     end
     
     def read

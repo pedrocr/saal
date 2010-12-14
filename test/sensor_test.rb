@@ -23,9 +23,9 @@ class TestSensor < Test::Unit::TestCase
     @conn = MockConnection.new
     @dbstore = MockDBStore.new
     @fake = SAAL::Sensor.new(@dbstore, 'fake', @defs['fake'], 
-                             :owconn => @conn, :no_comp_cache => true)
+                             :owconn => @conn, :no_outliercache => true)
     @fake2 = SAAL::Sensor.new(@dbstore, 'fake2', @defs['fake2'], 
-                              :owconn => @conn, :no_comp_cache => true)
+                              :owconn => @conn, :no_outliercache => true)
     @fake3 = SAAL::Sensor.new(@dbstore, 'fake3', @defs['fake3'], 
                               :owconn => @conn)
     @max_value = @defs['fake2']['max_value']
