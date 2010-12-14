@@ -16,7 +16,7 @@ class Test::Unit::TestCase
     end
     sleep 1 # Potential timing bug when the system is under load
     yield
-    Process.kill("TERM", pid)
+    Process.kill("KILL", pid)
     Process.waitpid(pid)
   end
 

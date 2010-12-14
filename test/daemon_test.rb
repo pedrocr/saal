@@ -18,7 +18,7 @@ class TestDaemon < Test::Unit::TestCase
     end
 
     db_test_query("SELECT * FROM sensor_reads") do |res|
-      assert res.num_rows > 0
+      assert res.num_rows > 0, "No sensor reads in DB"
     end
   end
 
