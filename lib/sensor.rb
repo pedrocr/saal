@@ -1,7 +1,9 @@
 module SAAL
   class Sensor
+    MAX_READ_TRIES = 5
+
     attr_reader :name, :description, :serial
-    def initialize(dbstore, name, defs, owconn=nil)
+    def initialize(dbstore, name, defs, opts={})
       @dbstore = dbstore
       @name = name
       @max_value = defs['max_value']
@@ -13,23 +15,16 @@ module SAAL
       @connect_opts = {}
       @connect_opts[:server] = defs['onewire']['server'] if defs['onewire']['server']
       @connect_opts[:port] = defs['onewire']['port'] if defs['onewire']['port']
-      @owconn = owconn
+      @owconn = opts[:owconn]
+      @outliercache = !opts[:no_comp_cache] ? OutlierCache.new : nil
     end
     
     def read
-      begin
-        normalize(owconn.read(@serial))
-      rescue Exception
-        nil
-      end
+      normalize(owread(false))
     end
 
     def read_uncached
-      begin
-        normalize(owconn.read('/uncached'+@serial))
-      rescue Exception
-        nil
-      end
+      normalize(owread(true))
     end
 
     def average(from, to)
@@ -38,12 +33,12 @@ module SAAL
 
     def store_value
       value = read_uncached
-      @dbstore.write @name, Time.now.utc.to_i, value if value
+      @dbstore.write(@name, Time.now.utc.to_i, value) if value
     end
 
     private 
     def owconn
-      @owconn || OWNet::Connection.new(@connect_opts)
+      @owconn ||= OWNet::Connection.new(@connect_opts)
     end
     
     def normalize(value)
@@ -54,6 +49,20 @@ module SAAL
       else
         value
       end
+    end
+
+    def owread(uncached = false)
+      tries = 0
+      value = nil
+      begin
+        tries += 1
+        value = begin
+          owconn.read((uncached ? '/uncached' : '')+@serial)
+        rescue Exception
+          nil
+        end
+      end while tries < MAX_READ_TRIES && @outliercache && !@outliercache.validate(value)
+      value
     end
   end
 end

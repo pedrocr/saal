@@ -1,9 +1,12 @@
 require File.dirname(__FILE__)+'/test_helper.rb'
 
 class MockConnection
-  attr_accessor :value
+  attr_accessor :value, :values
+  def initialize
+    @value = @values = nil
+  end
   def read(serial)
-    @value
+    @value ? @value : @values.shift 
   end
 end
 
@@ -19,9 +22,12 @@ class TestSensor < Test::Unit::TestCase
     @defs = YAML::load File.new(TEST_SENSOR_CLEANUPS_FILE)
     @conn = MockConnection.new
     @dbstore = MockDBStore.new
-    @fake = SAAL::Sensor.new(@dbstore, 'fake', @defs['fake'], @conn)
-    @fake2 = SAAL::Sensor.new(@dbstore, 'fake2', @defs['fake2'], @conn)
-    @fake3 = SAAL::Sensor.new(@dbstore, 'fake3', @defs['fake3'], @conn)
+    @fake = SAAL::Sensor.new(@dbstore, 'fake', @defs['fake'], 
+                             :owconn => @conn, :no_comp_cache => true)
+    @fake2 = SAAL::Sensor.new(@dbstore, 'fake2', @defs['fake2'], 
+                              :owconn => @conn, :no_comp_cache => true)
+    @fake3 = SAAL::Sensor.new(@dbstore, 'fake3', @defs['fake3'], 
+                              :owconn => @conn)
     @max_value = @defs['fake2']['max_value']
     @max_correctable = @defs['fake2']['max_correctable']
     @min_value = @defs['fake2']['min_value']
@@ -68,5 +74,12 @@ class TestSensor < Test::Unit::TestCase
     @conn.value = 200
     assert_equal 200, @fake3.read
     assert_equal 200, @fake3.read_uncached
+  end
+
+  def test_eliminate_outliers
+    @conn.values = [200]*20 + [1000,200]
+    assert_equal [200]*21, (1..21).map{@fake3.read}
+    @conn.values = [200]*20 + [1000,200,1000,200]
+    assert_equal [200]*21, (1..21).map{@fake3.read_uncached}
   end
 end
