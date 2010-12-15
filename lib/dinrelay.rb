@@ -15,6 +15,10 @@ module SAAL
           req = Net::HTTP::Get.new('/index.htm')
           req.basic_auth @user, @pass
           response = http.request(req)
+          if response.code != "200"
+            $stderr.puts "ERROR: Code #{response.code}"
+            $stderr.puts response.body
+          end
           return parse_index_html(response.body)[num]
         end
       end

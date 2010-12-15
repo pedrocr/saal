@@ -2,16 +2,30 @@
 
 require File.dirname(__FILE__)+'/../lib/saal.rb'
 
-if ARGV.size > 2 || ARGV.size < 1
-  $stderr.puts "Usage: dinrelaystatus <host> [port]"
+def exit_usage
+  $stderr.puts "Usage: dinrelaystatus <host:[port]> [user:password]"
   exit 2
 end
 
-host = ARGV[0]
-port = (ARGV[1] || 80).to_i
+if ARGV.size > 2 || ARGV.size < 1
+  exit_usage
+end
 
-puts "Checking outlets for #{host}:#{port}"
-og = SAAL::DINRelay::OutletGroup.new(host, :port => port)
+opts = {}
+
+hp = ARGV[0].split(":")
+host = hp[0]
+opts[:port] = (hp[1] || 80).to_i
+
+if ARGV[1]
+  up = ARGV[1].split(":")
+  exit_usage if up.size != 2
+  opts[:user] = up[0]
+  opts[:pass] = up[1]
+end
+
+puts "Checking outlets for #{host}:#{opts[:port]}"
+og = SAAL::DINRelay::OutletGroup.new(host, opts)
 (1..8).each do |num| 
   puts "Outlet \##{num}: #{og.state(num).to_s}"
 end
