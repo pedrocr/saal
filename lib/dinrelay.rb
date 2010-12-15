@@ -14,11 +14,17 @@ module SAAL
       def initialize(host, opts={})
         @host = host
         @port = opts[:port] || 80
+        @user = opts[:user] || "admin"
+        @pass = opts[:pass] || "1234"
       end
 
       def state(num)
-        html = Net::HTTP.get(@host, '/index.html', @port)
-        parse_index_html(html)[num]
+        Net::HTTP.start(@host,@port) do |http|
+          req = Net::HTTP::Get.new('/index.htm')
+          req.basic_auth @user, @pass
+          response = http.request(req)
+          return parse_index_html(response.body)[num]
+        end
       end
 
       private
