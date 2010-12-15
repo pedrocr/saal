@@ -1,0 +1,142 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15">
+<meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+
+<meta http-equiv="Refresh" content="300">
+<title>Outlet Control  - Lite Power Controller</title></head>
+<!-- state=00 lock=00 -->
+
+<body alink="#0000FF" vlink="#0000FF">
+<font face="Arial, Helvetica, Sans-Serif">
+<table width="100%" cellspacing="0" cellpadding="0">
+<tbody><tr>
+<td valign="top" width="17%" height="100%">
+
+    <!-- menu -->
+    <table width="100%" height="100%" align="center" border="0" cellspacing="1" cellpadding="0">
+    <tbody><tr><td valign="top" bgcolor="#F4F4F4">
+    <table width="100%" cellpadding="1" cellspacing="5">
+
+    <tbody><tr><td align="center">
+    
+    <table><tbody><tr><td><a href="http://www.digital-loggers.com/8.html"><img src="./index_files/logo.gif" width="195" height="65" border="0"></a></td>
+    
+    <td><b><font size="-1">Ethernet Power Controller</font></b></td></tr></tbody></table>
+    <hr>
+    </td></tr>
+
+
+
+<tr><td nowrap=""><b><a href="./index_files/index.html">Outlet Control</a></b></td></tr>
+<tr><td nowrap=""><b><a href="http://localhost:8080/admin.htm">Setup</a></b></td></tr>
+
+
+
+
+
+<tr><td nowrap=""><b><a href="http://localhost:8080/ap.htm">AutoPing</a></b></td></tr>
+<tr><td nowrap=""><b><a href="http://localhost:8080/syslog.htm">System Log</a></b></td></tr>
+<tr><td nowrap=""><b><a href="http://localhost:8080/logout">Logout</a></b></td></tr>
+<tr><td nowrap=""><b><a href="http://localhost:8080/help/">Help</a></b></td></tr>
+
+<tr><td><hr></td></tr>
+
+
+<tr><td><b><a href="http://www.digital-loggers.com/5.html">Manual</a></b></td></tr>
+
+<tr><td><b><a href="http://www.digital-loggers.com/6.html">FAQ</a></b></td></tr>
+
+<tr><td><b><a href="http://www.digital-loggers.com/7.html">Product Information</a></b></td></tr>
+
+<tr><td><b><a href="http://www.digital-loggers.com/8.html">Digital Loggers, Inc.</a></b></td></tr>
+
+
+    </tbody></table>
+    </td></tr>
+
+
+    <tr><td valign="bottom" height="100%" bgcolor="#F4F4F4">
+    <small>Version 1.2.C (Apr 12 2009 / 14:28:13) 43858FBE-7E60D1A3</small>
+    </td></tr>
+    <tr><td valign="bottom" height="100%" bgcolor="#F4F4F4">
+    <small>S/N:0000131097</small>
+    </td></tr>
+
+    </tbody></table>
+    <!-- /menu -->
+
+</td>
+<td valign="top" width="83%">
+
+    <!-- heading table -->
+    <table width="100%" align="center" border="0" cellspacing="1" cellpadding="3">
+	<tbody><tr><td bgcolor="red">&nbsp;</td></tr><tr><td align="center"><h1>We recommend that you change the password!</h1></td></tr><tr><td bgcolor="red">&nbsp;</td></tr>
+        <tr>
+        <th bgcolor="#DDDDFF" align="left">
+        Controller: Lite Power Controller
+        </th>
+        </tr>
+
+        <tr bgcolor="#FFFFFF" align="left">
+        <td>
+        Uptime:   115:48:32 <!-- 416912s up -->
+        </td>
+        </tr>
+
+    </tbody></table>
+    <!-- /heading table -->
+
+    <br>
+
+    <!-- individual control table -->
+    <table width="100%" align="center" border="0" cellspacing="1" cellpadding="3">
+
+        <tbody><tr>
+        <td bgcolor="#DDDDFF" colspan="5" align="left">
+        Individual Control
+        </td>
+        </tr>
+
+        <!-- heading rows -->
+        <tr bgcolor="#DDDDDD">
+        <th>#</th>
+        <th align="left">Name</th>
+        <th align="left">State</th>
+        <th align="left" colspan="2">Action</th>
+        </tr>
+        <!-- /heading rows -->
+
+<% (1..8).each do |num| %>
+<% state = outlets[num] %>
+<% reverse = state == "ON" ? "OFF" : "ON" %>
+<tr bgcolor="#F4F4F4"><td align="center">8</td>
+<td>Outlet <%= num %></td><td>
+<b><font color="red"><%= state %></font></b></td><td>
+<a href="http://example.com/outlet?<%= num %>=<%= reverse %>">Switch <%= reverse %></a>
+</td><td>
+<!-- <a  href=outlet?<%= num %>=CCL>Cycle</a> -->
+</td></tr>
+<% end %>>
+
+    </tbody></table>
+    <!-- /individual control table -->
+
+    <br>
+
+<table width="100%" align="center" border="0" cellspacing="1" cellpadding="3">
+<tbody><tr><td bgcolor="#DDDDFF" align="left">Master Control</td></tr>
+
+<tr><td bgcolor="#F4F4F4" align="left"><a href="http://localhost:8080/outlet?a=OFF">All outlets OFF</a></td></tr>
+<tr><td bgcolor="#F4F4F4" align="left"><a href="http://localhost:8080/outlet?a=ON">All outlets ON</a></td></tr>
+<tr><td bgcolor="#F4F4F4" align="left"><a href="http://localhost:8080/outlet?a=CCL">Cycle all outlets</a></td></tr>
+<tr><td align="center">Sequence delay: 1 sec.</td></tr>
+
+</tbody></table>
+
+
+</td>
+</tr>
+</tbody></table>
+
+
+
+</font></body><style type="text/css">embed[type*="application/x-shockwave-flash"],embed[src*=".swf"],object[type*="application/x-shockwave-flash"],object[codetype*="application/x-shockwave-flash"],object[src*=".swf"],object[codebase*="swflash.cab"],object[classid*="D27CDB6E-AE6D-11cf-96B8-444553540000"],object[classid*="d27cdb6e-ae6d-11cf-96b8-444553540000"],object[classid*="D27CDB6E-AE6D-11cf-96B8-444553540000"]{	display: none !important;}</style></html>

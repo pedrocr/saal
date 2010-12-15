@@ -2,6 +2,8 @@ require 'rubygems'
 require 'yaml'
 require "mysql"
 require 'ownet'
+require 'nokogiri'
+require 'erb'
 
 $-w = true
 
@@ -17,4 +19,5 @@ require File.dirname(__FILE__)+'/sensor.rb'
 require File.dirname(__FILE__)+'/daemon.rb'
 require File.dirname(__FILE__)+'/chart_data.rb'
 require File.dirname(__FILE__)+'/outliercache.rb'
+require File.dirname(__FILE__)+'/dinrelay.rb'
   
