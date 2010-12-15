@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+require File.dirname(__FILE__)+'/../lib/saal.rb'
+
+if ARGV.size > 2 || ARGV.size < 1
+  $stderr.puts "Usage: dinrelaystatus <host> [port]"
+  exit 2
+end
+
+host = ARGV[0]
+port = (ARGV[1] || 80).to_i
+
+puts "Checking outlets for #{host}:#{port}"
+og = SAAL::DINRelay::OutletGroup.new(host, :port => port)
+(1..8).each do |num| 
+  puts "Outlet \##{num}: #{og.state(num).to_s}"
+end
+
