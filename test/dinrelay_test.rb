@@ -45,11 +45,6 @@ class TestDINRelay < Test::Unit::TestCase
     erb.result(binding)
   end
 
-  def test_html_parse
-    hash = {1=>"OFF",2=>"OFF",3=>"ON",4=>"OFF",5=>"ON",6=>"ON",7=>"ON",8=>"OFF"}
-    assert_equal hash, SAAL::DINRelay.parse_index_html(create_index_html(hash))
-  end
-
   def test_read_values
     opts = {:port => 33333, :user => "someuser", :pass =>"somepass"}
     vals = {1=>"OFF",2=>"OFF",3=>"ON",4=>"OFF",5=>"ON",6=>"ON",7=>"ON",8=>"OFF"}

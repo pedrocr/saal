@@ -107,10 +107,11 @@
 
 <% (1..8).each do |num| %>
 <% state = outlets[num] %>
+<% color = state == "ON" ? "green" : "red" %>
 <% reverse = state == "ON" ? "OFF" : "ON" %>
 <tr bgcolor="#F4F4F4"><td align="center">8</td>
 <td>Outlet <%= num %></td><td>
-<b><font color="red"><%= state %></font></b></td><td>
+<b><font color="<%= color %>"><%= state %></font></b></td><td>
 <a href="http://example.com/outlet?<%= num %>=<%= reverse %>">Switch <%= reverse %></a>
 </td><td>
 <!-- <a  href=outlet?<%= num %>=CCL>Cycle</a> -->
