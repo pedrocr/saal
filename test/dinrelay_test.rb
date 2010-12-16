@@ -11,8 +11,10 @@ class TestDINRelay < Test::Unit::TestCase
       @html = opts[:html]
       @user = opts[:user]
       @pass = opts[:pass]
+      @feedback = opts[:feedback] || {}
     end
     def do_GET(req, res)
+      @feedback[:path] = req.path
       WEBrick::HTTPAuth.basic_auth(req, res, "My Realm") {|user, pass|
         user == @user && pass == @pass
       }
@@ -21,14 +23,14 @@ class TestDINRelay < Test::Unit::TestCase
     end
   end
 
-  def with_webrick(path,opts)
+  def with_webrick(opts)
     Socket.do_not_reverse_lookup = true # Speed up startup
     log = WEBrick::Log.new($stderr, WEBrick::Log::ERROR)
     access_log = [[log, WEBrick::AccessLog::COMBINED_LOG_FORMAT]]
     s = WEBrick::HTTPServer.new(:Port => opts[:port], 
                                 :Logger => log,
                                 :AccessLog => access_log)
-    s.mount(path, BasicServing, opts)
+    s.mount('/', BasicServing, opts)
     
     thread = Thread.new do
       s.start
@@ -46,12 +48,14 @@ class TestDINRelay < Test::Unit::TestCase
   end
 
   def test_read_values
-    opts = {:port => 33333, :user => "someuser", :pass =>"somepass"}
+    feedback = {}
+    opts = {:port => 33333, :user => "someuser", :pass =>"somepass", :feedback => feedback}
     vals = {1=>"OFF",2=>"OFF",3=>"ON",4=>"OFF",5=>"ON",6=>"ON",7=>"ON",8=>"OFF"}
-    with_webrick("/index.htm", opts.merge(:html=>create_index_html(vals))) do
+    with_webrick(opts.merge(:html=>create_index_html(vals))) do
       og = SAAL::DINRelay::OutletGroup.new("localhost", opts)
       vals.each do |num, state|
         assert_equal state, og.state(num)
+        assert_equal '/index.htm', feedback[:path]
       end
     end
   end
