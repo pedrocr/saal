@@ -11,19 +11,29 @@ module SAAL
       end
 
       def state(num)
+        response = do_get('/index.htm')
+        return parse_index_html(response.body)[num]
+      end
+
+      def set_state(num, state)
+        response = do_get("/outlet?#{num}=#{state}")
+        response.code == "200"
+      end
+
+      private
+      def do_get(path)
         Net::HTTP.start(@host,@port) do |http|
-          req = Net::HTTP::Get.new('/index.htm')
+          req = Net::HTTP::Get.new(path)
           req.basic_auth @user, @pass
           response = http.request(req)
           if response.code != "200"
             $stderr.puts "ERROR: Code #{response.code}"
             $stderr.puts response.body
           end
-          return parse_index_html(response.body)[num]
+          return response
         end
       end
 
-      private
       def parse_index_html(str)
         doc = Nokogiri::HTML(str)
         outlets = doc.css('tr[bgcolor="#F4F4F4"]')

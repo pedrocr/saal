@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+require File.dirname(__FILE__)+'/../lib/saal.rb'
+
+def exit_usage
+  $stderr.puts "Usage: dinrelayset <host:[port]> <port 1-8> <ON|OFF> [user:password]"
+  exit 2
+end
+
+if ARGV.size > 4 || ARGV.size < 3
+  exit_usage
+end
+
+opts = {}
+
+hp = ARGV[0].split(":")
+host = hp[0]
+opts[:port] = (hp[1] || 80).to_i
+
+num = ARGV[1].to_i
+exit_usage if num < 1 || num > 8 
+state = ARGV[2]
+exit_usage if state != 'ON' && state != 'OFF' 
+
+if ARGV[4]
+  up = ARGV[4].split(":")
+  exit_usage if up.size != 2
+  opts[:user] = up[0]
+  opts[:pass] = up[1]
+end
+
+puts "Setting outlet #{num} of #{host}:#{opts[:port]} to #{state}"
+og = SAAL::DINRelay::OutletGroup.new(host, opts)
+og.set_state(num, state)
+
