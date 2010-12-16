@@ -18,16 +18,18 @@ class MockDBStore
 end
 
 class TestSensor < Test::Unit::TestCase
+  def fake_sensor(name, opts={})
+    SAAL::Sensors.sensors_from_defs(@dbstore, name, @defs[name], 
+                                    opts.merge(:owconn => @conn))[0]
+  end
+
   def setup
     @defs = YAML::load File.new(TEST_SENSOR_CLEANUPS_FILE)
     @conn = MockConnection.new
     @dbstore = MockDBStore.new
-    @fake = SAAL::Sensor.new(@dbstore, 'fake', @defs['fake'], 
-                             :owconn => @conn, :no_outliercache => true)
-    @fake2 = SAAL::Sensor.new(@dbstore, 'fake2', @defs['fake2'], 
-                              :owconn => @conn, :no_outliercache => true)
-    @fake3 = SAAL::Sensor.new(@dbstore, 'fake3', @defs['fake3'], 
-                              :owconn => @conn)
+    @fake = fake_sensor('fake', :no_outliercache => true)
+    @fake2 = fake_sensor('fake2', :no_outliercache => true)
+    @fake3 = fake_sensor('fake3')
     @max_value = @defs['fake2']['max_value']
     @max_correctable = @defs['fake2']['max_correctable']
     @min_value = @defs['fake2']['min_value']

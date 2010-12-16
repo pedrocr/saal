@@ -6,9 +6,10 @@ module SAAL
     MAX_READ_TRIES = 5
 
     attr_reader :name, :description
-    def initialize(dbstore, name, defs, opts={})
+    def initialize(dbstore, name, underlying, defs, opts={})
       @dbstore = dbstore
       @name = name
+      @underlying = underlying
       @description = defs['name']
       
       # Reading correction settings
@@ -19,13 +20,6 @@ module SAAL
 
       # Outliercache
       @outliercache = opts[:no_outliercache] ? nil : OutlierCache.new
-
-      if defs['onewire']
-        @underlying = OWSensor.new(defs['onewire'], opts)
-      else
-        raise UnknownSensorType, "Couldn't figure out a valid sensor type from"+
-                                 " the configuration for #{name}"
-      end
     end  
 
     def read
