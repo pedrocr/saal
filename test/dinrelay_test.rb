@@ -3,7 +3,8 @@ require 'webrick'
 #require 'webrick/accesslog'
 
 class TestDINRelay < Test::Unit::TestCase
-  SERVICE_OPTS = {:port => 33333, :user => "someuser", :pass =>"somepass"}
+  SERVICE_OPTS = {:host => 'localhost', :port => 33333, 
+                  :user => "someuser", :pass =>"somepass"}
 
   class BasicServing < WEBrick::HTTPServlet::AbstractServlet
     def self.get_instance(config, opts)
@@ -52,7 +53,7 @@ class TestDINRelay < Test::Unit::TestCase
   end
 
   def setup
-    @og=SAAL::DINRelay::OutletGroup.new("localhost", SERVICE_OPTS)
+    @og=SAAL::DINRelay::OutletGroup.new(SERVICE_OPTS)
     @vals={1=>"OFF",2=>"OFF",3=>"ON",4=>"OFF",5=>"ON",6=>"ON",7=>"ON",8=>"OFF"}
     @rvals={1=>"ON",2=>"ON",3=>"OFF",4=>"ON",5=>"OFF",6=>"OFF",7=>"OFF",8=>"ON"}
   end
@@ -76,6 +77,22 @@ class TestDINRelay < Test::Unit::TestCase
         newstate = state == "ON" ? "OFF" : "ON"
         assert @og.set_state(num,newstate), "State change not working"
         assert_path "/outlet?#{num}=#{newstate}", feedback[:uri]
+      end
+    end
+  end
+
+  def test_enumerate_sensors
+    sensors = SAAL::Sensors.new(TEST_SENSORS_DINRELAY_FILE, TEST_DBCONF)
+    assert_equal (1..8).map{|i| "name#{i}"}, sensors.map{|s| s.name}.sort
+  end
+
+  def test_read_sensors
+    sensors = SAAL::Sensors.new(TEST_SENSORS_DINRELAY_FILE, TEST_DBCONF)
+    with_webrick(:html=>create_index_html(@vals)) do |feedback|
+      @vals.each do |num, state|
+        value = state == "ON" ? 1.0 : 0.0
+        assert_equal value, sensors.send('name'+num.to_s).read
+        assert_path '/index.htm', feedback[:uri]
       end
     end
   end

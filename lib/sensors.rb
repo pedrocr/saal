@@ -30,6 +30,12 @@ module SAAL
       if defs['onewire']
         return [Sensor.new(dbstore, name, OWSensor.new(defs['onewire'], opts), 
                            defs, opts)]
+      elsif defs['dinrelay']
+        og = DINRelay::OutletGroup.new(defs['dinrelay'])
+        outlet_names = defs['dinrelay']['outlets'] || []
+        return outlet_names.map do |num, oname|
+          Sensor.new(dbstore, oname, DINRelay::Outlet.new(num.to_i, og), defs, opts)
+        end
       else
         raise UnknownSensorType, "Couldn't figure out a valid sensor type "
                                  "from the configuration for #{name}"

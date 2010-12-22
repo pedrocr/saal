@@ -2,12 +2,23 @@ require 'net/http'
 
 module SAAL
   module DINRelay
+    class Outlet
+      def initialize(num, outletgroup)
+        @num = num
+        @og = outletgroup
+      end
+
+      def read(uncached = false)
+        {'ON' => 1.0, 'OFF' => 0.0}[@og.state(@num)]
+      end
+    end
+
     class OutletGroup
-      def initialize(host, opts={})
-        @host = host
-        @port = opts[:port] || 80
-        @user = opts[:user] || "admin"
-        @pass = opts[:pass] || "1234"
+      def initialize(opts={})
+        @host = opts[:host] || opts['host'] || 'localhost'
+        @port = opts[:port] || opts['port'] || 80
+        @user = opts[:user] || opts['user'] || 'admin'
+        @pass = opts[:pass] || opts['pass'] || '1234'
       end
 
       def state(num)
