@@ -84,4 +84,11 @@ class TestSensor < Test::Unit::TestCase
     @conn.values = [200]*20 + [1000,200,1000,200]
     assert_equal [200]*21, (1..21).map{@fake3.read_uncached}
   end
+
+  def test_eliminate_outliers_zeroes
+    @conn.values = [0]*20 + [1000,0]
+    assert_equal [0]*20+[1000], (1..21).map{@fake3.read}
+    @conn.values = [0]*20 + [1000,0]
+    assert_equal [0]*20+[1000], (1..21).map{@fake3.read_uncached}
+  end
 end

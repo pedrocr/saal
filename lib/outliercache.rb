@@ -41,7 +41,9 @@ module SAAL
     def valid_cache
       @compcache.sort!
       central = @compcache[1..(@compcache.size-2)]
-      average = central.inject(0.0){|sum,el| sum+el}/central.size
+      sum = central.inject(0.0){|sum,el| sum+el}
+      return false if sum == 0.0
+      average = sum/central.size
       central.each do |el|
         return false if (el.to_f/average.to_f - 1.0).abs > MAX_CACHE_DEVIATION
       end
