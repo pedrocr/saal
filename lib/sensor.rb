@@ -41,8 +41,8 @@ module SAAL
       normalize(outlier_proof_read(true))
     end
 
-    def set(value)
-      @underlying.set(value)
+    def write(value)
+      @underlying.write(value)
     end 
 
     def average(from, to)

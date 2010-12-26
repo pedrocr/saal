@@ -103,7 +103,7 @@ class TestDINRelay < Test::Unit::TestCase
       @vals.each do |num, state|
         newval = state == "ON" ? 0.0 : 1.0
         newstate = state == "ON" ? "OFF" : "ON"
-        assert_equal newval, sensors.send('name'+num.to_s).set(newval), 
+        assert_equal newval, sensors.send('name'+num.to_s).write(newval), 
                      "State change not working"
         assert_path "/outlet?#{num}=#{newstate}", feedback[:uri]
       end

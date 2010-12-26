@@ -14,7 +14,7 @@ module SAAL
         {'ON' => 1.0, 'OFF' => 0.0}[@og.state(@num)]
       end
 
-      def set(value)
+      def write(value)
         newstate = {1.0 => 'ON', 0.0 => 'OFF'}[value]
         if newstate
           @og.set_state(@num,newstate)
