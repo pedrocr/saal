@@ -1,5 +1,5 @@
 module SAAL
-  class OWSensor
+  class OWSensor < SensorUnderlying
     attr_reader :serial
     def initialize(defs, opts={})
       @serial = defs['serial']

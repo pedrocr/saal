@@ -1,7 +1,14 @@
-module SAAL
-  class UnknownSensorType < RuntimeError
+module SAAL  
+  class UnimplementedMethod < RuntimeError
   end
-  
+
+  class SensorUnderlying
+    def writeable?; false; end
+    def self.writeable! 
+      define_method(:writeable?){true}
+    end
+  end
+
   class Sensor
     MAX_READ_TRIES = 5
 
@@ -21,6 +28,10 @@ module SAAL
       # Outliercache
       @outliercache = opts[:no_outliercache] ? nil : OutlierCache.new
     end  
+
+    def writeable?
+      @underlying.writeable?
+    end
 
     def read
       normalize(outlier_proof_read(false))

@@ -34,6 +34,13 @@ class TestSensors < Test::Unit::TestCase
     assert_equal expected, @sensors.map {|sensor| sensor.description}
   end
 
+  def test_writeable
+    dinsensors = SAAL::Sensors.new(TEST_SENSORS_DINRELAY_FILE, TEST_DBCONF)
+    dinsensors.each {|s| assert s.writeable?}
+    owsensors = SAAL::Sensors.new(TEST_SENSORS_FILE, TEST_DBCONF)
+    owsensors.each {|s| assert !s.writeable?}
+  end
+
   def test_average
     db_setup
 

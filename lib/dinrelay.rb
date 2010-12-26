@@ -2,7 +2,9 @@ require 'net/http'
 
 module SAAL
   module DINRelay
-    class Outlet
+    class Outlet < SensorUnderlying
+      writeable!
+
       def initialize(num, outletgroup)
         @num = num
         @og = outletgroup

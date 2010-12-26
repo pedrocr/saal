@@ -1,4 +1,7 @@
 module SAAL
+  class UnknownSensorType < RuntimeError
+  end
+
   class Sensors
     include Enumerable
     
