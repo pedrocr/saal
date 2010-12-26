@@ -96,4 +96,17 @@ class TestDINRelay < Test::Unit::TestCase
       end
     end
   end
+
+  def test_set_sensors
+    sensors = SAAL::Sensors.new(TEST_SENSORS_DINRELAY_FILE, TEST_DBCONF)
+    with_webrick(:html=>create_index_html(@rvals)) do |feedback|
+      @vals.each do |num, state|
+        newval = state == "ON" ? 0.0 : 1.0
+        newstate = state == "ON" ? "OFF" : "ON"
+        assert_equal newval, sensors.send('name'+num.to_s).set(newval), 
+                     "State change not working"
+        assert_path "/outlet?#{num}=#{newstate}", feedback[:uri]
+      end
+    end
+  end
 end

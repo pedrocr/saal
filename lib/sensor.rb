@@ -30,6 +30,10 @@ module SAAL
       normalize(outlier_proof_read(true))
     end
 
+    def set(value)
+      @underlying.set(value)
+    end 
+
     def average(from, to)
       @dbstore.average(@name, from, to)
     end
