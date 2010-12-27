@@ -14,7 +14,7 @@ end
 opts = {}
 
 hp = ARGV[0].split(":")
-host = hp[0]
+opts[:host] = hp[0]
 opts[:port] = (hp[1] || 80).to_i
 
 if ARGV[1]
@@ -24,8 +24,8 @@ if ARGV[1]
   opts[:pass] = up[1]
 end
 
-puts "Checking outlets for #{host}:#{opts[:port]}"
-og = SAAL::DINRelay::OutletGroup.new(host, opts)
+puts "Checking outlets for #{opts[:host]}:#{opts[:port]}"
+og = SAAL::DINRelay::OutletGroup.new(opts)
 (1..8).each do |num| 
   puts "Outlet \##{num}: #{og.state(num).to_s}"
 end

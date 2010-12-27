@@ -14,7 +14,7 @@ end
 opts = {}
 
 hp = ARGV[0].split(":")
-host = hp[0]
+opts[:host] = hp[0]
 opts[:port] = (hp[1] || 80).to_i
 
 num = ARGV[1].to_i
@@ -29,7 +29,7 @@ if ARGV[4]
   opts[:pass] = up[1]
 end
 
-puts "Setting outlet #{num} of #{host}:#{opts[:port]} to #{state}"
-og = SAAL::DINRelay::OutletGroup.new(host, opts)
+puts "Setting outlet #{num} of #{opts[:host]}:#{opts[:port]} to #{state}"
+og = SAAL::DINRelay::OutletGroup.new(opts)
 og.set_state(num, state)
 
