@@ -13,10 +13,7 @@ task :default => ['test']
 TEST_FILES = 'test/**/*.rb'
 EXTRA_TEST_FILES = 'test/**/*.yml'
 CODE_FILES = 'lib/**/*.rb'
-BIN_FILES = ['bin/saal_daemon', 
-             'bin/saal_dump_database', 
-             'bin/saal_chart',
-             'bin/saal_import_mysql']
+BIN_FILES = 'bin/*'
 
 EXAMPLE_FILES = ['examples/*.rb']
 
@@ -34,24 +31,24 @@ RDOC_EXTRA_FILES = ['README.rdoc']
 
 spec = Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
-  s.summary = "Thin abstraction layer for interfacing and recording sensors (currently onewire)"
+  s.summary = "Thin abstraction layer for interfacing and recording sensors (currently onewire) and actuators (currently dinrelay)"
+  s.homepage = "http://github.com/pedrocr/saal" 
   s.name = PKG_NAME
   s.version = PKG_VERSION
   s.author = 'Pedro Côrte-Real'
   s.email = 'pedro@pedrocr.net'
-  s.requirements << 'ownet'
+  s.requirements += ['ownet', 'nokogiri']
   s.bindir = "bin"
-  s.executables = BIN_FILES.map{|f| f.gsub('bin/','')}
+  s.executables = Dir.glob(BIN_FILES).map{|f| f.gsub('bin/','')}
   s.require_path = 'lib'
-  s.autorequire = 'rake'
   s.files = PKG_FILES
   s.has_rdoc = true
   s.rdoc_options = RDOC_OPTIONS
   s.extra_rdoc_files = RDOC_EXTRA_FILES
   s.description = <<EOF
-A daemon and libraries to create an abstraction layer that interfaces with 
-onewire sensors, recording their values periodically and responding to requests
-for current and historical values.
+A daemon and libraries to create an abstraction layer that interfaces with
+ sensors and actuators, recording their state, responding to requests
+for current and historical values, and allowing changes of state.
 EOF
 end
 
