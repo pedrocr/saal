@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
-$: << File.dirname(__FILE__)+"/../lib/"
-require 'saal'
+require File.dirname(__FILE__)+'/../lib/saal.rb'
 
 def usage
   $stderr.puts("Usage: saal_chart <day|week|4week|year|4year> <chart_file.png>")

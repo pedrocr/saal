@@ -4,9 +4,7 @@ SENSOR_INTERVAL = 60 # seconds between consecutive measurements of the sensors
 DBCONF = "/etc/saal/database.yml"
 SENSORSCONF = "/etc/saal/sensors.yml"
 
-$: << File.dirname(__FILE__)+"/../lib/"
-require 'rubygems'
-require 'saal'
+require File.dirname(__FILE__)+'/../lib/saal.rb'
 
 if ARGV.size != 1
   $stderr.puts "Usage: saal_daemon [pidfile]"

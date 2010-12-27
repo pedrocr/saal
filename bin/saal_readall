@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
-$: << File.dirname(__FILE__)+"/../lib/"
-require 'saal'
+require File.dirname(__FILE__)+'/../lib/saal.rb'
 
 if ARGV.size > 0
   $stderr.puts "saal_readall takes no arguments"

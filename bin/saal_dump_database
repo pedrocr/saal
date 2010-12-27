@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'rubygems'
-require 'saal'
+require File.dirname(__FILE__)+'/../lib/saal.rb'
 
 if ARGV.size != 0
   puts "Usage: saal_dump_database"
