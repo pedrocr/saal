@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+$: << File.dirname(__FILE__)+"/../lib/"
+require 'saal'
+
+if ARGV.size > 0
+  $stderr.puts "saal_readall takes no arguments"
+  exit 2
+else
+  SAAL::Sensors.new.each{|s| puts "#{s.name}: #{s.read.to_s}"}
+end
