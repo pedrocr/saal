@@ -37,7 +37,9 @@ spec = Gem::Specification.new do |s|
   s.version = PKG_VERSION
   s.author = 'Pedro Côrte-Real'
   s.email = 'pedro@pedrocr.net'
-  s.requirements += ['ownet', 'nokogiri', 'yaml', 'mysql', 'erb']
+  s.add_dependency('ownet', [">= 0.0.3"])
+  s.add_dependency('nokogiri')
+  s.add_dependency('mysql')
   s.bindir = "bin"
   s.executables = Dir.glob(BIN_FILES).map{|f| f.gsub('bin/','')}
   s.require_path = 'lib'
