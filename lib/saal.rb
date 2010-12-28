@@ -4,8 +4,6 @@ require 'ownet'
 require 'nokogiri'
 require 'erb'
 
-$-w = true
-
 module SAAL
     CONFDIR = "/etc/saal/"
     SENSORSCONF = CONFDIR+"sensors.yml"
