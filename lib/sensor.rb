@@ -43,7 +43,11 @@ module SAAL
     end
 
     def write(value)
-      @underlying.write(value)
+      if @mock_opts[:value]
+        @mock_opts[:value] = value
+      else
+        @underlying.write(value)
+      end
     end 
 
     def average(from, to)
