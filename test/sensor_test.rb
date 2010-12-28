@@ -91,4 +91,12 @@ class TestSensor < Test::Unit::TestCase
     @conn.values = [0]*20 + [1000,0]
     assert_equal [0]*20+[1000], (1..21).map{@fake3.read_uncached}
   end
+
+  def test_mock_set
+    @mockable = fake_sensor('fake3')
+    @conn.value = 1.0
+    assert_equal 1.0, @mockable.read
+    @mockable.mock_set(:value => 2.0)
+    assert_equal 2.0, @mockable.read
+  end
 end

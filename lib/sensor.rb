@@ -18,6 +18,7 @@ module SAAL
       @name = name
       @underlying = underlying
       @description = defs['name']
+      @mock_opts = {}
       
       # Reading correction settings
       @max_value = defs['max_value']
@@ -34,11 +35,11 @@ module SAAL
     end
 
     def read
-      normalize(outlier_proof_read(false))
+      outlier_proof_read(false)
     end
 
     def read_uncached
-      normalize(outlier_proof_read(true))
+      outlier_proof_read(true)
     end
 
     def write(value)
@@ -54,8 +55,13 @@ module SAAL
       @dbstore.write(@name, Time.now.utc.to_i, value) if value
     end
 
+    def mock_set(opts)
+      @mock_opts = opts
+    end
+
     private
     def outlier_proof_read(uncached)
+      return @mock_opts[:value] if @mock_opts[:value]
       tries = 0
       value = nil
       begin
@@ -63,7 +69,7 @@ module SAAL
         value = @underlying.read(uncached)
         break if value && @outliercache && @outliercache.validate(value)
       end while tries < MAX_READ_TRIES
-      value
+      normalize(value)
     end
 
     def normalize(value)
