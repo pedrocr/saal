@@ -8,6 +8,8 @@ module SAAL
     CONFDIR = "/etc/saal/"
     SENSORSCONF = CONFDIR+"sensors.yml"
     DBCONF = CONFDIR+"database.yml"
+
+    VERSION = '0.2.2'
 end
 
 require File.dirname(__FILE__)+'/dbstore.rb'

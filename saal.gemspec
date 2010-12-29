@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
 
   s.name              = 'saal'
-  s.version           = '0.2.1'
+  s.version           = '0.2.2'
   s.date              = '2010-12-29'
 
   s.summary     = "Thin abstraction layer for interfacing and recording sensors (currently onewire) and actuators (currently dinrelay)"
@@ -26,7 +26,7 @@ EOF
   s.rdoc_options = ['-S', '-w 2', '-N', '-c utf8']
   s.extra_rdoc_files = %w[README.rdoc LICENSE]
 
-  s.executables = Dir.glob(BIN_FILES).map{|f| f.gsub('bin/','')}
+  s.executables = Dir.glob("bin/*").map{|f| f.gsub('bin/','')}
 
   s.add_dependency('ownet', [">= 0.1.0"])
   s.add_dependency('nokogiri')
