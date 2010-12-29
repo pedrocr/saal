@@ -29,17 +29,14 @@ module SAAL
     end
     
     def average(sensor, from, to)     
-      db_query "SELECT AVG(value) AS average FROM sensor_reads
-                       WHERE sensor = '#{db_quote(sensor.to_s)}' 
-                         AND date >= #{from.to_s} 
-                         AND date <= #{to.to_s}" do |r|
-        if r.num_rows == 0 
-          nil
-        else
-          row = r.fetch_row
-          row[0] ? row[0].to_f : nil
-        end
-      end
+      db_range("AVG", sensor, from, to)
+    end
+
+    def minimum(sensor, from, to)     
+      db_range("MIN", sensor, from, to)
+    end
+    def maximum(sensor, from, to)     
+      db_range("MAX", sensor, from, to)
     end
 
     def each
@@ -52,6 +49,20 @@ module SAAL
     end
     
     private
+    def db_range(function, sensor, from, to)
+      db_query "SELECT #{function}(value) AS average FROM sensor_reads
+                       WHERE sensor = '#{db_quote(sensor.to_s)}' 
+                         AND date >= #{from.to_s} 
+                         AND date <= #{to.to_s}" do |r|
+        if r.num_rows == 0 
+          nil
+        else
+          row = r.fetch_row
+          row[0] ? row[0].to_f : nil
+        end
+      end
+    end
+
     def db_quote(text)
       Mysql.quote(text)
     end

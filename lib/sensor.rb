@@ -54,6 +54,14 @@ module SAAL
       @dbstore.average(@name, from, to)
     end
 
+    def minimum(from, to)
+      @dbstore.minimum(@name, from, to)
+    end
+
+    def maximum(from, to)
+      @dbstore.maximum(@name, from, to)
+    end
+
     def store_value
       value = read_uncached
       @dbstore.write(@name, Time.now.utc.to_i, value) if value

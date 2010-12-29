@@ -39,6 +39,24 @@ class TestFileStore < Test::Unit::TestCase
     assert_nil @dbstore.average(:test_sensor, 50, 60)
   end
 
+  def test_min_max
+    db_setup
+    test_values = [[10, 7.323],[12, 5.432],[23, -2.125], [44, 0.123]]
+    test_values.each do |values|
+      @dbstore.write(:test_sensor, *values)
+    end
+
+    [[:minimum, -2.125], [:maximum, 5.432]].each do |func, value|
+      assert_instance_of Float, @dbstore.send(func, :test_sensor, 11, 25)
+      assert_in_delta value, @dbstore.send(func,:test_sensor, 11, 25), 0.0001
+      assert_in_delta value, @dbstore.send(func,:test_sensor, 12, 25), 0.0001
+      assert_in_delta value, @dbstore.send(func,:test_sensor, 12, 23), 0.0001
+      
+      # when there are no points it's nil
+      assert_nil @dbstore.send(func,:test_sensor, 50, 60)
+    end
+  end
+
   def test_enumerable
     db_setup
     test_time = 1196024160
