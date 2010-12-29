@@ -100,5 +100,10 @@ class TestSensor < Test::Unit::TestCase
     assert_equal 2.0, @mockable.read
     @mockable.write(3.0)
     assert_equal 3.0, @mockable.read
+    @mockable.mock_set(:minimum => 1.0, :average => 2.0, :maximum => 3.0)
+    assert_equal 1.0, @mockable.minimum(0,100)
+    assert_equal 2.0, @mockable.average(0,100)
+    assert_equal 3.0, @mockable.maximum(0,100)
+    assert_equal 3.0, @mockable.read
   end
 end

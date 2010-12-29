@@ -51,14 +51,17 @@ module SAAL
     end 
 
     def average(from, to)
+      return @mock_opts[:average] if @mock_opts[:average]
       @dbstore.average(@name, from, to)
     end
 
     def minimum(from, to)
+      return @mock_opts[:minimum] if @mock_opts[:minimum]
       @dbstore.minimum(@name, from, to)
     end
 
     def maximum(from, to)
+      return @mock_opts[:maximum] if @mock_opts[:maximum]
       @dbstore.maximum(@name, from, to)
     end
 
@@ -68,7 +71,7 @@ module SAAL
     end
 
     def mock_set(opts)
-      @mock_opts = opts
+      @mock_opts.merge!(opts)
     end
 
     private
