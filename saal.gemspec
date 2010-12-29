@@ -56,7 +56,6 @@ EOF
     lib/sensor.rb
     lib/sensors.rb
     saal.gemspec
-    test/.gitignore
     test/chart_data_test.rb
     test/daemon_test.rb
     test/dbstore_test.rb
