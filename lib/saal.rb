@@ -3,7 +3,6 @@ require "mysql"
 require 'ownet'
 require 'nokogiri'
 require 'erb'
-require 'date'
 
 module SAAL
     CONFDIR = "/etc/saal/"
