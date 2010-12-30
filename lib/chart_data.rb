@@ -4,20 +4,18 @@ module SAAL
              :months => [31,23,59,59],
              :days => [23,59,59],
              :weeks => [23,59,59],
-             :hours => [59,59],
-             :year => [12,31,23,59,59],
-             :month => [31,23,59,59],
-             :day => [23,59,59],
-             :week => [23,59,59],
-             :hour => [59,59]}
+             :hours => [59,59]}
 
-    NUMHOURS = {:hours => 1, :hour => 1, :days => 24, :day => 24, 
-                :weeks => 24*7, :week => 24*7}
+    NUMHOURS = {:hours => 1, :days => 24, :weeks => 24*7}
 
+    attr_reader :from, :to
     def initialize(sensor, opts={})
       @sensor = sensor
       if opts[:last] && opts[:periods]
-        @from, @to = calc_alignment(opts[:last], opts[:periods], opts[:now])
+        @last = opts[:last]
+        @periods = opts[:periods]
+        @now = opts[:now]
+        @from, @to = calc_alignment(@last, @periods, @now)
       else
         @from = opts[:from] || 0
         @to = opts[:to] || Time.now.utc.to_i
@@ -26,6 +24,20 @@ module SAAL
 
     def average(num)
       get_data(:average, num)
+    end
+
+    def periodnames
+      if !@last
+        raise RuntimeError, 
+              "Trying to get periodnames without a :last & :periods definition" 
+      end
+
+      case @periods
+      when :hours
+        (0..23).map{|i| ((@now.hour - i)%24).to_s}.reverse
+      else
+        raise RuntimeError, "No such period type #{@periods}" 
+      end
     end
 
     private

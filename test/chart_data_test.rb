@@ -40,32 +40,34 @@ class TestChartData < Test::Unit::TestCase
   
   
   # Test all the alignment functions underlying :last, :periods
-  def self.assert_alignment_interval(num,periods,from,to, now = nil, extra=nil)
+  def self.assert_alignment_interval(num,periods,from,to, periodnames=nil, 
+                                     now = nil, extra=nil)
     define_method("test_alignment_#{num}#{periods}#{extra.to_s}") do
-      o = SAAL::ChartDataRange.new(nil)
       now = now || Time.utc(2010, 12, 30, 15, 38, 19)
-      gotfrom, gotto = o.send(:calc_alignment, num,periods,now) 
-      assert_equal [from.to_i, to.to_i], [gotfrom, gotto],
+      o = SAAL::ChartDataRange.new(nil, :last => num, :periods => periods, :now => now)
+      assert_equal [from.to_i, to.to_i], [o.from, o.to],
                    "Expecting #{from.utc} - #{to.utc}\n"+
-                   "Got #{Time.at(gotfrom).utc} - #{Time.at(gotto).utc}"
+                   "Got #{Time.at(o.from).utc} - #{Time.at(o.to).utc}"
+      assert_equal periodnames, o.periodnames if periodnames
     end
   end
   assert_alignment_interval(24, :hours, Time.utc(2010, 12, 29, 16, 0, 0),
-                                        Time.utc(2010, 12, 30, 15, 59, 59))
-  assert_alignment_interval(1, :day, Time.utc(2010, 12, 30, 0, 0, 0),
+                                        Time.utc(2010, 12, 30, 15, 59, 59),
+                            (16..23).map{|s| s.to_s}+(0..15).map{|s| s.to_s})
+  assert_alignment_interval(1, :days, Time.utc(2010, 12, 30, 0, 0, 0),
                                         Time.utc(2010, 12, 30, 23, 59, 59))
   assert_alignment_interval(12, :hours, Time.utc(2010, 12, 30, 4, 0, 0),
                                         Time.utc(2010, 12, 30, 15, 59, 59))
-  assert_alignment_interval(1, :week, Time.utc(2010, 12, 27, 0, 0, 0),
+  assert_alignment_interval(1, :weeks, Time.utc(2010, 12, 27, 0, 0, 0),
                                       Time.utc(2011, 1, 2, 23, 59, 59))
-  assert_alignment_interval(1, :year, Time.utc(2010, 1, 1, 0, 0, 0),
+  assert_alignment_interval(1, :years, Time.utc(2010, 1, 1, 0, 0, 0),
                                         Time.utc(2010, 12, 31, 23, 59, 59))
   assert_alignment_interval(2, :years, Time.utc(2009, 1, 1, 0, 0, 0),
                                         Time.utc(2010, 12, 31, 23, 59, 59))
-  assert_alignment_interval(1, :month, Time.utc(2010, 12, 1, 0, 0, 0),
+  assert_alignment_interval(1, :months, Time.utc(2010, 12, 1, 0, 0, 0),
                                         Time.utc(2010, 12, 31, 23, 59, 59))
-  assert_alignment_interval(1, :month, Time.utc(2010, 4, 1, 0, 0, 0),
-                                       Time.utc(2010, 4, 30, 23, 59, 59),
+  assert_alignment_interval(1, :months, Time.utc(2010, 4, 1, 0, 0, 0),
+                                       Time.utc(2010, 4, 30, 23, 59, 59),nil,
                                        Time.utc(2010, 4, 30, 12, 50, 30), 
                                        "_30day_month")
   assert_alignment_interval(12, :months, Time.utc(2010, 1, 1, 0, 0, 0),
