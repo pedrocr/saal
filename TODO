@@ -5,7 +5,7 @@ TODO
 - Verify inputs on the server to make sure it never crashes
 - Remove the chart configuration options from the saal_chart script
 - Add an init.d file to the package (and possibly an installer script for ubuntu/debian)
-- Add outlier detection and removal
+- Add filter support to sensor reads (e.g., altitude compensation for pressure)
 DONE
 X- Make the server bind only to a certain interface (not applicable)
 X- Override OWNet::Connection with a mock object so that owserver is not needed
@@ -22,3 +22,4 @@ X- Make connections persistant
 - Make the date returned by GET the date of the last read (GET doesn't return
   a date now
 - Implement monthly, yearly and 10-day average charts
+- Add outlier detection and removal
