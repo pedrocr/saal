@@ -8,6 +8,7 @@ class Test::Unit::TestCase
   TEST_SENSORS_DINRELAY_FILE = File.dirname(__FILE__)+'/test_dinrelay_sensors.yml'
   TEST_SENSOR_CLEANUPS_FILE = File.dirname(__FILE__)+'/test_sensor_cleanups.yml'
   TEST_NONEXIST_SENSOR_FILE = File.dirname(__FILE__)+'/nonexistant_sensor.yml'
+  TEST_CHARTS_FILE = File.dirname(__FILE__)+'/test_charts.yml'
   TEST_DBCONF = File.dirname(__FILE__)+'/test_db.yml'
   TEST_DBOPTS = YAML::load(File.new(TEST_DBCONF))
 

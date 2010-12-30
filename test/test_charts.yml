@@ -1,0 +1,25 @@
+day:
+  sensors: [fake_temp, non_existant]
+  last: 24
+  periods: hours
+
+week:
+  sensors: [fake_temp, non_existant]
+  last: 7
+  periods: days
+
+4week:
+  sensors: [fake_temp, non_existant]
+  last: 4
+  periods: weeks
+  alignlabels: left
+
+year:
+  sensors: [fake_temp, non_existant]
+  last: 12
+  periods: months
+
+4year:
+  sensors: [fake_temp, non_existant]
+  last: 4
+  periods: years
