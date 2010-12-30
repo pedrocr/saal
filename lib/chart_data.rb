@@ -87,7 +87,6 @@ module SAAL
     end
 
     def self.calc_alignment(num, periods, now=nil)
-      # FIXME: reimplement using DateTime's features
       now ||= Time.now.utc
 
       if [:years, :year].include? periods
@@ -98,7 +97,7 @@ module SAAL
         newm = now.month%12 + 1
         newy = now.year + (now.month == 12 ? 1 : 0)
         to = Time.utc(newy, newm, 1, 0, 0, 0).to_i-1
-        # FIXME: ugly ugly line to subtract X months from a date
+        # subtract num months from a date
         from = Time.at(to+1).to_datetime.<<(num).to_gm_time.to_i
       else
         # Calculate by elasped time
