@@ -21,8 +21,8 @@ end
 class TestChartData < Test::Unit::TestCase  
   def test_basic_range
     sensor = MockSensor.new
-    range = SAAL::ChartDataRange.new(sensor, :from => 1, :to => 1000)
-    assert_equal MOCK_AVERAGES, range.average(5)
+    range = SAAL::ChartDataRange.new(:from => 1, :to => 1000)
+    assert_equal MOCK_AVERAGES, range.average(sensor, 5)
     assert_equal([[1,200],[201,400],[401,600],[601,800],[801,1000]],
                  sensor.asked_averages)
   end
@@ -33,18 +33,27 @@ class TestChartData < Test::Unit::TestCase
     ranges = [[1293638400,1293655679],[1293655680,1293672959],
               [1293672960,1293690239],[1293690240,1293707519],
               [1293707520,1293724799]]
-    range = SAAL::ChartDataRange.new(sensor, :last => 24, :periods => :hours, :now => now)
-    assert_equal MOCK_AVERAGES, range.average(5)
+    range = SAAL::ChartDataRange.new(:last => 24, :periods => :hours, :now => now)
+    assert_equal MOCK_AVERAGES, range.average(sensor, 5)
     assert_equal ranges, sensor.asked_averages
   end
-  
+
+  def test_correct_time_use
+    sensor = MockSensor.new
+    range = SAAL::ChartDataRange.new(:last => 24, :periods => :hours)
+    now = Time.now
+    to = Time.utc(now.year,now.month,now.day,now.hour,59,59).to_i
+    from = to - 24*60*60 + 1
+    assert_equal MOCK_AVERAGES[0..0], range.average(sensor, 1)
+    assert_equal [[from,to]], sensor.asked_averages
+  end
   
   # Test all the alignment functions underlying :last, :periods
   def self.assert_alignment_interval(num,periods,from,to, periodnames=nil, 
                                      now = nil, extra=nil)
     define_method("test_alignment_#{num}#{periods}#{extra.to_s}") do
       now = now || Time.utc(2010, 12, 30, 15, 38, 19)
-      o = SAAL::ChartDataRange.new(nil, :last => num, :periods => periods, :now => now)
+      o = SAAL::ChartDataRange.new(:last => num, :periods => periods, :now => now)
       assert_equal [from.to_i, to.to_i], [o.from, o.to],
                    "Expecting #{from.utc} - #{to.utc}\n"+
                    "Got #{Time.at(o.from).utc} - #{Time.at(o.to).utc}"
