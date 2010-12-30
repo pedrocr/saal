@@ -7,15 +7,17 @@ module SAAL
              :hours => [59,59]}
 
     NUMHOURS = {:hours => 1, :days => 24, :weeks => 24*7}
+    DAYNAMES = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
+    MONTHNAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 
     attr_reader :from, :to
     def initialize(sensor, opts={})
       @sensor = sensor
       if opts[:last] && opts[:periods]
-        @last = opts[:last]
+        @num = opts[:last]
         @periods = opts[:periods]
         @now = opts[:now]
-        @from, @to = calc_alignment(@last, @periods, @now)
+        @from, @to = calc_alignment(@num, @periods, @now)
       else
         @from = opts[:from] || 0
         @to = opts[:to] || Time.now.utc.to_i
@@ -27,14 +29,26 @@ module SAAL
     end
 
     def periodnames
-      if !@last
+      if !@num
         raise RuntimeError, 
               "Trying to get periodnames without a :last & :periods definition" 
       end
 
       case @periods
       when :hours
-        (0..23).map{|i| ((@now.hour - i)%24).to_s}.reverse
+        (0...@num).map{|i| ((@now.hour - i)%24).to_s}.reverse
+      when :days
+        (1..@num).map{|i| (@now.wday - i)%7}.map{|w| DAYNAMES[w]}.reverse
+      when :weeks
+        initial = @now.to_i - (@now.wday-1)*24*60*60
+        (0...@num).map do |i| 
+          time = Time.at(initial - i*24*60*60*7)
+          time.day.to_s+" "+ MONTHNAMES[time.month-1]
+        end.reverse
+      when :months
+        (1..@num).map{|i| (@now.month - i)%12}.map{|m| MONTHNAMES[m]}.reverse
+      when :years
+        (0...@num).map{|i| (@now.year - i).to_s}.reverse
       else
         raise RuntimeError, "No such period type #{@periods}" 
       end

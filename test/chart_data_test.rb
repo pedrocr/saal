@@ -54,24 +54,48 @@ class TestChartData < Test::Unit::TestCase
   assert_alignment_interval(24, :hours, Time.utc(2010, 12, 29, 16, 0, 0),
                                         Time.utc(2010, 12, 30, 15, 59, 59),
                             (16..23).map{|s| s.to_s}+(0..15).map{|s| s.to_s})
+
+  assert_alignment_interval(22, :hours, Time.utc(2010, 12, 29, 18, 0, 0),
+                                        Time.utc(2010, 12, 30, 15, 59, 59),
+                            (18..23).map{|s| s.to_s}+(0..15).map{|s| s.to_s})
+
   assert_alignment_interval(1, :days, Time.utc(2010, 12, 30, 0, 0, 0),
-                                        Time.utc(2010, 12, 30, 23, 59, 59))
+                                      Time.utc(2010, 12, 30, 23, 59, 59),
+                            ["Thu"])
+
   assert_alignment_interval(12, :hours, Time.utc(2010, 12, 30, 4, 0, 0),
-                                        Time.utc(2010, 12, 30, 15, 59, 59))
-  assert_alignment_interval(1, :weeks, Time.utc(2010, 12, 27, 0, 0, 0),
-                                      Time.utc(2011, 1, 2, 23, 59, 59))
+                                        Time.utc(2010, 12, 30, 15, 59, 59),
+                            (4..15).map{|s| s.to_s})
+
+  assert_alignment_interval(1, :weeks,Time.utc(2010, 12, 27, 0, 0, 0),
+                                      Time.utc(2011, 1, 2, 23, 59, 59),
+                            ["27 Dec"])
+
+  assert_alignment_interval(2, :weeks,Time.utc(2010, 12, 20, 0, 0, 0),
+                                      Time.utc(2011, 1, 2, 23, 59, 59),
+                            ["20 Dec","27 Dec"])
+
   assert_alignment_interval(1, :years, Time.utc(2010, 1, 1, 0, 0, 0),
-                                        Time.utc(2010, 12, 31, 23, 59, 59))
+                                        Time.utc(2010, 12, 31, 23, 59, 59),
+                            ["2010"])
+
   assert_alignment_interval(2, :years, Time.utc(2009, 1, 1, 0, 0, 0),
-                                        Time.utc(2010, 12, 31, 23, 59, 59))
+                                        Time.utc(2010, 12, 31, 23, 59, 59),
+                            ["2009","2010"])
+
   assert_alignment_interval(1, :months, Time.utc(2010, 12, 1, 0, 0, 0),
-                                        Time.utc(2010, 12, 31, 23, 59, 59))
+                                        Time.utc(2010, 12, 31, 23, 59, 59),
+                            ["Dec"])
   assert_alignment_interval(1, :months, Time.utc(2010, 4, 1, 0, 0, 0),
-                                       Time.utc(2010, 4, 30, 23, 59, 59),nil,
-                                       Time.utc(2010, 4, 30, 12, 50, 30), 
+                                        Time.utc(2010, 4, 30, 23, 59, 59),
+                            ["Apr"],    Time.utc(2010, 4, 30, 12, 50, 30), 
                                        "_30day_month")
+
   assert_alignment_interval(12, :months, Time.utc(2010, 1, 1, 0, 0, 0),
-                                        Time.utc(2010, 12, 31, 23, 59, 59))
+                                        Time.utc(2010, 12, 31, 23, 59, 59),
+                            ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug",
+                             "Sep","Oct","Nov","Dec"])
+
   assert_alignment_interval(13, :months, Time.utc(2009, 12, 1, 0, 0, 0),
                                         Time.utc(2010, 12, 31, 23, 59, 59))
   assert_alignment_interval(24, :months, Time.utc(2009, 1, 1, 0, 0, 0),
