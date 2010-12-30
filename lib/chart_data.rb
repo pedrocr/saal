@@ -1,4 +1,7 @@
 module SAAL
+  class Charts
+  end
+
   class ChartDataRange
     ALIGN = {:years => [12,31,23,59,59],
              :months => [31,23,59,59],

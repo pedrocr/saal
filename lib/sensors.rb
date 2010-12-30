@@ -11,8 +11,7 @@ module SAAL
       @sensors =  {}
       @defs.each do |name, defs|
         self.class.sensors_from_defs(@dbstore, name, defs).each{|s| @sensors[s.name] = s}
-      end 
-      
+      end   
     end
         
     # Implements the get methods to fetch a specific sensor
