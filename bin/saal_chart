@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+NUM_VALUES = 500 # Number of datapoints per series in the chart
 
 require File.dirname(__FILE__)+'/../lib/saal.rb'
 
@@ -12,20 +13,18 @@ if ARGV.size != 2
 end
 
 @now = Time.now.utc
-
-NUM_VALUES = 500
 case ARGV[0]
 when 'day' then
   PERIODNAMES = (0..23).map{|i| ((@now.hour - i)%24).to_s}.reverse
-  ALIGNMENT = :hour 
-  NUMDAYS = 1
-  ALIGNNAMES = :center
+  @last = 24
+  @periods = :hours
+  @alignnames = :center
 when 'week' then
   daynames = ["Seg","Ter","Qua","Qui","Sex","Sab","Dom"]
   PERIODNAMES = (1..7).map{|i| (@now.wday - i)%7}.map{|w| daynames[w]}.reverse
-  ALIGNMENT = :day 
-  NUMDAYS = 7
-  ALIGNNAMES = :center
+  @last = 7
+  @periods = :days
+  @alignnames = :center
 when '4week' then
   monthnames = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Sep","Out","Nov","Dez"]
   initial = @now.to_i - (@now.wday-1)*24*60*60
@@ -33,46 +32,47 @@ when '4week' then
     time = Time.at(initial - i*24*60*60*7)
     time.day.to_s+" "+ monthnames[time.month-1]
   end.reverse
-  ALIGNMENT = :week
-  NUMDAYS = 28
-  ALIGNNAMES = :left
+  @last = 28
+  @periods = :days
+  @alignnames = :left
 when 'year' then
   monthnames = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Sep","Out","Nov","Dez"]
   initial = @now.to_i - (@now.wday-1)*24*60*60
   PERIODNAMES = (1..12).map{|i| (@now.month - i)%12}.map{|m| monthnames[m]}.reverse
-  ALIGNMENT = :month
-  NUMDAYS = 356
-  ALIGNNAMES = :center
+  @last = 12
+  @periods = :months
+  @alignnames = :center
 when '4year' then
   PERIODNAMES = (0..3).map{|i| (@now.year - i).to_s}.reverse
-  ALIGNMENT = :year
-  NUMDAYS = 356*3
-  ALIGNNAMES = :center
+  @last = 4
+  @periods = :years
+  @alignnames = :center
 else
   usage
   exit(3)
 end
 NUMPERIODS = PERIODNAMES.size
 
-align = {:year => [12,31,23,59,59],
-         :month => [31,23,59,59],
-         :day => [23,59,59],
-         :week => [23,59,59],
-         :hour => [59,59]}
-
-args = [@now.year, @now.month, @now.day, @now.hour, @now.min, @now.sec]
-args = args[0..-(align[ALIGNMENT].size+1)]
-args += align[ALIGNMENT]
-@to = Time.utc(*args).to_i
-@to += (6-@now.wday)*60*60*24 if ALIGNMENT == :week
-@from = @to - 60*60*24*NUMDAYS
+def normalize_data(data, min, max)
+  data.map do |i|
+    if i.nil?
+      -1.0
+    elsif i < min
+      0.0
+    elsif i > max
+      100.0
+    else
+      v = (((i-min)/(max-min).to_f)*1000).round/10.0
+    end
+  end
+end
 
 @sensors = SAAL::Sensors.new
 def create_data(sensor, min, max, constant=0)
-  @c = SAAL::ChartData.new(@sensors.send(sensor))
-  d = @c.get_data(@from, @to, NUM_VALUES)
+  @c = SAAL::ChartDataRange.new(@sensors.send(sensor), :last => @last, :periods => @periods)
+  d = @c.average(NUM_VALUES)
   d = d.map{|num| num ? num+constant : num}
-  @c.normalize_data(d,min,max)
+  normalize_data(d,min,max)
 end
 
 @data = [create_data('temp_exterior', -15, 45),
@@ -84,7 +84,7 @@ end
 @dataurl = @data.map {|values| values.join(",")}.join('|')
 
 r = {}
-case ALIGNNAMES
+case @alignnames
 when :center
   @periodnamesurl = "||"+PERIODNAMES.join('||')+"||"
 when :left
