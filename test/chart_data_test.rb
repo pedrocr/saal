@@ -18,37 +18,33 @@ class MockSensor
   end
 end
 
-class TestChartData < Test::Unit::TestCase
-  def test_get_data
-    sensor = MockSensor.new
-    c = SAAL::ChartData.new(sensor)
-    assert_equal MOCK_AVERAGES, c.get_data(0, 1000, 5)
-    assert_equal([[0,199],[200,399],[400,599],[600,799],[800,1000]],
-                 sensor.asked_averages)
-  end
-  
-  def test_normalize_data
-    sensor = MockSensor.new
-    c = SAAL::ChartData.new(sensor)
-    d = c.get_data(0, 1000, 5)
-    assert_equal NORMALIZED_MOCK_AVERAGES, 
-                 c.normalize_data(d, MOCK_MIN, MOCK_MAX)
-    assert_equal([[0,199],[200,399],[400,599],[600,799],[800,1000]],
-                 sensor.asked_averages)    
-  end
-
+class TestChartData < Test::Unit::TestCase  
   def test_basic_range
     sensor = MockSensor.new
-    range = SAAL::ChartDataRange.new(sensor, :from => 0, :to => 1000)
+    range = SAAL::ChartDataRange.new(sensor, :from => 1, :to => 1000)
     assert_equal MOCK_AVERAGES, range.average(5)
-    assert_equal([[0,199],[200,399],[400,599],[600,799],[800,1000]],
+    assert_equal([[1,200],[201,400],[401,600],[601,800],[801,1000]],
                  sensor.asked_averages)
   end
 
+  def test_interval_range
+    sensor = MockSensor.new
+    now = Time.utc(2010, 12, 30, 15, 38, 19)
+    ranges = [[1293638400,1293655679],[1293655680,1293672959],
+              [1293672960,1293690239],[1293690240,1293707519],
+              [1293707520,1293724799]]
+    range = SAAL::ChartDataRange.new(sensor, :last => 24, :periods => :hours, :now => now)
+    assert_equal MOCK_AVERAGES, range.average(5)
+    assert_equal ranges, sensor.asked_averages
+  end
+  
+  
+  # Test all the alignment functions underlying :last, :periods
   def self.assert_alignment_interval(num,periods,from,to, now = nil, extra=nil)
     define_method("test_alignment_#{num}#{periods}#{extra.to_s}") do
+      o = SAAL::ChartDataRange.new(nil)
       now = now || Time.utc(2010, 12, 30, 15, 38, 19)
-      gotfrom, gotto = SAAL::ChartDataRange.calc_alignment(num,periods,now) 
+      gotfrom, gotto = o.send(:calc_alignment, num,periods,now) 
       assert_equal [from.to_i, to.to_i], [gotfrom, gotto],
                    "Expecting #{from.utc} - #{to.utc}\n"+
                    "Got #{Time.at(gotfrom).utc} - #{Time.at(gotto).utc}"

@@ -1,33 +1,4 @@
 module SAAL
-  class ChartData
-    def initialize(sensor)
-      @sensor = sensor
-    end
-    
-    def get_data(from, to, num)
-      step = (to - from).to_f/num.to_f
-      (0..num-2).map do |i|
-        f = (from+i*step).to_i
-        t = (from+(i+1)*step-0.5).to_i
-        @sensor.average(f, t)
-      end << @sensor.average((from+(num-1)*step).to_i, to)
-    end
-    
-    def normalize_data(data, min, max)
-      data.map do |i|
-        if i.nil?
-          -1.0
-        elsif i < min
-          0.0
-        elsif i > max
-          100.0
-        else
-          v = (((i-min)/(max-min).to_f)*1000).round/10.0
-        end
-      end
-    end
-  end
-
   class ChartDataRange
     ALIGN = {:years => [12,31,23,59,59],
              :months => [31,23,59,59],
@@ -45,7 +16,8 @@ module SAAL
 
     def initialize(sensor, opts={})
       @sensor = sensor
-      if opts[:alignment]
+      if opts[:last] && opts[:periods]
+        @from, @to = calc_alignment(opts[:last], opts[:periods], opts[:now])
       else
         @from = opts[:from] || 0
         @to = opts[:to] || Time.now.utc.to_i
@@ -57,7 +29,7 @@ module SAAL
     end
 
     private
-    def self.calc_alignment(num, periods, now=nil)
+    def calc_alignment(num, periods, now=nil)
       now ||= Time.now.utc
 
       if [:years, :year].include? periods
@@ -87,12 +59,13 @@ module SAAL
     end
 
     def get_data(method, num)
-      step = (@to - @from).to_f/num.to_f
+      step = (@to - @from)/num
+      t = @from - 1
       (0..num-2).map do |i|
-        f = (@from+i*step).to_i
-        t = (@from+(i+1)*step-0.5).to_i
-        @sensor.send(method, f, t)
-      end << @sensor.send(method, (@from+(num-1)*step).to_i, @to)
+        f = t + 1
+        t = (f+step)
+        v = @sensor.send(method, f, t)
+      end << @sensor.send(method, t+1, @to)
     end
   end
 end
