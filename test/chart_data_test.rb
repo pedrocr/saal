@@ -36,4 +36,26 @@ class TestChartData < Test::Unit::TestCase
     assert_equal([[0,199],[200,399],[400,599],[600,799],[800,1000]],
                  sensor.asked_averages)    
   end
+
+  def test_basic_range
+    sensor = MockSensor.new
+    range = SAAL::ChartDataRange.new(sensor, :from => 0, :to => 1000)
+    assert_equal MOCK_AVERAGES, range.average(5)
+    assert_equal([[0,199],[200,399],[400,599],[600,799],[800,1000]],
+                 sensor.asked_averages)
+  end
+
+  def self.assert_alignment_interval(num,periods,from,to)
+    define_method("test_alignment_#{num}#{periods}") do
+      now = Time.utc(2010, 12, 30, 15, 38, 19)
+      gotfrom, gotto = SAAL::ChartDataRange.calc_alignment(:now => now, 
+                                                           :periods => periods, 
+                                                           :last => num)
+      assert_equal [from.to_i, to.to_i], [gotfrom, gotto],
+                   "Expecting #{from} - #{to}\n"+
+                   "Got #{Time.at(gotfrom)} - #{Time.at(gotto)}"
+    end
+  end
+  assert_alignment_interval(24, :hours, Time.utc(2010, 12, 29, 16, 0, 0),
+                                        Time.utc(2010, 12, 30, 15, 59, 59))
 end
