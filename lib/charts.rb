@@ -5,7 +5,7 @@ module SAAL
       @sensors = opts[:sensors] || Sensors.new
       @charts = {}
       @defs.each do |name, defs|
-        @charts[name.to_sym] = Chart.new(name, defs, @sensors)
+        @charts[name.to_sym] = Chart.new(name, defs, @sensors, opts)
       end  
     end
 

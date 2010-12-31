@@ -9,7 +9,7 @@ class TestChart < Test::Unit::TestCase
                                :now => Time.utc(2010, 12, 30, 15, 38, 19))
   end
 
-  def test_each
+  def test_read
     name = 'week'
     defs = @defs[name]
     chart = @charts.find(name)
