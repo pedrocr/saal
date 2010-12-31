@@ -4,6 +4,7 @@ TODO
 - Split classes into one per file with corresponding test (rails style)
 - Verify inputs on the server to make sure it never crashes
 - Remove the chart configuration options from the saal_chart script
+?- Remove Sensors and Charts and move their functionality to Sensor and Chart
 - Add an init.d file to the package (and possibly an installer script for ubuntu/debian)
 - Add filter support to sensor reads (e.g., altitude compensation for pressure)
 DONE
