@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
 
   s.name              = 'saal'
-  s.version           = '0.2.3'
-  s.date              = '2010-12-30'
+  s.version           = '0.2.4'
+  s.date              = '2010-12-31'
 
   s.summary     = "Thin abstraction layer for interfacing and recording sensors (currently onewire) and actuators (currently dinrelay)"
   s.description = <<EOF
@@ -46,7 +46,9 @@ EOF
     bin/saal_dump_database
     bin/saal_import_mysql
     bin/saal_readall
+    lib/chart.rb
     lib/chart_data.rb
+    lib/charts.rb
     lib/daemon.rb
     lib/dbstore.rb
     lib/dinrelay.rb
@@ -57,6 +59,8 @@ EOF
     lib/sensors.rb
     saal.gemspec
     test/chart_data_test.rb
+    test/chart_test.rb
+    test/charts_test.rb
     test/daemon_test.rb
     test/dbstore_test.rb
     test/dinrelay.html.erb
@@ -65,6 +69,7 @@ EOF
     test/outliercache_test.rb
     test/sensor_test.rb
     test/sensors_test.rb
+    test/test_charts.yml
     test/test_db.yml
     test/test_dinrelay_sensors.yml
     test/test_helper.rb

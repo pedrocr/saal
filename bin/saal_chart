@@ -4,7 +4,7 @@ NUM_VALUES = 500 # Number of datapoints per series in the chart
 require File.dirname(__FILE__)+'/../lib/saal.rb'
 
 def usage
-  $stderr.puts("Usage: saal_chart <day|week|4week|year|4year> <chart_file.png>")
+  $stderr.puts("Usage: saal_chart <name> <chart_file.png>")
 end
 
 if ARGV.size != 2
@@ -12,48 +12,17 @@ if ARGV.size != 2
   exit (2)
 end
 
-@now = Time.now.utc
-case ARGV[0]
-when 'day' then
-  PERIODNAMES = (0..23).map{|i| ((@now.hour - i)%24).to_s}.reverse
-  @last = 24
-  @periods = :hours
-  @alignnames = :center
-when 'week' then
-  daynames = ["Seg","Ter","Qua","Qui","Sex","Sab","Dom"]
-  PERIODNAMES = (1..7).map{|i| (@now.wday - i)%7}.map{|w| daynames[w]}.reverse
-  @last = 7
-  @periods = :days
-  @alignnames = :center
-when '4week' then
-  monthnames = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Sep","Out","Nov","Dez"]
-  initial = @now.to_i - (@now.wday-1)*24*60*60
-  PERIODNAMES = (0...4).map do |i| 
-    time = Time.at(initial - i*24*60*60*7)
-    time.day.to_s+" "+ monthnames[time.month-1]
-  end.reverse
-  @last = 28
-  @periods = :days
-  @alignnames = :left
-when 'year' then
-  monthnames = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Sep","Out","Nov","Dez"]
-  initial = @now.to_i - (@now.wday-1)*24*60*60
-  PERIODNAMES = (1..12).map{|i| (@now.month - i)%12}.map{|m| monthnames[m]}.reverse
-  @last = 12
-  @periods = :months
-  @alignnames = :center
-when '4year' then
-  PERIODNAMES = (0..3).map{|i| (@now.year - i).to_s}.reverse
-  @last = 4
-  @periods = :years
-  @alignnames = :center
-else
+@chart = SAAL::Charts.new.find(ARGV[0])
+if !@chart
+  $stderr.puts "No such chart '#{ARGV[0]}'"
   usage
-  exit(3)
+  exit (3)
 end
-NUMPERIODS = PERIODNAMES.size
 
-def normalize_data(data, min, max)
+[:temp_exterior => [-15, 45], :temp_estufa => [-15, 45],
+ :hum_exterior => [0,100], :pressao => [950,1050,0.54*33.86]]
+
+def normalize_data(data, min, max, offset=0)
   data.map do |i|
     if i.nil?
       -1.0
@@ -62,36 +31,32 @@ def normalize_data(data, min, max)
     elsif i > max
       100.0
     else
-      v = (((i-min)/(max-min).to_f)*1000).round/10.0
+      (((i-min)/(max-min).to_f)*1000).round/10.0+offset
     end
   end
 end
 
-@sensors = SAAL::Sensors.new
-def create_data(sensor, min, max, constant=0)
-  @c = SAAL::ChartDataRange.new(@sensors.send(sensor), :last => @last, :periods => @periods)
-  d = @c.average(NUM_VALUES)
-  d = d.map{|num| num ? num+constant : num}
-  normalize_data(d,min,max)
+@periodnames = @chart.periodnames
+@numperiods = @periodnames.size
+@averages = @chart.average(NUM_VALUES)
+
+@data = [[:temp_exterior, [-15, 45]], [:temp_estufa, [-15, 45]],
+         [:hum_exterior, [0,100]], 
+         [:pressao, [950,1050,0.54*33.86]]].map do |sensor, range|
+  normalize_data(@averages[sensor], *range)
 end
-
-@data = [create_data('temp_exterior', -15, 45),
-         create_data('temp_estufa', -15, 45),
-         create_data('hum_exterior', 0, 100),
-         create_data('pressao', 950, 1050, 0.54*33.86)] #Convert to pressure at sea level
-
 
 @dataurl = @data.map {|values| values.join(",")}.join('|')
 
 r = {}
 case @alignnames
 when :center
-  @periodnamesurl = "||"+PERIODNAMES.join('||')+"||"
+  @periodnamesurl = "||"+@periodnames.join('||')+"||"
 when :left
-  @periodnamesurl = "|"+PERIODNAMES.join('|')+"||"
+  @periodnamesurl = "|"+@periodnames.join('|')+"||"
   r[:chxs] = "0,555555,11,-1,lt"
 end
-@xincr = 100.0/NUMPERIODS.to_f*10000.truncate.to_f/10000
+@xincr = 100.0/@numperiods.to_f*10000.truncate.to_f/10000
 
 r[:chof] = "png"
 r[:chs] = "700x300"
