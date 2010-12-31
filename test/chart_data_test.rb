@@ -22,7 +22,7 @@ class TestChartData < Test::Unit::TestCase
   def test_basic_range
     sensor = MockSensor.new
     range = SAAL::ChartDataRange.new(:from => 1, :to => 1000)
-    assert_equal MOCK_AVERAGES, range.average(sensor, 5)
+    assert_equal MOCK_AVERAGES, range.get_data(:average, sensor, 5)
     assert_equal([[1,200],[201,400],[401,600],[601,800],[801,1000]],
                  sensor.asked_averages)
   end
@@ -34,7 +34,7 @@ class TestChartData < Test::Unit::TestCase
               [1293672960,1293690239],[1293690240,1293707519],
               [1293707520,1293724799]]
     range = SAAL::ChartDataRange.new(:last => 24, :periods => :hours, :now => now)
-    assert_equal MOCK_AVERAGES, range.average(sensor, 5)
+    assert_equal MOCK_AVERAGES, range.get_data(:average, sensor, 5)
     assert_equal ranges, sensor.asked_averages
   end
 
@@ -44,7 +44,7 @@ class TestChartData < Test::Unit::TestCase
     now = Time.now
     to = Time.utc(now.year,now.month,now.day,now.hour,59,59).to_i
     from = to - 24*60*60 + 1
-    assert_equal MOCK_AVERAGES[0..0], range.average(sensor, 1)
+    assert_equal MOCK_AVERAGES[0..0], range.get_data(:average, sensor, 1)
     assert_equal [[from,to]], sensor.asked_averages
   end
   

@@ -33,8 +33,14 @@ module SAAL
       @to.to_i
     end
 
-    def average(sensor, num)
-      get_data(:average, sensor, num)
+    def get_data(method, sensor, num)
+      step = (@to - @from).to_i/num
+      t = @from - 1
+      (0..num-2).map do |i|
+        f = t + 1
+        t = (f+step)
+        v = sensor.send(method, f.to_i, t.to_i)
+      end << sensor.send(method, (t+1).to_i, to.to_i)
     end
 
     def periodnames
@@ -90,16 +96,6 @@ module SAAL
       end
       @from = from
       @to = to
-    end
-
-    def get_data(method, sensor, num)
-      step = (@to - @from).to_i/num
-      t = @from - 1
-      (0..num-2).map do |i|
-        f = t + 1
-        t = (f+step)
-        v = sensor.send(method, f.to_i, t.to_i)
-      end << sensor.send(method, (t+1).to_i, to.to_i)
     end
   end
 end

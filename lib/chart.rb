@@ -15,9 +15,26 @@ module SAAL
       @datarange.periodnames
     end
 
-    def average(num)
+    def average(num=nil)
+      get_data(:average, num)
+    end
+
+    def minimum(num=nil)
+      get_data(:minimum, num)
+    end
+
+    def maximum(num=nil)
+      get_data(:minimum, num)
+    end
+
+    private
+    def get_data(method, num)
+      n = num || 1
       h = {}
-      @sensors.each{|s| h[s.name.to_sym] = @datarange.average(s,num)}
+      @sensors.each do |s| 
+        data = @datarange.get_data(method,s,n)
+        h[s.name.to_sym] = num ? data : data[0]
+      end
       h
     end
   end
