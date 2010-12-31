@@ -1,4 +1,5 @@
 TODO
+!-Index the value column of the sensor reads for minimum and maximum
 - Add logging to the daemon
 ?- Change the sensor configuration to be a ruby DSL and make it a daemon config
 - Split classes into one per file with corresponding test (rails style)
