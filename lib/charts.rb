@@ -1,5 +1,7 @@
 module SAAL
   class Charts
+    include Enumerable
+
     def initialize(conffile=SAAL::CHARTSCONF, opts={})
       @defs = YAML::load(File.new(conffile))
       @sensors = opts[:sensors] || Sensors.new
@@ -12,6 +14,10 @@ module SAAL
     # Fetch a specific chart by name
     def find(name)
       @charts[name.to_sym]
+    end
+
+    def each
+      @charts.each{|name, chart| yield chart}
     end
   end
 end
