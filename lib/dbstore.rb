@@ -14,6 +14,8 @@ module SAAL
                     value FLOAT,
                     INDEX USING HASH (sensor),
                     INDEX USING BTREE (date))"
+      db_query "CREATE INDEX value ON sensor_reads (value) USING BTREE",
+               :ignoreerr => 1061
     end
     
     def db_wipe
@@ -67,7 +69,7 @@ module SAAL
       Mysql.quote(text)
     end
 
-    def db_query(query)
+    def db_query(query, opts={})
       db = nil
       begin
         # connect to the MySQL server
@@ -77,7 +79,7 @@ module SAAL
         res = db.query(query)
         yield res if block_given?
       rescue Mysql::Error => e
-        $stderr.puts "MySQL Error \#{e.errno}: \#{e.error}"
+        $stderr.puts "MySQL Error #{e.errno}: #{e.error}" if !(e.errno == opts[:ignoreerr])
       ensure
         db.close if db
       end
