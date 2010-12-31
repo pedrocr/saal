@@ -18,6 +18,8 @@ module SAAL
                :ignoreerr => 1061
       db_query "CREATE INDEX sensor_value ON sensor_reads (sensor, value) USING BTREE",
                :ignoreerr => 1061
+      db_query "CREATE INDEX sensor_value_date ON sensor_reads (sensor, value, date) USING BTREE",
+               :ignoreerr => 1061
     end
     
     def db_wipe
