@@ -1,9 +1,10 @@
 module SAAL
   class Chart
-    attr_reader :name, :num, :periods, :sensors
+    attr_reader :name, :num, :periods, :sensors, :alignlabels
     def initialize(name, defs, sensors, opts={})
       @name = name
       @defs = defs
+      @alignlabels = (defs['alignlabels'] || :center).to_sym
       @sensors = defs['sensors'].map{|name| sensors.send(name)} 
       @num = defs['last']
       @periods = defs['periods']

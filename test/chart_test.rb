@@ -9,6 +9,11 @@ class TestChart < Test::Unit::TestCase
                                :now => Time.utc(2010, 12, 30, 15, 38, 19))
   end
 
+  def test_alignlabels
+    assert_equal :center, @charts.find('week').alignlabels
+    assert_equal :left, @charts.find('4week').alignlabels
+  end
+
   def test_read
     name = 'week'
     defs = @defs[name]

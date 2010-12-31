@@ -49,7 +49,7 @@ end
 @dataurl = @data.map {|values| values.join(",")}.join('|')
 
 r = {}
-case @alignnames
+case @chart.alignlabels
 when :center
   @periodnamesurl = "||"+@periodnames.join('||')+"||"
 when :left
