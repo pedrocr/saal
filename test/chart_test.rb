@@ -23,6 +23,12 @@ class TestChart < Test::Unit::TestCase
     assert_equal({:fake_temp => [1], :non_existant => [1]}, chart.average(1))
   end
 
+  def test_from_to
+    chart = @charts.find('day')
+    assert_equal Time.utc(2010, 12, 29, 16, 0, 0).to_i, chart.from
+    assert_equal Time.utc(2010, 12, 30, 15, 59, 59).to_i, chart.to
+  end
+
   def test_min_max_1arity
     name = 'week'
     defs = @defs[name]

@@ -2,6 +2,8 @@ day:
   sensors: [fake_temp, non_existant]
   last: 24
   periods: hours
+  alt: Some ALT text
+  description: some description of the chart
 
 week:
   sensors: [fake_temp, non_existant]

@@ -1,6 +1,6 @@
 module SAAL
   class Chart
-    attr_reader :name, :num, :periods, :sensors, :alignlabels
+    attr_reader :name, :num, :periods, :alt, :description, :sensors, :alignlabels
     def initialize(name, defs, sensors, opts={})
       @name = name
       @defs = defs
@@ -8,6 +8,8 @@ module SAAL
       @sensors = defs['sensors'].map{|name| sensors.send(name)} 
       @num = defs['last']
       @periods = defs['periods']
+      @alt = defs['alt']
+      @description = defs['description']
       @datarange = ChartDataRange.new(defs.merge(:now => opts[:now]))
     end
 
@@ -25,6 +27,13 @@ module SAAL
 
     def maximum(num=nil)
       get_data(:maximum, num)
+    end
+
+    def from
+      @datarange.from
+    end
+    def to
+      @datarange.to
     end
 
     private

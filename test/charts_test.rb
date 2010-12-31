@@ -21,6 +21,8 @@ class TestCharts < Test::Unit::TestCase
       defs = @defs[chart.name]
       assert_equal defs['last'], chart.num
       assert_equal defs['periods'], chart.periods
+      assert_equal defs['description'], chart.description
+      assert_equal defs['alt'], chart.alt
       assert_equal defs['sensors'], chart.sensors.map{|s| s.name.to_s}
       i += 1
     end
