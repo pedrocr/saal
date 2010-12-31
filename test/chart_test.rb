@@ -28,9 +28,10 @@ class TestChart < Test::Unit::TestCase
     defs = @defs[name]
     chart = @charts.find(name)    
     assert_equal ['Fri','Sat','Sun','Mon','Tue','Wed','Thu'], chart.periodnames
+    v = {:minimum => 1, :maximum => 2}
     [:minimum,:maximum].each do |method|
-      chart.sensors.each {|s| s.mock_set(method => 1)}
-      assert_equal({:fake_temp => [1], :non_existant => [1]}, chart.send(method,1))
+      chart.sensors.each {|s| s.mock_set(method => v[method])}
+      assert_equal({:fake_temp => [v[method]], :non_existant => [v[method]]}, chart.send(method,1))
     end
   end
   
@@ -39,9 +40,10 @@ class TestChart < Test::Unit::TestCase
     defs = @defs[name]
     chart = @charts.find(name)    
     assert_equal ['Fri','Sat','Sun','Mon','Tue','Wed','Thu'], chart.periodnames
+    v = {:minimum => 1, :maximum => 2}
     [:minimum,:maximum].each do |method|
-      chart.sensors.each {|s| s.mock_set(method => 1)}
-      assert_equal({:fake_temp => 1, :non_existant => 1}, chart.send(method))
+      chart.sensors.each {|s| s.mock_set(method => v[method])}
+      assert_equal({:fake_temp => v[method], :non_existant => v[method]}, chart.send(method))
     end
   end
 end

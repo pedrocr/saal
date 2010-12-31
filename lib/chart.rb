@@ -24,7 +24,7 @@ module SAAL
     end
 
     def maximum(num=nil)
-      get_data(:minimum, num)
+      get_data(:maximum, num)
     end
 
     private
