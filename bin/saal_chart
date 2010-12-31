@@ -4,72 +4,78 @@ NUM_VALUES = 500 # Number of datapoints per series in the chart
 require File.dirname(__FILE__)+'/../lib/saal.rb'
 
 def usage
-  $stderr.puts("Usage: saal_chart <name> <chart_file.png>")
+  $stderr.puts("Usage: saal_chart <chart dir>")
 end
 
-if ARGV.size != 2
+if ARGV.size != 1
   usage
   exit (2)
 end
 
-@chart = SAAL::Charts.new.find(ARGV[0])
-if !@chart
-  $stderr.puts "No such chart '#{ARGV[0]}'"
-  usage
-  exit (3)
-end
+SENSORS = [[:temp_exterior, [-15, 45]], [:temp_estufa, [-15, 45]],
+           [:hum_exterior, [0,100]], 
+           [:pressao, [950,1050,0.54*33.86]]]
 
-[:temp_exterior => [-15, 45], :temp_estufa => [-15, 45],
- :hum_exterior => [0,100], :pressao => [950,1050,0.54*33.86]]
 
-def normalize_data(data, min, max, offset=0)
-  data.map do |i|
-    if i.nil?
-      -1.0
-    elsif i < min
-      0.0
-    elsif i > max
-      100.0
-    else
-      (((i-min)/(max-min).to_f)*1000).round/10.0+offset
+SAAL::Charts.new.each do |chart|
+  $stderr.puts "Generating chart #{chart.name}"
+
+  pngfile = ARGV[0]+'/chart-'+chart.name.to_s+'.png'
+  ymlfile = ARGV[0]+'/chart-'+chart.name.to_s+'.yml'
+
+  @mins = chart.minimum  
+  @maxs = chart.maximum
+  @minmax = {}
+  SENSORS.each{|s,r| @minmax[s] = {:maximum => @maxs[s], :minimum => @mins[s]}}
+
+  File.open(ymlfile, 'w').write(YAML::dump(@minmax))
+
+  def normalize_data(data, min, max, offset=0)
+    data.map do |i|
+      if i.nil?
+        -1.0
+      elsif i < min
+        0.0
+      elsif i > max
+        100.0
+      else
+        (((i-min)/(max-min).to_f)*1000).round/10.0+offset
+      end
     end
   end
+
+  @periodnames = chart.periodnames
+  @numperiods = @periodnames.size
+  @averages = chart.average(NUM_VALUES)
+
+  @data = SENSORS.map do |sensor, range|
+    normalize_data(@averages[sensor], *range)
+  end
+
+  @dataurl = @data.map {|values| values.join(",")}.join('|')
+
+  r = {}
+  case chart.alignlabels
+  when :center
+    @periodnamesurl = "||"+@periodnames.join('||')+"||"
+  when :left
+    @periodnamesurl = "|"+@periodnames.join('|')+"||"
+    r[:chxs] = "0,555555,11,-1,lt"
+  end
+  @xincr = 100.0/@numperiods.to_f*10000.truncate.to_f/10000
+
+  r[:chof] = "png"
+  r[:chs] = "700x300"
+  r[:cht] = "lc"
+  r[:chco] = "00ff00,ff0000,0000ff,ffff00"
+  r[:chxt] = "x,y,y,r"
+  r[:chxl] = "0:#{@periodnamesurl}1:|-15ºC||0||15||30||45ºC|2:|0%|25|50|75|100%|3:|950||975||1000||1025||1050 hPa"
+  r[:chg] = "#{@xincr},12.5,1,5"
+  r[:chd] = "t:#{@dataurl}"
+
+  @url = "http://chart.apis.google.com/chart?&"
+  @postdata = r.map{|k,v| k.to_s+"="+v}.join("&")
+
+
+  system "wget --quiet \"#{@url}\" --post-data=\"#{@postdata}\" -O #{pngfile}"
 end
-
-@periodnames = @chart.periodnames
-@numperiods = @periodnames.size
-@averages = @chart.average(NUM_VALUES)
-
-@data = [[:temp_exterior, [-15, 45]], [:temp_estufa, [-15, 45]],
-         [:hum_exterior, [0,100]], 
-         [:pressao, [950,1050,0.54*33.86]]].map do |sensor, range|
-  normalize_data(@averages[sensor], *range)
-end
-
-@dataurl = @data.map {|values| values.join(",")}.join('|')
-
-r = {}
-case @chart.alignlabels
-when :center
-  @periodnamesurl = "||"+@periodnames.join('||')+"||"
-when :left
-  @periodnamesurl = "|"+@periodnames.join('|')+"||"
-  r[:chxs] = "0,555555,11,-1,lt"
-end
-@xincr = 100.0/@numperiods.to_f*10000.truncate.to_f/10000
-
-r[:chof] = "png"
-r[:chs] = "700x300"
-r[:cht] = "lc"
-r[:chco] = "00ff00,ff0000,0000ff,ffff00"
-r[:chxt] = "x,y,y,r"
-r[:chxl] = "0:#{@periodnamesurl}1:|-15ºC||0||15||30||45ºC|2:|0%|25|50|75|100%|3:|950||975||1000||1025||1050 hPa"
-r[:chg] = "#{@xincr},12.5,1,5"
-r[:chd] = "t:#{@dataurl}"
-
-@url = "http://chart.apis.google.com/chart?&"
-@postdata = r.map{|k,v| k.to_s+"="+v}.join("&")
-
-
-system "wget --quiet \"#{@url}\" --post-data=\"#{@postdata}\" -O #{ARGV[1]}"
-
