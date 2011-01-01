@@ -109,4 +109,24 @@ class TestChartData < Test::Unit::TestCase
                                         Time.utc(2010, 12, 31, 23, 59, 59))
   assert_alignment_interval(24, :months, Time.utc(2009, 1, 1, 0, 0, 0),
                                         Time.utc(2010, 12, 31, 23, 59, 59))
+  assert_alignment_interval(12, :months, Time.utc(2010, 2, 1, 0, 0, 0),
+                                       Time.utc(2011, 1, 31, 23, 59, 59),
+                            ["Feb","Mar","Apr","May","Jun","Jul","Aug",
+                             "Sep","Oct","Nov","Dec","Jan"],
+                                       Time.utc(2011, 1, 1, 14, 15, 10),
+                            "_midyear")
+
+  def self.assert_dec_months(num, from, to)
+    define_method("test_dec_#{num}months_from#{from.join('-')}_to#{to.join('-')}") do
+      o = SAAL::ChartDataRange.new
+      assert_equal Time.utc(to[0], to[1], 1, 0, 0, 0),
+                   o.send(:dec_months, num, Time.utc(from[0],from[1],1,0,0,0))
+    end
+  end
+
+  assert_dec_months 2, [2010,12],[2010,10]
+  assert_dec_months 12, [2011,1],[2010,1]
+  assert_dec_months 24, [2011,1],[2009,1]
+  assert_dec_months 2, [2011,1],[2010,11]
+  assert_dec_months 14, [2011,1],[2009,11]
 end

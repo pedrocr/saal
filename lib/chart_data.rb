@@ -76,15 +76,14 @@ module SAAL
         from = Time.utc(@now.year - num + 1, 1, 1, 0, 0, 0)
         to = Time.utc(@now.year, 12, 31, 23, 59, 59)
       elsif [:months, :month].include? periods
-        # advance to the 1st of the next month and then subtract 1 second
+        # advance to the 1st of the next month
         newm = @now.month%12 + 1
         newy = @now.year + (@now.month == 12 ? 1 : 0)
-        to = Time.utc(newy, newm, 1, 0, 0, 0) - 1
-        # subtract num months from a date
-        newm = @now.month-1 - (num-1)%12 + 1
-        newy = @now.year - (num-1)/12
-        from = Time.utc(newy, newm, 1, 0, 0, 0, 0)
-        #from = (to+1).to_datetime.<<(num).to_gm_time
+        to = Time.utc(newy, newm, 1, 0, 0, 0)
+        # Go back num months for from
+        from = dec_months(num, to)
+        # subtract 1 second from two to get the end of current month
+        to -= 1
       else
         # Calculate by elasped time
         args = [@now.year, @now.month, @now.day, @now.hour, @now.min, @now.sec]
@@ -96,6 +95,20 @@ module SAAL
       end
       @from = from
       @to = to
+    end
+
+    # Subtract num months from a given Time
+    def dec_months(num, time)
+      # Go back any 12 month intervals (aka years)
+      newy = time.year - num/12
+      num = num%12
+      # Go back the remainder months
+      newm = time.month - num
+      if newm < 1
+        newm = 12 - (-newm)
+        newy -= 1
+      end
+      from = Time.utc(newy, newm, time.day, time.hour, time.min, time.sec)
     end
   end
 end
