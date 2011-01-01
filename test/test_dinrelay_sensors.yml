@@ -13,4 +13,12 @@ group1:
       6: name6
       7: name7
       8: name8
-
+    descriptions:
+      1: description1
+      2: description2
+      3: description3
+      4: description4
+      5: description5
+      6: description6
+      7: description7
+      8: description8

@@ -35,7 +35,9 @@ module SAAL
       elsif defs['dinrelay']
         og = DINRelay::OutletGroup.new(defs['dinrelay'])
         outlet_names = defs['dinrelay']['outlets'] || []
+        outlet_descriptions = defs['dinrelay']['descriptions'] || []
         return outlet_names.map do |num, oname|
+          defs.merge!('name' => outlet_descriptions[num])
           Sensor.new(dbstore, oname, DINRelay::Outlet.new(num.to_i, og), defs, opts)
         end
       else

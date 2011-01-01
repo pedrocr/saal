@@ -84,6 +84,7 @@ class TestDINRelay < Test::Unit::TestCase
   def test_enumerate_sensors
     sensors = SAAL::Sensors.new(TEST_SENSORS_DINRELAY_FILE, TEST_DBCONF)
     assert_equal((1..8).map{|i| "name#{i}"}, sensors.map{|s| s.name}.sort)
+    assert_equal((1..8).map{|i| "description#{i}"}, sensors.map{|s| s.description}.sort)
   end
 
   def test_read_sensors
