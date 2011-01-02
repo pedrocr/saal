@@ -3,6 +3,7 @@ module SAAL
   end
 
   class SensorUnderlying
+    def sensor_type; nil; end
     def writeable?; false; end
     def self.writeable! 
       define_method(:writeable?){true}
@@ -34,10 +35,14 @@ module SAAL
 
       # Outliercache
       @outliercache = opts[:no_outliercache] ? nil : OutlierCache.new
-    end  
+    end
 
     def writeable?
       @underlying.writeable?
+    end
+
+    def sensor_type
+      @underlying.sensor_type
     end
 
     def read

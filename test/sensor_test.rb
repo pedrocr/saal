@@ -113,6 +113,12 @@ class TestSensor < Test::Unit::TestCase
     assert_equal corrected, sensor.average(0,100)
   end
 
+  def test_sensor_type
+    [:pressure, :humidity, :temperature].each do |type|
+      assert_equal type, fake_sensor(type.to_s).sensor_type
+    end
+  end
+
   def test_mocked
     @mockable = fake_sensor('fake3')
     @conn.value = 1.0
