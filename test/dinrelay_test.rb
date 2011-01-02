@@ -87,6 +87,12 @@ class TestDINRelay < Test::Unit::TestCase
     assert_equal((1..8).map{|i| "description#{i}"}, sensors.map{|s| s.description}.sort)
   end
 
+  def test_sensor_type
+    SAAL::Sensors.new(TEST_SENSORS_DINRELAY_FILE, TEST_DBCONF).each do |s|
+      assert_equal :onoff, s.sensor_type
+    end
+  end
+
   def test_read_sensors
     sensors = SAAL::Sensors.new(TEST_SENSORS_DINRELAY_FILE, TEST_DBCONF)
     with_webrick(:html=>create_index_html(@vals)) do |feedback|

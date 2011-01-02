@@ -10,6 +10,10 @@ module SAAL
         @og = outletgroup
       end
 
+      def sensor_type
+        :onoff
+      end
+
       def read(uncached = false)
         {'ON' => 1.0, 'OFF' => 0.0}[@og.state(@num)]
       end
