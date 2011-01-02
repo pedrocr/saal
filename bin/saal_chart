@@ -23,10 +23,13 @@ SAAL::Charts.new.each do |chart|
   pngfile = ARGV[0]+'/chart-'+chart.name.to_s+'.png'
   ymlfile = ARGV[0]+'/chart-'+chart.name.to_s+'.yml'
 
-  @mins = chart.minimum  
+  @mins = chart.minimum
   @maxs = chart.maximum
+  @avgs = chart.average
   @minmax = {}
-  SENSORS.each{|s,r| @minmax[s] = {:maximum => @maxs[s], :minimum => @mins[s]}}
+  SENSORS.each do |s,r| 
+    @minmax[s] = {:maximum => @maxs[s], :minimum => @mins[s], :average => @avgs[s]}
+  end
 
   File.open(ymlfile, 'w').write(YAML::dump(@minmax))
 
