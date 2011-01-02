@@ -29,13 +29,13 @@ class TestChart < Test::Unit::TestCase
     assert_equal Time.utc(2010, 12, 30, 15, 59, 59).to_i, chart.to
   end
 
-  def test_min_max_1arity
+  def test_min_max_avg_1arity
     name = 'week'
     defs = @defs[name]
     chart = @charts.find(name)    
     assert_equal ['Fri','Sat','Sun','Mon','Tue','Wed','Thu'], chart.periodnames
-    v = {:minimum => 1, :maximum => 2}
-    [:minimum,:maximum].each do |method|
+    v = {:minimum => 1.0, :maximum => 2.0, :average => 1.5}
+    [:minimum,:maximum,:average].each do |method|
       chart.sensors.each {|s| s.mock_set(method => v[method])}
       assert_equal({:fake_temp => [v[method]], :non_existant => [v[method]]}, chart.send(method,1))
     end
@@ -46,8 +46,8 @@ class TestChart < Test::Unit::TestCase
     defs = @defs[name]
     chart = @charts.find(name)    
     assert_equal ['Fri','Sat','Sun','Mon','Tue','Wed','Thu'], chart.periodnames
-    v = {:minimum => 1, :maximum => 2}
-    [:minimum,:maximum].each do |method|
+    v = {:minimum => 1.0, :maximum => 2.0, :average => 1.5}
+    [:minimum,:maximum,:average].each do |method|
       chart.sensors.each {|s| s.mock_set(method => v[method])}
       assert_equal({:fake_temp => v[method], :non_existant => v[method]}, chart.send(method))
     end
