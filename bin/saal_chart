@@ -14,7 +14,7 @@ end
 
 SENSORS = [[:temp_exterior, [-15, 45]], [:temp_estufa, [-15, 45]],
            [:hum_exterior, [0,100]], 
-           [:pressao, [950,1050,0.54*33.86]]]
+           [:pressao, [950,1050]]]
 
 
 SAAL::Charts.new.each do |chart|

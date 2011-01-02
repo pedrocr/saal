@@ -19,3 +19,20 @@ fake3:
   onewire: 
     serial: /10.4AEC29CDBAAB/temperature
 
+pressure:
+  name: "A fake pressure sensor"
+  type: pressure
+  altitude: 200
+  onewire: 
+    serial: /10.4AEC29CDBAAB/pressure
+temperature:
+  name: "A fake pressure sensor"
+  onewire: 
+    serial: /10.4AEC29CDBAAB/temperature
+humidity:
+  name: "A fake pressure sensor"
+  onewire: 
+    serial: /10.4AEC29CDBAAB/humidity
+
+
+

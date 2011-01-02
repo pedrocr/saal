@@ -11,9 +11,18 @@ class MockConnection
 end
 
 class MockDBStore
-  attr_accessor :value
+  attr_accessor :value, :stored_value
   def average(sensor, from, to)
     @value
+  end
+  def minimum(sensor, from, to)
+    @value
+  end
+  def maximum(sensor, from, to)
+    @value
+  end
+  def write(sensor,date,value)
+    @stored_value = value
   end
 end
 
@@ -90,6 +99,18 @@ class TestSensor < Test::Unit::TestCase
     assert_equal [0]*20+[1000], (1..21).map{@fake3.read}
     @conn.values = [0]*20 + [1000,0]
     assert_equal [0]*20+[1000], (1..21).map{@fake3.read_uncached}
+  end
+
+  def test_sealevel_correction
+    sensor = fake_sensor('pressure')
+    @conn.value = @dbstore.value = 1000
+    corrected = 1000+@defs['pressure']['altitude'].to_f/9.2
+    assert_equal corrected, sensor.read
+    sensor.store_value
+    assert_equal 1000, @dbstore.stored_value
+    assert_equal corrected, sensor.minimum(0,100)
+    assert_equal corrected, sensor.maximum(0,100)
+    assert_equal corrected, sensor.average(0,100)
   end
 
   def test_mocked

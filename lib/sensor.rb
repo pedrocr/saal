@@ -26,6 +26,12 @@ module SAAL
       @min_value = defs['min_value']
       @min_correctable = defs['min_correctable']
 
+      @read_offset = if defs['altitude'] && defs['type'] == 'pressure'
+        defs['altitude'].to_f/9.2
+      else
+        0.0
+      end
+
       # Outliercache
       @outliercache = opts[:no_outliercache] ? nil : OutlierCache.new
     end  
@@ -52,22 +58,22 @@ module SAAL
 
     def average(from, to)
       return @mock_opts[:average] if @mock_opts[:average]
-      @dbstore.average(@name, from, to)
+      apply_offset @dbstore.average(@name, from, to)
     end
 
     def minimum(from, to)
       return @mock_opts[:minimum] if @mock_opts[:minimum]
-      @dbstore.minimum(@name, from, to)
+      apply_offset @dbstore.minimum(@name, from, to)
     end
 
     def maximum(from, to)
       return @mock_opts[:maximum] if @mock_opts[:maximum]
-      @dbstore.maximum(@name, from, to)
+      apply_offset @dbstore.maximum(@name, from, to)
     end
 
     def store_value
       value = read_uncached
-      @dbstore.write(@name, Time.now.utc.to_i, value) if value
+      @dbstore.write(@name, Time.now.utc.to_i, value-@read_offset) if value
     end
 
     def mock_set(opts)
@@ -87,14 +93,18 @@ module SAAL
       normalize(value)
     end
 
+    def apply_offset(v)
+      v ? v+@read_offset : v
+    end
+
     def normalize(value)
-      if @max_value and value > @max_value
+      apply_offset(if @max_value and value > @max_value
         (@max_correctable and value <= @max_correctable) ? @max_value : nil
       elsif @min_value and value < @min_value
         (@min_correctable and value >= @min_correctable) ? @min_value : nil
       else
         value
-      end
+      end)
     end
   end
 end
