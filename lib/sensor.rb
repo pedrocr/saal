@@ -27,7 +27,7 @@ module SAAL
       @min_value = defs['min_value']
       @min_correctable = defs['min_correctable']
 
-      @read_offset = if defs['altitude'] && defs['type'] == 'pressure'
+      @read_offset = if defs['altitude'] && @underlying.sensor_type == :pressure
         defs['altitude'].to_f/9.2
       else
         0.0

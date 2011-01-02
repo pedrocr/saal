@@ -21,7 +21,6 @@ fake3:
 
 pressure:
   name: "A fake pressure sensor"
-  type: pressure
   altitude: 200
   onewire: 
     serial: /10.4AEC29CDBAAB/pressure
