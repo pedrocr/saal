@@ -6,17 +6,24 @@ SENSORSCONF = "/etc/saal/sensors.yml"
 
 require File.dirname(__FILE__)+'/../lib/saal.rb'
 
+def usage
+  $stderr.puts "Usage: saal_daemon <pidfile|--foreground>"
+end
+
 if ARGV.size != 1
-  $stderr.puts "Usage: saal_daemon [pidfile]"
+  usage
   exit 2
-else
-  pidfile = ARGV[0]  
+else  
+  foreground = (ARGV[0] == '--foreground')
   d = SAAL::Daemon.new(:interval => SENSOR_INTERVAL,
                        :sensorconf => SENSORSCONF,
-                       :dbconf => DBCONF)
+                       :dbconf => DBCONF,
+                       :foreground => foreground)
   pid = d.run
-  File.open(pidfile, 'w') do |f|
-    f.write(pid)
-    f.close
+  if !foreground
+    File.open(pidfile, 'w') do |f|
+      f.write(pid)
+      f.close
+    end
   end
 end

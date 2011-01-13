@@ -1,13 +1,17 @@
 module SAAL
   class ForkedRunner
     def self.run_as_fork(opts={})
-      fork do
-        if not opts[:keep_stdin]
-          $stderr.reopen "/dev/null", "a"
-          $stdin.reopen "/dev/null", "a"
-          $stdout.reopen "/dev/null", "a"
-        end
+      if opts[:foreground]
         yield ForkedRunner.new
+      else
+        fork do
+          if not opts[:keep_stdin]
+            $stderr.reopen "/dev/null", "a"
+            $stdin.reopen "/dev/null", "a"
+            $stdout.reopen "/dev/null", "a"
+          end
+          yield ForkedRunner.new
+        end
       end
     end
     
