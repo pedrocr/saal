@@ -101,6 +101,15 @@ class TestSensor < Test::Unit::TestCase
     assert_equal [0]*20+[1000], (1..21).map{@fake3.read_uncached}
   end
 
+  def test_eliminate_outliers
+    correctread = 994.422
+    fakeread = 817.309
+    @conn.values = [correctread]*20 + [fakeread,correctread]
+    assert_equal [correctread]*21, (1..21).map{@fake3.read}
+    @conn.values = [correctread]*20 + [fakeread,correctread]
+    assert_equal [correctread]*21, (1..21).map{@fake3.read_uncached}
+  end
+
   def test_sealevel_correction
     sensor = fake_sensor('pressure')
     @conn.value = @dbstore.value = 1000

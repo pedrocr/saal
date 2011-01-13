@@ -13,7 +13,7 @@ module SAAL
     # Sets how close the central values have to be for the cache to be "live"
     MAX_CACHE_DEVIATION = 0.05
     # Sets how off the read value can be from the cache median to be accepted
-    MAX_VALUE_DEVIATION = 0.25
+    MAX_VALUE_DEVIATION = 0.15
 
     def initialize
       @compcache = []
