@@ -41,7 +41,7 @@ class TestChartData < Test::Unit::TestCase
   def test_correct_time_use
     sensor = MockSensor.new
     range = SAAL::ChartDataRange.new(:last => 24, :periods => :hours)
-    now = Time.now
+    now = Time.now.utc
     to = Time.utc(now.year,now.month,now.day,now.hour,59,59).to_i
     from = to - 24*60*60 + 1
     assert_equal MOCK_AVERAGES[0..0], range.get_data(:average, sensor, 1)
