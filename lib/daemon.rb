@@ -2,6 +2,7 @@ module SAAL
   class ForkedRunner
     def self.run_as_fork(opts={})
       if opts[:foreground]
+        $stderr.puts "Running saal_daemon #{SAAL::VERSION} in foreground..."
         yield ForkedRunner.new
       else
         fork do
