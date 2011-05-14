@@ -13,7 +13,8 @@ end
 if ARGV.size != 1
   usage
   exit 2
-else  
+else
+  pidfile = ARGV[0]
   foreground = (ARGV[0] == '--foreground')
   d = SAAL::Daemon.new(:interval => SENSOR_INTERVAL,
                        :sensorconf => SENSORSCONF,
