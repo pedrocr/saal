@@ -9,7 +9,7 @@ TODO
 - Remove the chart configuration options from the saal_chart script
 ?- Remove Sensors and Charts and move their functionality to Sensor and Chart
 - Add an init.d file to the package (and possibly an installer script for ubuntu/debian)
-- Add filter support to sensor reads (e.g., altitude compensation for pressure)
+- Add interface that does retries for reading as well as writing (e.g., dinrelay confirm state change)
 DONE
 X- Make the server bind only to a certain interface (not applicable)
 X- Override OWNet::Connection with a mock object so that owserver is not needed
@@ -27,3 +27,4 @@ X- Make connections persistant
   a date now
 - Implement monthly, yearly and 10-day average charts
 - Add outlier detection and removal
+- Add filter support to sensor reads (e.g., altitude compensation for pressure)
