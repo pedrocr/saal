@@ -14,6 +14,7 @@ class TestDINRelay < Test::Unit::TestCase
       @html = opts[:html]
       @user = opts[:user]
       @pass = opts[:pass]
+      @status = opts[:status] || 200
       @feedback = opts[:feedback] || {}
     end
     def do_GET(req, res)
@@ -22,7 +23,8 @@ class TestDINRelay < Test::Unit::TestCase
         user == @user && pass == @pass
       }
       res.body = @html
-      res['Content-Type'] = "text/xml"
+      res.status = @status
+      res['Content-Type'] = "text/html"
     end
   end
 
@@ -113,6 +115,22 @@ class TestDINRelay < Test::Unit::TestCase
         assert_equal newval, sensors.send('name'+num.to_s).write(newval), 
                      "State change not working"
         assert_path "/outlet?#{num}=#{newstate}", feedback[:uri]
+      end
+    end
+  end
+
+  def test_failed_connection
+    @vals.each do |num, state|
+      assert_equal nil, @og.state(num)
+      assert !@og.set_state(num,"ON"), "State change working without a server?!"
+    end
+  end
+
+  def test_failed_request
+    with_webrick(:html=>create_index_html(@vals),:status=>404) do |feedback|
+      @vals.each do |num, state|
+        assert_equal nil, @og.state(num)
+        assert !@og.set_state(num,"ON"), "State change working without a server?!"
       end
     end
   end

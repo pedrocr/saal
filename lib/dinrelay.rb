@@ -37,25 +37,30 @@ module SAAL
 
       def state(num)
         response = do_get('/index.htm')
-        return parse_index_html(response.body)[num]
+        return response ? parse_index_html(response.body)[num] : nil
       end
 
       def set_state(num, state)
         response = do_get("/outlet?#{num}=#{state}")
-        response.code == "200"
+        response != nil
       end
 
       private
       def do_get(path)
-        Net::HTTP.start(@host,@port) do |http|
-          req = Net::HTTP::Get.new(path)
-          req.basic_auth @user, @pass
-          response = http.request(req)
-          if response.code != "200"
-            $stderr.puts "ERROR: Code #{response.code}"
-            $stderr.puts response.body
+        begin
+          Net::HTTP.start(@host,@port) do |http|
+            req = Net::HTTP::Get.new(path)
+            req.basic_auth @user, @pass
+            response = http.request(req)
+            if response.code != "200"
+              #$stderr.puts "ERROR: Code #{response.code}"
+              #$stderr.puts response.body
+              return nil
+            end
+            return response
           end
-          return response
+        rescue Exception
+          return nil
         end
       end
 
