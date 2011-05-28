@@ -12,9 +12,7 @@ if ARGV.size != 1
   exit (2)
 end
 
-SENSORS = [[:temp_exterior, [-15, 45]], [:temp_estufa, [-15, 45]],
-           [:hum_exterior, [0,100]], 
-           [:pressao, [950,1050]]]
+SENSOR_RANGES = {:temperature=>[-15, 45], :humidity=>[0,100], :pressure=>[950,1050]}
 
 
 SAAL::Charts.new.each do |chart|
@@ -27,13 +25,14 @@ SAAL::Charts.new.each do |chart|
   @maxs = chart.maximum
   @avgs = chart.average
   @minmax = {}
-  SENSORS.each do |s,r| 
+  chart.sensors.each do |s|
+    s = s.name.to_sym
     @minmax[s] = {:maximum => @maxs[s], :minimum => @mins[s], :average => @avgs[s]}
   end
 
   File.open(ymlfile, 'w').write(YAML::dump(@minmax))
 
-  def normalize_data(data, min, max, offset=0)
+  def normalize_data(data, min, max)
     data.map do |i|
       if i.nil?
         -1.0
@@ -42,7 +41,7 @@ SAAL::Charts.new.each do |chart|
       elsif i > max
         100.0
       else
-        (((i-min)/(max-min).to_f)*1000).round/10.0+offset
+        (((i-min)/(max-min).to_f)*1000).round/10.0
       end
     end
   end
@@ -51,8 +50,8 @@ SAAL::Charts.new.each do |chart|
   @numperiods = @periodnames.size
   @averages = chart.average(NUM_VALUES)
 
-  @data = SENSORS.map do |sensor, range|
-    normalize_data(@averages[sensor], *range)
+  @data = chart.sensors.map do |sensor|
+    normalize_data(@averages[sensor.name.to_sym], *(SENSOR_RANGES[sensor.sensor_type]))
   end
 
   @dataurl = @data.map {|values| values.join(",")}.join('|')
