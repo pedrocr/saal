@@ -49,6 +49,7 @@ module SAAL
       def do_get(path)
         begin
           Net::HTTP.start(@host,@port) do |http|
+            http.open_timeout = 5 # Timeout faster when the other side doesn't respond
             req = Net::HTTP::Get.new(path)
             req.basic_auth @user, @pass
             response = http.request(req)
