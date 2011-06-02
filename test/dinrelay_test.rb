@@ -1,5 +1,6 @@
 require File.dirname(__FILE__)+'/test_helper.rb'
 require 'webrick'
+require 'benchmark'
 
 class TestDINRelay < Test::Unit::TestCase
   SERVICE_OPTS = {:host => 'localhost', :port => 33333, 
@@ -15,8 +16,10 @@ class TestDINRelay < Test::Unit::TestCase
       @pass = opts[:pass]
       @status = opts[:status] || 200
       @feedback = opts[:feedback] || {}
+      @sleep = opts[:sleep] || 0
     end
     def do_GET(req, res)
+      sleep @sleep
       @feedback[:uri] = req.request_uri.to_s
       WEBrick::HTTPAuth.basic_auth(req, res, "My Realm") {|user, pass|
         user == @user && pass == @pass
@@ -131,6 +134,38 @@ class TestDINRelay < Test::Unit::TestCase
         assert_equal nil, @og.state(num)
         assert !@og.set_state(num,"ON"), "State change working without a server?!"
       end
+    end
+  end
+
+  def test_fast_open_timeout
+    #FIXME: Find a way to make this test address more generic
+    @og=SAAL::DINRelay::OutletGroup.new(SERVICE_OPTS.merge(:host => "10.254.254.254", 
+                                                           :timeout=>0.1))
+    with_webrick(:html=>create_index_html(@vals)) do |feedback|
+      time = Benchmark.measure do
+        @vals.each do |num, state|
+          assert_equal nil, @og.state(num), "Read not timing out?"
+          assert !@og.set_state(num,"ON"), "State change not timing out?"
+        end
+      end
+      total_time = @og.timeout*2*@vals.keys.size
+      assert time.total < total_time
+             "Doing the reads took too long, are we really timing out?"
+    end
+  end
+
+  def test_fast_read_timeout
+    @og=SAAL::DINRelay::OutletGroup.new(SERVICE_OPTS.merge(:timeout=>0.1))
+    with_webrick(:html=>create_index_html(@vals),:sleep=>10) do |feedback|
+      time = Benchmark.measure do
+        @vals.each do |num, state|
+          assert_equal nil, @og.state(num), "Read not timing out?"
+          assert !@og.set_state(num,"ON"), "State change not timing out?"
+        end
+      end
+      total_time = @og.timeout*2*@vals.keys.size
+      assert time.total < total_time
+             "Doing the reads took too long, are we really timing out?"
     end
   end
 end

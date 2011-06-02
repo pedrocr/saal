@@ -28,11 +28,16 @@ module SAAL
     end
 
     class OutletGroup
+      DEFAULT_TIMEOUT = 2
+
+      attr_reader :timeout
+
       def initialize(opts={})
         @host = opts[:host] || opts['host'] || 'localhost'
         @port = opts[:port] || opts['port'] || 80
         @user = opts[:user] || opts['user'] || 'admin'
         @pass = opts[:pass] || opts['pass'] || '1234'
+        @timeout = opts[:timeout] || DEFAULT_TIMEOUT
       end
 
       def state(num)
@@ -48,18 +53,19 @@ module SAAL
       private
       def do_get(path)
         begin
-          Net::HTTP.start(@host,@port) do |http|
-            http.open_timeout = 5 # Timeout faster when the other side doesn't respond
-            req = Net::HTTP::Get.new(path)
-            req.basic_auth @user, @pass
-            response = http.request(req)
-            if response.code != "200"
-              #$stderr.puts "ERROR: Code #{response.code}"
-              #$stderr.puts response.body
-              return nil
-            end
-            return response
+          http = Net::HTTP.new(@host,@port)
+          # Timeout faster when the other side doesn't respond
+          http.open_timeout = @timeout
+          http.read_timeout = @timeout
+          req = Net::HTTP::Get.new(path)
+          req.basic_auth @user, @pass
+          response = http.request(req)
+          if response.code != "200"
+            #$stderr.puts "ERROR: Code #{response.code}"
+            #$stderr.puts response.body
+            return nil
           end
+          return response
         rescue Exception
           return nil
         end
