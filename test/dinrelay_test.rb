@@ -1,6 +1,5 @@
 require File.dirname(__FILE__)+'/test_helper.rb'
 require 'webrick'
-#require 'webrick/accesslog'
 
 class TestDINRelay < Test::Unit::TestCase
   SERVICE_OPTS = {:host => 'localhost', :port => 33333, 
