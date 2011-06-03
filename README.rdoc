@@ -1,13 +1,13 @@
 = saal
 
-saal stands for Sensor and Actuator Abstraction Layer, and it aims to handle the mechanics of accessing sensors and actuators and logging their state over time. In its present state it is capable of reading from any set of one wire sensors attached one or more owserver processes from the owfs project. In the future other forms of sensors as well as actuators can be added.
+saal stands for Sensor and Actuator Abstraction Layer, and it aims to handle the mechanics of accessing sensors and actuators and logging their state over time. In its present state it is capable of reading from any set of one wire sensors attached one or more owserver processes from the owfs project. It is also able to read and actuate the DIN mounted IP relay from digital loggers (http://www.digital-loggers.com/din.html). In the future other forms of sensors as well as actuators can be added.
 
-Based on a single definition of available sensors several features are available:
+Based on a single definition of available sensors/actuators several features are available:
 
-* An API to read from the sensors
+* An API to read/write to sensors/actuators
 * A daemon that periodically records all sensor values into a MySQL database
 * An API to interrogate the database of recorded values
-* A graphing API and example code to produce ongoing displays of the sensor reads
+* A graphing API and full program to produce charts from the stored sensor reads
 
 An example of the usage of saal can be seen at http://www.corujas.net.
 
@@ -60,16 +60,37 @@ Both arguments to average are unix timestamps in UTC timezone.
 
 == Charting
 
-SAAL::ChartData provides some helper methods to produce a time series of values for a sensor where each point is the average of the sensor reads for the interval:
+After you've gotten sensor logging working and some values in the database you can start creating charts based on it. Here's an example /etc/saal/charts.yml file:
 
-  saal = SAAL::Sensors.new
-  chart = SAAL::ChartData.new(saal.fake_temp)
-  now = Time.now.utc.to_i
-  # Average fake_temp over the last 10 minutes divided in 4 intervals
-  chart.get_data(now - 60*10, now, 4) 
-  #=> [19.1555206999183, 28.3404493331909, 56.4694658915202, 50.4347496032715]
+  day:
+    sensors: [temp_exterior, hum_exterior, pressure]
+    last: 24
+    periods: hours
 
-See saal_chart for an example of creating chart images over several time spans including serveral sensors using Google's chart API.
+  week:
+    sensors: [temp_exterior, hum_exterior, pressure]
+    last: 7
+    periods: days
+
+  4week:
+    sensors: [temp_exterior, hum_exterior, pressure]
+    last: 4
+    periods: weeks
+    alignlabels: left
+
+  year:
+    sensors: [temp_exterior, hum_exterior, pressure]
+    last: 12
+    periods: months
+
+  4year:
+    sensors: [temp_exterior, hum_exterior, pressure]
+    last: 4
+    periods: years
+
+With this in place you can now run "saal_chart <some_directory>" and get 5 png files produced with the Google charts API that show the data recorded in the database over the given periods. This is almost exactly the config that generates the graphs at http://www.corujas.net.
+
+The charting code handles range selection and period naming automatically, so all possibilities of number and type of periods are possible.
 
 == Author
 
