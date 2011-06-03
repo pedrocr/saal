@@ -1,4 +1,5 @@
 TODO
+- Make the sensor storage in saal_daemon threaded so a single sensor read can't stall everything else for a long time
 !-Index the value column of the sensor reads for minimum and maximum
 - Change the filtering operations (e.g., outliercache) so that the raw value is always stored in the database
 - Make the outliercache filter based on the expected sensor range (e.g. -20-50 in temperature and 800-1200 in pressure) so as to not be overly sensitive when around 0)
