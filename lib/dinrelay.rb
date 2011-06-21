@@ -29,23 +29,31 @@ module SAAL
 
     class OutletGroup
       DEFAULT_TIMEOUT = 2
+      DEFAULT_CACHE_TIMEOUT = 60
 
-      attr_reader :timeout
+      attr_accessor :host, :port, :user, :pass, :timeout, :cache_timeout
 
       def initialize(opts={})
         @host = opts[:host] || opts['host'] || 'localhost'
         @port = opts[:port] || opts['port'] || 80
         @user = opts[:user] || opts['user'] || 'admin'
         @pass = opts[:pass] || opts['pass'] || '1234'
-        @timeout = opts[:timeout] || DEFAULT_TIMEOUT
+        @timeout = opts[:timeout] || opts['timeout'] || DEFAULT_TIMEOUT
+        @cache_timeout = opts[:cache_timeout] || opts['cache_timeout'] || DEFAULT_CACHE_TIMEOUT
+        @cache = nil
+        @cachehit = nil
       end
 
       def state(num)
-        response = do_get('/index.htm')
-        return response ? parse_index_html(response.body)[num] : nil
+        if !@cachetime or @cachetime < Time.now - @cache_timeout
+          @cache = do_get('/index.htm')
+          @cachetime = Time.now
+        end
+        return @cache ? parse_index_html(@cache.body)[num] : nil
       end
 
       def set_state(num, state)
+        @cachetime = nil
         response = do_get("/outlet?#{num}=#{state}")
         response != nil
       end

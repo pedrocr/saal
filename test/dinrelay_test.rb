@@ -21,6 +21,7 @@ class TestDINRelay < Test::Unit::TestCase
     def do_GET(req, res)
       sleep @sleep
       @feedback[:uri] = req.request_uri.to_s
+      @feedback[:nrequests] = (@feedback[:nrequests]||0)+1
       WEBrick::HTTPAuth.basic_auth(req, res, "My Realm") {|user, pass|
         user == @user && pass == @pass
       }
@@ -105,6 +106,7 @@ class TestDINRelay < Test::Unit::TestCase
         assert_equal value, sensors.send('name'+num.to_s).read
         assert_path '/index.htm', feedback[:uri]
       end
+      assert_equal 1, feedback[:nrequests], "dinrelay request caching not working"
     end
   end
 
@@ -118,6 +120,30 @@ class TestDINRelay < Test::Unit::TestCase
                      "State change not working"
         assert_path "/outlet?#{num}=#{newstate}", feedback[:uri]
       end
+    end
+  end
+
+  # Test that write invalidates any caching
+  def test_write_read_sensors
+    sensors = SAAL::Sensors.new(TEST_SENSORS_DINRELAY_FILE, TEST_DBCONF)
+    with_webrick(:html=>create_index_html(@vals)) do |feedback|
+      @vals.each do |num, state|
+        sensors.send('name'+num.to_s).write(0.0)
+        sensors.send('name'+num.to_s).read
+      end
+      assert_equal 16, feedback[:nrequests], "dinrelay caching too much"
+    end
+  end
+
+  # Test that the cache times out
+  def test_cache_invalidation
+    sensors = SAAL::Sensors.new(TEST_SENSORS_DINRELAY_FILE, TEST_DBCONF)
+    @og.cache_timeout = 0.1
+    with_webrick(:html=>create_index_html(@vals)) do |feedback|
+      @og.state(1)
+      sleep 0.2
+      @og.state(1)
+      assert_equal 2, feedback[:nrequests], "dinrelay caching not invalidating"
     end
   end
 
