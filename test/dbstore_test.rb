@@ -67,4 +67,24 @@ class TestFileStore < Test::Unit::TestCase
     assert_equal [["test_sensor", test_time, test_value]]*n,
                  @dbstore.map{|sensor,time,value| [sensor,time,value]}   
   end
+
+  def test_last_value
+    db_setup
+    now = Time.now.utc.to_i
+    test_values = [[now-10, 105.0],[now-5, 95.0],[now-2, 100.0],[now, 100.5]]
+    test_values.each do |values|
+      @dbstore.write(:test_sensor, *values)
+    end
+    assert_equal 100.5, @dbstore.last_value(:test_sensor)
+  end
+
+  def test_last_value_stale
+    db_setup
+    now = Time.now.utc.to_i - SAAL::DBStore::MAX_LAST_VAL_AGE - 100
+    test_values = [[now-10, 105.0],[now-5, 95.0],[now-2, 100.0],[now, 100.5]]
+    test_values.each do |values|
+      @dbstore.write(:test_sensor, *values)
+    end
+    assert_equal nil, @dbstore.last_value(:test_sensor)
+  end
 end

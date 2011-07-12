@@ -1,5 +1,8 @@
 module SAAL
   class DBStore
+    # Only give out last_value if it's less than 5 min old
+    MAX_LAST_VAL_AGE = 5*60 
+
     include Enumerable
     def initialize(conffile=SAAL::DBCONF)
       @dbopts = YAML::load(File.new(conffile))
@@ -37,6 +40,23 @@ module SAAL
     end
     def maximum(sensor, from, to)     
       db_range("MAX", sensor, from, to)
+    end
+    def last_value(sensor)
+      db_query "SELECT date,value FROM sensor_reads 
+                  WHERE sensor = '#{db_quote(sensor.to_s)}'  
+                  ORDER BY date DESC LIMIT 1" do |r|
+        if r.num_rows == 0
+          return nil
+        else
+          row = r.fetch_row
+          date, value = [row[0].to_i, row[1].to_f]
+          if date > Time.now.utc.to_i - MAX_LAST_VAL_AGE
+            return value
+          else
+            return nil
+          end
+        end
+      end
     end
 
     def each

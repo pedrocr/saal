@@ -21,6 +21,9 @@ class MockDBStore
   def maximum(sensor, from, to)
     @value
   end
+  def last_value(sensor)
+    @value
+  end
   def write(sensor,date,value)
     @stored_value = value
   end
@@ -43,6 +46,11 @@ class TestSensor < Test::Unit::TestCase
     @max_correctable = @defs['fake2']['max_correctable']
     @min_value = @defs['fake2']['min_value']
     @min_correctable = @defs['fake2']['min_correctable']
+  end
+
+  def test_last_value
+    @dbstore.value = 55.3
+    assert_equal 55.3, @fake.last_value
   end
 
   def test_read_too_high_values
@@ -136,10 +144,11 @@ class TestSensor < Test::Unit::TestCase
     assert_equal 2.0, @mockable.read
     @mockable.write(3.0)
     assert_equal 3.0, @mockable.read
-    @mockable.mock_set(:minimum => 1.0, :average => 2.0, :maximum => 3.0)
+    @mockable.mock_set(:minimum => 1.0, :average => 2.0, :maximum => 3.0, :last_value => 5.0)
     assert_equal 1.0, @mockable.minimum(0,100)
     assert_equal 2.0, @mockable.average(0,100)
     assert_equal 3.0, @mockable.maximum(0,100)
+    assert_equal 5.0, @mockable.last_value
     assert_equal 3.0, @mockable.read
   end
 end

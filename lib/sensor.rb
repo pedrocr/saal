@@ -76,6 +76,11 @@ module SAAL
       apply_offset @dbstore.maximum(@name, from, to)
     end
 
+    def last_value
+      return @mock_opts[:last_value] if @mock_opts[:last_value]
+      apply_offset @dbstore.last_value(@name)
+    end
+
     def store_value
       value = read_uncached
       @dbstore.write(@name, Time.now.utc.to_i, value-@read_offset) if value
