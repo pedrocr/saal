@@ -1,12 +1,28 @@
 require File.dirname(__FILE__)+'/test_helper.rb'
 
 class MockConnection
-  attr_accessor :value, :values
+  attr_accessor :value, :values, :stored_value
   def initialize
     @value = @values = nil
   end
   def read(serial)
     @value ? @value : @values.shift 
+  end
+  def write(serial, value)
+    @stored_value = value
+  end
+end
+
+class MockOWUnderlying
+  attr_accessor :value
+  def initialize(opts={})
+    @value = opts[:value]
+  end
+  def read(cached)
+    @value
+  end
+  def write(value)
+    @value = value
   end
 end
 
@@ -51,6 +67,14 @@ class TestSensor < Test::Unit::TestCase
   def test_last_value
     @dbstore.value = 55.3
     assert_equal 55.3, @fake.last_value
+  end
+
+  def test_write_causes_store
+    @fake3.underlying = MockOWUnderlying.new(:value => 5)
+    assert_equal 5, @fake3.read
+    @fake3.write(10)
+    assert_equal 10, @dbstore.stored_value
+    assert_equal 10, @fake3.underlying.value
   end
 
   def test_read_too_high_values

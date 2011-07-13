@@ -20,6 +20,8 @@ class TestDINRelay < Test::Unit::TestCase
     end
     def do_GET(req, res)
       sleep @sleep
+      @feedback[:uris] ||= []
+      @feedback[:uris] << req.request_uri.to_s
       @feedback[:uri] = req.request_uri.to_s
       @feedback[:nrequests] = (@feedback[:nrequests]||0)+1
       WEBrick::HTTPAuth.basic_auth(req, res, "My Realm") {|user, pass|
@@ -118,7 +120,8 @@ class TestDINRelay < Test::Unit::TestCase
         newstate = state == "ON" ? "OFF" : "ON"
         assert_equal newval, sensors.send('name'+num.to_s).write(newval), 
                      "State change not working"
-        assert_path "/outlet?#{num}=#{newstate}", feedback[:uri]
+        assert_path "/outlet?#{num}=#{newstate}", feedback[:uris][-2]
+        assert_path "/index.htm", feedback[:uris][-1]
       end
     end
   end

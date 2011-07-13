@@ -14,6 +14,7 @@ module SAAL
     MAX_READ_TRIES = 5
 
     attr_reader :name, :description
+    attr_accessor :underlying
     def initialize(dbstore, name, underlying, defs, opts={})
       @dbstore = dbstore
       @name = name
@@ -57,7 +58,9 @@ module SAAL
       if @mock_opts[:value]
         @mock_opts[:value] = value
       else
-        @underlying.write(value)
+        ret = @underlying.write(value)
+        store_value
+        ret
       end
     end 
 
