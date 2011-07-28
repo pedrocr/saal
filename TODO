@@ -4,11 +4,11 @@ TODO
 !-Index the value column of the sensor reads for minimum and maximum
 - Change the filtering operations (e.g., outliercache) so that the raw value is always stored in the database
 - Make the outliercache filter based on the expected sensor range (e.g. -20-50 in temperature and 800-1200 in pressure) so as to not be overly sensitive when around 0)
+- Alternatively try using a different method to integrate values (Kalman filter?)
 - Add logging to the daemon
 ?- Change the sensor configuration to be a ruby DSL and make it a daemon config
 - Split classes into one per file with corresponding test (rails style)
 - Verify inputs on the server to make sure it never crashes
-- Remove the chart configuration options from the saal_chart script
 ?- Remove Sensors and Charts and move their functionality to Sensor and Chart
 - Add an init.d file to the package (and possibly an installer script for ubuntu/debian)
 - Add interface that does retries for reading as well as writing (e.g., dinrelay confirm state change)
