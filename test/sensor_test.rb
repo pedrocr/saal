@@ -55,13 +55,7 @@ class TestSensor < Test::Unit::TestCase
     @defs = YAML::load File.new(TEST_SENSOR_CLEANUPS_FILE)
     @conn = MockConnection.new
     @dbstore = MockDBStore.new
-    @fake = fake_sensor('fake', :no_outliercache => true)
-    @fake2 = fake_sensor('fake2', :no_outliercache => true)
-    @fake3 = fake_sensor('fake3')
-    @max_value = @defs['fake2']['max_value']
-    @max_correctable = @defs['fake2']['max_correctable']
-    @min_value = @defs['fake2']['min_value']
-    @min_correctable = @defs['fake2']['min_correctable']
+    @fake = fake_sensor('fake')
   end
 
   def test_last_value
@@ -70,18 +64,11 @@ class TestSensor < Test::Unit::TestCase
   end
 
   def test_write_causes_store
-    @fake3.underlying = MockOWUnderlying.new(:value => 5)
-    assert_equal 5, @fake3.read
-    @fake3.write(10)
+    @fake.underlying = MockOWUnderlying.new(:value => 5)
+    assert_equal 5, @fake.read
+    @fake.write(10)
     assert_equal 10, @dbstore.stored_value
-    assert_equal 10, @fake3.underlying.value
-  end
-
-
-  def test_read_without_limits
-    @conn.value = 200
-    assert_equal 200, @fake3.read
-    assert_equal 200, @fake3.read_uncached
+    assert_equal 10, @fake.underlying.value
   end
 
   def test_sealevel_correction
@@ -103,7 +90,7 @@ class TestSensor < Test::Unit::TestCase
   end
 
   def test_mocked
-    @mockable = fake_sensor('fake3')
+    @mockable = fake_sensor('fake')
     @conn.value = 1.0
     assert_equal 1.0, @mockable.read
     @mockable.mock_set(:value => 2.0)
