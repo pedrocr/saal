@@ -3,9 +3,10 @@
 require 'rubygems'
 require 'rake'
 require 'date'
+require 'rdoc'
 require 'rcov/rcovtask'
 require 'rake/testtask'
-require 'rake/rdoctask'
+require 'rdoc/task'
 
 #############################################################################
 #
