@@ -71,6 +71,18 @@ class TestSensor < Test::Unit::TestCase
     assert_equal 10, @fake.underlying.value
   end
 
+  def test_outlier_removal
+    sensor = fake_sensor('fake')
+    @conn.values = [1000.0,1.0,1.0]
+    assert_equal 1.0, sensor.read
+  end
+
+  def test_outlier_removal_with_nils
+    sensor = fake_sensor('fake')
+    @conn.values = [1000.0,nil,1.0]
+    assert_equal 1000.0, sensor.read
+  end
+
   def test_sealevel_correction
     sensor = fake_sensor('pressure')
     @conn.value = @dbstore.value = 1000

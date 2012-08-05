@@ -87,7 +87,14 @@ module SAAL
     private
     def real_read(uncached)
       return @mock_opts[:value] if @mock_opts[:value]
-      apply_offset(@underlying.read(uncached))
+      values = (0..2).map{@underlying.read(uncached)}
+      #FIXME: If we don't get three values give up and return the first value
+      if not values.all? {|v| v.instance_of?(Float) || v.instance_of?(Integer)}
+        value = values[0]
+      else
+        value = values.sort[1]
+      end
+      apply_offset(value)
     end
       
     def apply_offset(v)
