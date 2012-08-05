@@ -21,21 +21,12 @@ module SAAL
       @underlying = underlying
       @description = defs['name']
       @mock_opts = {}
-      
-      # Reading correction settings
-      @max_value = defs['max_value']
-      @max_correctable = defs['max_correctable']
-      @min_value = defs['min_value']
-      @min_correctable = defs['min_correctable']
 
       @read_offset = if defs['altitude'] && @underlying.sensor_type == :pressure
         defs['altitude'].to_f/9.2
       else
         0.0
       end
-
-      # Outliercache
-      @outliercache = opts[:no_outliercache] ? nil : OutlierCache.new
     end
 
     def writeable?
@@ -47,11 +38,11 @@ module SAAL
     end
 
     def read
-      outlier_proof_read(false)
+      real_read(false)
     end
 
     def read_uncached
-      outlier_proof_read(true)
+      real_read(true)
     end
 
     def write(value)
@@ -94,30 +85,13 @@ module SAAL
     end
 
     private
-    def outlier_proof_read(uncached)
+    def real_read(uncached)
       return @mock_opts[:value] if @mock_opts[:value]
-      tries = 0
-      value = nil
-      begin
-        tries += 1
-        value = @underlying.read(uncached)
-        break if value && @outliercache && @outliercache.validate(value)
-      end while tries < MAX_READ_TRIES
-      normalize(value)
+      apply_offset(@underlying.read(uncached))
     end
-
+      
     def apply_offset(v)
       v ? v+@read_offset : v
-    end
-
-    def normalize(value)
-      apply_offset(if @max_value and value > @max_value
-        (@max_correctable and value <= @max_correctable) ? @max_value : nil
-      elsif @min_value and value < @min_value
-        (@min_correctable and value >= @min_correctable) ? @min_value : nil
-      else
-        value
-      end)
     end
   end
 end

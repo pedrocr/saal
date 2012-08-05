@@ -77,69 +77,11 @@ class TestSensor < Test::Unit::TestCase
     assert_equal 10, @fake3.underlying.value
   end
 
-  def test_read_too_high_values
-    @conn.value = @max_value+1
-    assert_nil @fake.read
-    assert_nil @fake.read_uncached
-    @conn.value = @max_value
-    assert_equal @max_value, @fake.read
-    assert_equal @max_value, @fake.read_uncached
-  end
-
-  def test_read_too_high_but_correctable_values
-    @conn.value = @max_correctable
-    assert_equal @max_value, @fake2.read
-    assert_equal @max_value, @fake2.read_uncached
-    @conn.value = @max_correctable+1
-    assert_nil @fake2.read
-    assert_nil @fake2.read_uncached
-  end
-
-  def test_read_too_low_values
-    @conn.value = @min_value-1
-    assert_nil @fake.read
-    assert_nil @fake.read_uncached
-    @conn.value = @min_value
-    assert_equal @min_value, @fake.read
-    assert_equal @min_value, @fake.read_uncached
-  end
-
-  def test_read_too_low_but_correctable_values
-    @conn.value = @min_correctable
-    assert_equal @min_value, @fake2.read
-    assert_equal @min_value, @fake2.read_uncached
-    @conn.value = @min_correctable-1
-    assert_nil @fake2.read
-    assert_nil @fake2.read_uncached
-  end
 
   def test_read_without_limits
     @conn.value = 200
     assert_equal 200, @fake3.read
     assert_equal 200, @fake3.read_uncached
-  end
-
-  def test_eliminate_outliers
-    @conn.values = [200]*20 + [1000,200]
-    assert_equal [200]*21, (1..21).map{@fake3.read}
-    @conn.values = [200]*20 + [1000,200,1000,200]
-    assert_equal [200]*21, (1..21).map{@fake3.read_uncached}
-  end
-
-  def test_eliminate_outliers_zeroes
-    @conn.values = [0]*20 + [1000,0]
-    assert_equal [0]*20+[1000], (1..21).map{@fake3.read}
-    @conn.values = [0]*20 + [1000,0]
-    assert_equal [0]*20+[1000], (1..21).map{@fake3.read_uncached}
-  end
-
-  def test_eliminate_outliers
-    correctread = 994.422
-    fakeread = 817.309
-    @conn.values = [correctread]*20 + [fakeread,correctread]
-    assert_equal [correctread]*21, (1..21).map{@fake3.read}
-    @conn.values = [correctread]*20 + [fakeread,correctread]
-    assert_equal [correctread]*21, (1..21).map{@fake3.read_uncached}
   end
 
   def test_sealevel_correction
