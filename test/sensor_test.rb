@@ -71,9 +71,15 @@ class TestSensor < Test::Unit::TestCase
     assert_equal 10, @fake.underlying.value
   end
 
-  def test_outlier_removal
+  def test_single_outlier_removal
     sensor = fake_sensor('fake')
-    @conn.values = [1000.0,1.0,1.0]
+    @conn.values = [1000.0,1.0,1.0,1.0,1.0]
+    assert_equal 1.0, sensor.read
+  end
+
+  def test_double_outlier_removal
+    sensor = fake_sensor('fake')
+    @conn.values = [1000.0,1.0,1000.0,1.0,1.0]
     assert_equal 1.0, sensor.read
   end
 

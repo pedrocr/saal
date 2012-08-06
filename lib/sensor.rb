@@ -11,7 +11,7 @@ module SAAL
   end
 
   class Sensor
-    MAX_READ_TRIES = 5
+    NUM_READS = 5
 
     attr_reader :name, :description
     attr_accessor :underlying
@@ -87,8 +87,8 @@ module SAAL
     private
     def real_read(uncached)
       return @mock_opts[:value] if @mock_opts[:value]
-      values = (0..2).map{@underlying.read(uncached)}
-      #FIXME: If we don't get three values give up and return the first value
+      values = (0..NUM_READS-1).map{@underlying.read(uncached)}
+      #FIXME: If we don't get all values give up and return the first value
       if not values.all? {|v| v.instance_of?(Float) || v.instance_of?(Integer)}
         value = values[0]
       else
