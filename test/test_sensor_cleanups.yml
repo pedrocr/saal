@@ -5,11 +5,25 @@ fake:
 
 fake2:
   name: "A fake temperature sensor"
+  numreads: 3
   onewire: 
     serial: /10.4AEC29CDBAAB/temperature
 
 fake3:
   name: "A fake temperature sensor"
+  numreads: 5
+  onewire: 
+    serial: /10.4AEC29CDBAAB/temperature
+
+fake4:
+  name: "A fake temperature sensor"
+  numreads: 4
+  onewire: 
+    serial: /10.4AEC29CDBAAB/temperature
+
+fake5:
+  name: "A fake temperature sensor"
+  numreads: 0
   onewire: 
     serial: /10.4AEC29CDBAAB/temperature
 

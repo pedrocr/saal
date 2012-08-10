@@ -11,9 +11,7 @@ module SAAL
   end
 
   class Sensor
-    NUM_READS = 5
-
-    attr_reader :name, :description
+    attr_reader :name, :description, :numreads
     attr_accessor :underlying
     def initialize(dbstore, name, underlying, defs, opts={})
       @dbstore = dbstore
@@ -27,6 +25,10 @@ module SAAL
       else
         0.0
       end
+
+      @numreads = (defs['numreads']||1).to_i
+      @numreads = 1 if @numreads == 0
+      @numreads += 1 if @numreads.even?
     end
 
     def writeable?
@@ -87,12 +89,12 @@ module SAAL
     private
     def real_read(uncached)
       return @mock_opts[:value] if @mock_opts[:value]
-      values = (0..NUM_READS-1).map{@underlying.read(uncached)}
+      values = (0..@numreads-1).map{@underlying.read(uncached)}
       #FIXME: If we don't get all values give up and return the first value
       if not values.all? {|v| v.instance_of?(Float) || v.instance_of?(Integer)}
         value = values[0]
       else
-        value = values.sort[1]
+        value = values.sort[@numreads/2]
       end
       apply_offset(value)
     end
