@@ -34,6 +34,8 @@ module SAAL
         @read_multiplier = 1.0
       end
 
+      @set_type = defs['type'] ? defs['type'].to_sym : nil
+
       @numreads = (defs['numreads']||1).to_i
       @numreads = 1 if @numreads == 0
       @numreads += 1 if @numreads.even?
@@ -44,7 +46,7 @@ module SAAL
     end
 
     def sensor_type
-      @underlying.sensor_type
+      @set_type || @underlying.sensor_type
     end
 
     def read

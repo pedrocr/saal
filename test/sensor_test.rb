@@ -133,6 +133,10 @@ class TestSensor < Test::Unit::TestCase
     end
   end
 
+  def test_set_sensor_type
+    assert_equal :temperature, fake_sensor("temperature_forced").sensor_type
+  end
+
   def test_mocked
     @mockable = fake_sensor('fake')
     @conn.value = 1.0

@@ -48,5 +48,11 @@ humidity:
   onewire: 
     serial: /10.4AEC29CDBAAB/humidity
 
+temperature_forced:
+  name: "A fake temperature sensor"
+  type: temperature
+  onewire: 
+    serial: /10.4AEC29CDBAAB/nondescript
+
 
 
