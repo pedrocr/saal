@@ -114,6 +114,19 @@ class TestSensor < Test::Unit::TestCase
     assert_equal corrected, sensor.average(0,100)
   end
 
+  def test_linear_correction
+    sensor = fake_sensor('offset')
+    @conn.value = @dbstore.value = 1000
+    corrected = @defs['offset']['linear_multiplier'].to_f*1000+
+                @defs['offset']['linear_offset'].to_f
+    assert_equal corrected, sensor.read
+    sensor.store_value
+    assert_equal 1000, @dbstore.stored_value
+    assert_equal corrected, sensor.minimum(0,100)
+    assert_equal corrected, sensor.maximum(0,100)
+    assert_equal corrected, sensor.average(0,100)
+  end
+
   def test_sensor_type
     [:pressure, :humidity, :temperature].each do |type|
       assert_equal type, fake_sensor(type.to_s).sensor_type

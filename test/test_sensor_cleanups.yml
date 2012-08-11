@@ -27,6 +27,13 @@ fake5:
   onewire: 
     serial: /10.4AEC29CDBAAB/temperature
 
+offset:
+  name: "A fake linear offset sensor"
+  linear_multiplier: 2
+  linear_offset: 100
+  onewire: 
+    serial: /10.4AEC29CDBAAB/pressure
+
 pressure:
   name: "A fake pressure sensor"
   altitude: 200

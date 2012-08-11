@@ -20,10 +20,18 @@ module SAAL
       @description = defs['name']
       @mock_opts = {}
 
-      @read_offset = if defs['altitude'] && @underlying.sensor_type == :pressure
-        defs['altitude'].to_f/9.2
+      if defs['altitude'] && @underlying.sensor_type == :pressure  
+        @read_offset = defs['altitude'].to_f/9.2
+      elsif defs['linear_offset']
+        @read_offset = defs['linear_offset'].to_f
       else
-        0.0
+        @read_offset = 0.0
+      end
+
+      if defs['linear_multiplier']
+        @read_multiplier = defs['linear_multiplier'].to_f
+      else
+        @read_multiplier = 1.0
       end
 
       @numreads = (defs['numreads']||1).to_i
@@ -78,8 +86,8 @@ module SAAL
     end
 
     def store_value
-      value = read_uncached
-      @dbstore.write(@name, Time.now.utc.to_i, value-@read_offset) if value
+      value = real_read(true,false)
+      @dbstore.write(@name, Time.now.utc.to_i, value) if value
     end
 
     def mock_set(opts)
@@ -87,7 +95,7 @@ module SAAL
     end
 
     private
-    def real_read(uncached)
+    def real_read(uncached,offset=true)
       return @mock_opts[:value] if @mock_opts[:value]
       values = (0..@numreads-1).map{@underlying.read(uncached)}
       #FIXME: If we don't get all values give up and return the first value
@@ -96,11 +104,11 @@ module SAAL
       else
         value = values.sort[@numreads/2]
       end
-      apply_offset(value)
+      offset ? apply_offset(value) : value
     end
       
     def apply_offset(v)
-      v ? v+@read_offset : v
+      v ? v*@read_multiplier+@read_offset : v
     end
   end
 end
