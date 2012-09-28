@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
-NUM_VALUES = 500 # Number of datapoints per series in the chart
+
+NUM_VALUES_SMALL = 500 # Datapoints in "small" charts
+NUM_VALUES_LARGE = 150 # Datapoints in "large" charts
+LARGE_CHART_THRESHOLD = 30*24*60*60 # Threshold for a large chart (in seconds)
 
 require File.dirname(__FILE__)+'/../lib/saal.rb'
 
@@ -48,7 +51,11 @@ SAAL::Charts.new.each do |chart|
 
   @periodnames = chart.periodnames
   @numperiods = @periodnames.size
-  @averages = chart.average(NUM_VALUES)
+  num_values = ((chart.to-chart.from)>LARGE_CHART_THRESHOLD) ?
+               NUM_VALUES_LARGE : 
+               NUM_VALUES_SMALL
+
+  @averages = chart.average(num_values)
 
   @data = chart.sensors.map do |sensor|
     normalize_data(@averages[sensor.name.to_sym], *(SENSOR_RANGES[sensor.sensor_type]))
