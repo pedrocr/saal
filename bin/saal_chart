@@ -76,7 +76,7 @@ SAAL::Charts.new.each do |chart|
   r[:chof] = "png"
   r[:chs] = "700x300"
   r[:cht] = "lc"
-  r[:chco] = "00ff00,ff0000,0000ff,ffff00"
+  r[:chco] = "00ff00,ff0000,0000ff,ff9933,800080"
   r[:chxt] = "x,y,y,r"
   r[:chxl] = "0:#{@periodnamesurl}1:|-15ºC||0||15||30||45ºC|2:|0%|25|50|75|100%|3:|950||975||1000||1025||1050 hPa"
   r[:chg] = "#{@xincr},12.5,1,5"
