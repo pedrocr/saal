@@ -108,7 +108,7 @@ module SAAL
         newm = 12 - (-newm)
         newy -= 1
       end
-      from = Time.utc(newy, newm, time.day, time.hour, time.min, time.sec)
+      Time.utc(newy, newm, time.day, time.hour, time.min, time.sec)
     end
   end
 end
