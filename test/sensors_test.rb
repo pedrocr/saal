@@ -31,7 +31,7 @@ class TestSensors < Test::Unit::TestCase
     
   def test_each
     expected = @defs.map{ |name, value| value['name']}
-    assert_equal expected, @sensors.map {|sensor| sensor.description}
+    assert_equal expected.sort, @sensors.map {|sensor| sensor.description}.sort
   end
 
   def test_writeable
