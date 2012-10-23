@@ -50,16 +50,36 @@ class TestChartData < Test::Unit::TestCase
   
   # Test all the alignment functions underlying :last, :periods
   def self.assert_alignment_interval(num,periods,from,to, periodnames=nil, 
-                                     now = nil, extra=nil)
+                                     now = nil, extra=nil,timezone=nil)
     define_method("test_alignment_#{num}#{periods}#{extra.to_s}") do
+      ENV['TZ'] = timezone || "UTC"
       now = now || Time.utc(2010, 12, 30, 15, 38, 19)
       o = SAAL::ChartDataRange.new(:last => num, :periods => periods, :now => now)
       assert_equal [from.to_i, to.to_i], [o.from, o.to],
                    "Expecting #{from.utc} - #{to.utc}\n"+
                    "Got #{Time.at(o.from).utc} - #{Time.at(o.to).utc}"
       assert_equal periodnames, o.periodnames if periodnames
+      ENV['TZ'] = "UTC"
     end
   end
+  # Check for correct timezone handling
+  assert_alignment_interval(24, :hours, Time.utc(2010, 12, 29, 16, 0, 0),
+                                        Time.utc(2010, 12, 30, 15, 59, 59),
+                            (17..23).map{|s| s.to_s}+(0..16).map{|s| s.to_s}, 
+                            nil,"_timezone_test","UTC-1")
+  # Check for the timezone changing times (added hour)
+  assert_alignment_interval(24, :hours, Time.utc(2012, 10, 28, 0, 0, 0),
+                                        Time.utc(2012, 10, 28, 23, 59, 59),
+                            ["1"]+(1..23).map{|s| s.to_s}, 
+                            Time.utc(2012, 10, 28, 23, 59, 59),
+                            "_changing_timezone_test","Europe/Lisbon")
+  # Check for the timezone changing times (removed hour)
+  assert_alignment_interval(24, :hours, Time.utc(2012, 3, 25, 0, 0, 0),
+                                        Time.utc(2012, 3, 25, 23, 59, 59),
+                            ["0"]+(2..23).map{|s| s.to_s}+["0"], 
+                            Time.utc(2012, 3, 25, 23, 59, 59),
+                            "_changing_timezone_test","Europe/Lisbon")
+
   assert_alignment_interval(24, :hours, Time.utc(2010, 12, 29, 16, 0, 0),
                                         Time.utc(2010, 12, 30, 15, 59, 59),
                             (16..23).map{|s| s.to_s}+(0..15).map{|s| s.to_s})

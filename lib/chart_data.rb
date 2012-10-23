@@ -51,7 +51,7 @@ module SAAL
 
       case @periods
       when :hours
-        (0...@num).map{|i| ((@now.hour - i)%24).to_s}.reverse
+        (0...@num).map{|i| ((@now.getlocal - i*3600).hour).to_s}.reverse
       when :days
         (1..@num).map{|i| (@now.wday - i)%7}.map{|w| DAYNAMES[w]}.reverse
       when :weeks
