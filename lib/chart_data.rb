@@ -82,7 +82,7 @@ module SAAL
         to = Time.utc(newy, newm, 1, 0, 0, 0)
         # Go back num months for from
         from = dec_months(num, to)
-        # subtract 1 second from two to get the end of current month
+        # subtract 1 second from to to get the end of current month
         to -= 1
       else
         # Calculate by elasped time
