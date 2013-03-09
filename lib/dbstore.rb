@@ -14,9 +14,9 @@ module SAAL
       db_query "CREATE TABLE IF NOT EXISTS sensor_reads
                    (sensor VARCHAR(100), 
                     date INT, 
-                    value FLOAT,
-                    INDEX USING HASH (sensor),
-                    INDEX USING BTREE (date))"
+                    value FLOAT) ENGINE=InnoDB"
+      db_query "ALTER TABLE sensor_reads ADD INDEX sensor_date_value (sensor,date,value) USING BTREE",
+               :ignoreerr => 1061
     end
     
     def db_wipe
@@ -43,18 +43,15 @@ module SAAL
     end
     def last_value(sensor)
       db_query "SELECT date,value FROM sensor_reads 
-                  WHERE sensor = '#{db_quote(sensor.to_s)}'  
+                  WHERE sensor = '#{db_quote(sensor.to_s)}'
+                  AND date > '#{Time.now.utc.to_i - MAX_LAST_VAL_AGE}'
                   ORDER BY date DESC LIMIT 1" do |r|
         if r.num_rows == 0
           return nil
         else
           row = r.fetch_row
           date, value = [row[0].to_i, row[1].to_f]
-          if date > Time.now.utc.to_i - MAX_LAST_VAL_AGE
-            return value
-          else
-            return nil
-          end
+          return value
         end
       end
     end
