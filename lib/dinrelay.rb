@@ -55,6 +55,9 @@ module SAAL
       def set_state(num, state)
         @cachetime = nil
         response = do_get("/outlet?#{num}=#{state}")
+        #FIXME: Find a better workaround for dinrelay's crashing when you cycle
+        #       through outlets too fast
+        sleep 1
         response != nil
       end
 
