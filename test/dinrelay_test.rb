@@ -3,8 +3,25 @@ require 'webrick'
 require 'benchmark'
 
 class TestDINRelay < Test::Unit::TestCase
-  SERVICE_OPTS = {:host => 'localhost', :port => 33333, 
-                  :user => "someuser", :pass =>"somepass"}
+  def setup
+    @@serv_num ||= 0
+    @@serv_num += 1
+
+    @og=SAAL::DINRelay::OutletGroup.new(service_opts)
+    @vals={1=>"OFF",2=>"OFF",3=>"ON",4=>"OFF",5=>"ON",6=>"ON",7=>"ON",8=>"OFF"}
+    @rvals={1=>"ON",2=>"ON",3=>"OFF",4=>"ON",5=>"OFF",6=>"OFF",7=>"OFF",8=>"ON"}
+
+    defs = YAML::load(File.new(TEST_SENSORS_DINRELAY_FILE))
+    defs['group1']['dinrelay']['port'] = service_opts[:port]
+    tempfile = Tempfile.new('dinrelay_test_yml')
+    File.open(tempfile.path,'w') {|f| f.write(YAML::dump defs)}
+    @test_sensors_dinrelay_file = tempfile.path
+  end
+
+  def service_opts
+    base_opts = {:host => 'localhost', :user => "someuser", :pass =>"somepass"}
+    base_opts.merge(:port => 3333+@@serv_num)
+  end
 
   class BasicServing < WEBrick::HTTPServlet::AbstractServlet
     def self.get_instance(config, opts)
@@ -34,7 +51,7 @@ class TestDINRelay < Test::Unit::TestCase
   end
 
   def with_webrick(opts)
-    opts = SERVICE_OPTS.merge(opts)
+    opts = service_opts.merge(opts)  
 
     Socket.do_not_reverse_lookup = true # Speed up startup
     log = WEBrick::Log.new($stderr, WEBrick::Log::ERROR)
@@ -59,14 +76,8 @@ class TestDINRelay < Test::Unit::TestCase
     erb.result(binding)
   end
 
-  def setup
-    @og=SAAL::DINRelay::OutletGroup.new(SERVICE_OPTS)
-    @vals={1=>"OFF",2=>"OFF",3=>"ON",4=>"OFF",5=>"ON",6=>"ON",7=>"ON",8=>"OFF"}
-    @rvals={1=>"ON",2=>"ON",3=>"OFF",4=>"ON",5=>"OFF",6=>"OFF",7=>"OFF",8=>"ON"}
-  end
-
   def assert_path(path, uri)
-    assert_equal "http://localhost:#{SERVICE_OPTS[:port]}"+path, uri
+    assert_equal "http://localhost:#{service_opts[:port]}"+path, uri
   end
 
   def test_read_state
@@ -89,7 +100,7 @@ class TestDINRelay < Test::Unit::TestCase
   end
 
   def test_enumerate_sensors
-    sensors = SAAL::Sensors.new(TEST_SENSORS_DINRELAY_FILE, TEST_DBCONF)
+    sensors = SAAL::Sensors.new(@test_sensors_dinrelay_file, TEST_DBCONF)
     assert_equal((1..8).map{|i| "name#{i}"}, sensors.map{|s| s.name}.sort)
     assert_equal((1..8).map{|i| "description#{i}"}, sensors.map{|s| s.description}.sort)
   end
@@ -101,7 +112,7 @@ class TestDINRelay < Test::Unit::TestCase
   end
 
   def test_read_sensors
-    sensors = SAAL::Sensors.new(TEST_SENSORS_DINRELAY_FILE, TEST_DBCONF)
+    sensors = SAAL::Sensors.new(@test_sensors_dinrelay_file, TEST_DBCONF)
     with_webrick(:html=>create_index_html(@vals)) do |feedback|
       @vals.each do |num, state|
         value = state == "ON" ? 1.0 : 0.0
@@ -113,7 +124,7 @@ class TestDINRelay < Test::Unit::TestCase
   end
 
   def test_set_sensors
-    sensors = SAAL::Sensors.new(TEST_SENSORS_DINRELAY_FILE, TEST_DBCONF)
+    sensors = SAAL::Sensors.new(@test_sensors_dinrelay_file, TEST_DBCONF)
     with_webrick(:html=>create_index_html(@rvals)) do |feedback|
       @vals.each do |num, state|
         newval = state == "ON" ? 0.0 : 1.0
@@ -128,7 +139,7 @@ class TestDINRelay < Test::Unit::TestCase
 
   # Test that write invalidates any caching
   def test_write_read_sensors
-    sensors = SAAL::Sensors.new(TEST_SENSORS_DINRELAY_FILE, TEST_DBCONF)
+    sensors = SAAL::Sensors.new(@test_sensors_dinrelay_file, TEST_DBCONF)
     with_webrick(:html=>create_index_html(@vals)) do |feedback|
       @vals.each do |num, state|
         sensors.send('name'+num.to_s).write(0.0)
@@ -140,7 +151,7 @@ class TestDINRelay < Test::Unit::TestCase
 
   # Test that the cache times out
   def test_cache_invalidation
-    sensors = SAAL::Sensors.new(TEST_SENSORS_DINRELAY_FILE, TEST_DBCONF)
+    sensors = SAAL::Sensors.new(@test_sensors_dinrelay_file, TEST_DBCONF)
     @og.cache_timeout = 0.1
     with_webrick(:html=>create_index_html(@vals)) do |feedback|
       @og.state(1)
@@ -168,7 +179,7 @@ class TestDINRelay < Test::Unit::TestCase
 
   def test_fast_open_timeout
     #FIXME: Find a way to make this test address more generic
-    @og=SAAL::DINRelay::OutletGroup.new(SERVICE_OPTS.merge(:host => "10.254.254.254", 
+    @og=SAAL::DINRelay::OutletGroup.new(service_opts.merge(:host => "10.254.254.254", 
                                                            :timeout=>0.1))
     with_webrick(:html=>create_index_html(@vals)) do |feedback|
       time = Benchmark.measure do
@@ -184,7 +195,7 @@ class TestDINRelay < Test::Unit::TestCase
   end
 
   def test_fast_read_timeout
-    @og=SAAL::DINRelay::OutletGroup.new(SERVICE_OPTS.merge(:timeout=>0.1))
+    @og=SAAL::DINRelay::OutletGroup.new(service_opts.merge(:timeout=>0.1))
     with_webrick(:html=>create_index_html(@vals),:sleep=>10) do |feedback|
       time = Benchmark.measure do
         @vals.each do |num, state|
