@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
 
   s.name              = 'saal'
-  s.version           = '0.2.22'
+  s.version           = '0.2.23'
   s.date              = '2013-05-16'
 
   s.summary     = "Thin abstraction layer for interfacing and recording sensors (currently onewire) and actuators (currently dinrelay)"

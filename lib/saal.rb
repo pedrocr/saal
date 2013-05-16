@@ -10,7 +10,7 @@ module SAAL
     DBCONF = CONFDIR+"database.yml"
     CHARTSCONF = CONFDIR+"charts.yml"
 
-    VERSION = '0.2.22'
+    VERSION = '0.2.23'
 end
 
 require File.dirname(__FILE__)+'/dbstore.rb'

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 
 NUM_VALUES_SMALL = 500 # Datapoints in "small" charts
 NUM_VALUES_LARGE = 150 # Datapoints in "large" charts
