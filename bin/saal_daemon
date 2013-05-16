@@ -19,7 +19,8 @@ else
   d = SAAL::Daemon.new(:interval => SENSOR_INTERVAL,
                        :sensorconf => SENSORSCONF,
                        :dbconf => DBCONF,
-                       :foreground => foreground)
+                       :foreground => foreground,
+                       :keep_stdin => false)
   pid = d.run
   if !foreground
     File.open(pidfile, 'w') do |f|

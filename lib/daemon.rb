@@ -7,9 +7,9 @@ module SAAL
       else
         fork do
           if not opts[:keep_stdin]
-            $stderr.reopen "/dev/null", "a"
-            $stdin.reopen "/dev/null", "a"
+            $stdin.reopen "/dev/null"
             $stdout.reopen "/dev/null", "a"
+            $stderr.reopen "/dev/null", "a"
           end
           yield ForkedRunner.new
         end
