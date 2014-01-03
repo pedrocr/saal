@@ -98,6 +98,8 @@ SAAL::Charts.new.each do |chart|
     steps[4] = "#{max} #{TYPES[type]}"
     @axes << steps.join("||")
   end
+  # Duplicate the axis if there's only one
+  @axes *= 2 if @axes.size == 1
   # Alternate between left and right axes
   @axisset = (['y','r']*@axes.size)[0..@axes.size-1].join(",")
   @axes = @axes.each_with_index.map {|a,i| "#{i+1}:|#{a}"}.join("|")
