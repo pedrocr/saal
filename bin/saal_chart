@@ -16,9 +16,9 @@ if ARGV.size != 1
   exit (2)
 end
 
-SENSOR_RANGES = {:temperature=>[[10,25],[0,25],[0,35],[0,45],[0,65],[-15, 45]], 
-                 :humidity=>[[0,100]], 
-                 :pressure=>[[950,1050]]}
+MAX_RANGES = {:temperature=>[-10,70], 
+              :humidity=>[0,110], 
+              :pressure=>[900,1200]}
 
 TYPES = {:temperature => "ºC", :humidity => "%", :pressure => "hPa"}
 
@@ -62,19 +62,34 @@ SAAL::Charts.new.each do |chart|
 
   @averages = chart.average(num_values)
   @ranges = {}
+
+  # First find the smallest interval that fits all sensors for each type
   @data = chart.sensors.map do |sensor|
     avgs = @averages[sensor.name.to_sym]
 
     min = avgs.select{|o| o != nil}.min
     max = avgs.select{|o| o != nil}.max
-    range = SENSOR_RANGES[sensor.sensor_type].find do |range|
-      low, high = range
-      max and min and low < min and high > max
+    if min and max
+      range = [(min/5).floor*5, (max/5).ceil*5]
+      @ranges[sensor.sensor_type] ||= range
+      previous = @ranges[sensor.sensor_type]
+      @ranges[sensor.sensor_type] = [[range[0],previous[0]].min, 
+                                     [range[1],previous[1]].max]
     end
-    range ||= SENSOR_RANGES[sensor.sensor_type][-1] # Select the last one as default
-    @ranges[sensor.sensor_type] = range
+  end
 
-    normalize_data(avgs, *range)
+  # Then clip those intervals to MAX_RANGES
+  @data = chart.sensors.map do |sensor|
+    maxrange = MAX_RANGES[sensor.sensor_type]
+    @ranges[sensor.sensor_type] ||= maxrange
+    previous = @ranges[sensor.sensor_type]
+    @ranges[sensor.sensor_type] = [[maxrange[0],previous[0]].max, 
+                                   [maxrange[1],previous[1]].min]
+  end
+
+  # Finally use those intervals to normalize the data
+  @data = chart.sensors.map do |sensor|
+    normalize_data(@averages[sensor.name.to_sym], *@ranges[sensor.sensor_type])
   end
 
   @dataurl = @data.map {|values| values.join(",")}.join('|')
