@@ -89,23 +89,25 @@ SAAL::Charts.new.each do |chart|
   end
   @xincr = 100.0/@numperiods.to_f*10000.truncate.to_f/10000
 
-  @axis = []
+  @axes = []
   @ranges.each do |type, range| 
     min,max = range
     step = (max-min).to_f/4.0
     steps = (0..4).map{|i| (min+i*step).to_i.to_s}
     steps[0] = "#{min} #{TYPES[type]}"
     steps[4] = "#{max} #{TYPES[type]}"
-    @axis << steps.join("||")
+    @axes << steps.join("||")
   end
-  @axis = @axis.each_with_index.map {|a,i| "#{i+1}:|#{a}"}.join("|")
+  # Alternate between left and right axes
+  @axisset = (['y','r']*@axes.size)[0..@axes.size-1].join(",")
+  @axes = @axes.each_with_index.map {|a,i| "#{i+1}:|#{a}"}.join("|")
 
   r[:chof] = "png"
   r[:chs] = "700x300"
   r[:cht] = "lc"
   r[:chco] = "00ff00,ff0000,0000ff,ff9933,800080"
-  r[:chxt] = "x,y,y,r"
-  r[:chxl] = "0:#{@periodnamesurl}#{@axis}"
+  r[:chxt] = "x,#{@axisset}"
+  r[:chxl] = "0:#{@periodnamesurl}#{@axes}"
   r[:chg] = "#{@xincr},12.5,1,5"
   r[:chd] = "t:#{@dataurl}"
 
