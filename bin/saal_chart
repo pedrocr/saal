@@ -16,7 +16,9 @@ if ARGV.size != 1
   exit (2)
 end
 
-SENSOR_RANGES = {:temperature=>[-15, 45], :humidity=>[0,100], :pressure=>[950,1050]}
+SENSOR_RANGES = {:temperature=>[[10,25],[0,25],[0,35],[0,45],[0,65],[-15, 45]], 
+                 :humidity=>[[0,100]], 
+                 :pressure=>[[950,1050]]}
 
 
 SAAL::Charts.new.each do |chart|
@@ -57,9 +59,18 @@ SAAL::Charts.new.each do |chart|
                NUM_VALUES_SMALL
 
   @averages = chart.average(num_values)
-
   @data = chart.sensors.map do |sensor|
-    normalize_data(@averages[sensor.name.to_sym], *(SENSOR_RANGES[sensor.sensor_type]))
+    avgs = @averages[sensor.name.to_sym]
+
+    min = avgs.select{|o| o != nil}.min
+    max = avgs.select{|o| o != nil}.max
+    range = SENSOR_RANGES[sensor.sensor_type].find do |range|
+      low, high = range
+      max and min and low < min and high > max
+    end
+    range ||= SENSOR_RANGES[sensor.sensor_type][-1] # Select the last one as default
+
+    normalize_data(avgs, *range)
   end
 
   @dataurl = @data.map {|values| values.join(",")}.join('|')
