@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
 
   s.name              = 'saal'
   s.version           = '0.2.25'
-  s.date              = '2014-01-03'
+  s.date              = '2018-06-02'
 
   s.summary     = "Thin abstraction layer for interfacing and recording sensors (currently onewire) and actuators (currently dinrelay)"
   s.description = <<EOF
