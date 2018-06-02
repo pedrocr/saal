@@ -19,6 +19,7 @@ EOF
   s.authors  = ["Pedro Côrte-Real"]
   s.email    = 'pedro@pedrocr.net'
   s.homepage = 'https://github.com/pedrocr/saal'
+  s.licenses = 'LGPL-2.1'
 
   s.require_paths = %w[lib]
 
