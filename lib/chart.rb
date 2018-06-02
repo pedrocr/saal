@@ -5,7 +5,7 @@ module SAAL
       @name = name
       @defs = defs
       @alignlabels = (defs['alignlabels'] || :center).to_sym
-      @sensors = defs['sensors'].map{|name| sensors.send(name)} 
+      @sensors = defs['sensors'].map{|sname| sensors.send(sname)}
       @num = defs['last']
       @periods = defs['periods']
       @alt = defs['alt']

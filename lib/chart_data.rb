@@ -39,7 +39,7 @@ module SAAL
       (0..num-2).map do |i|
         f = t + 1
         t = (f+step)
-        v = sensor.send(method, f.to_i, t.to_i)
+        _v = sensor.send(method, f.to_i, t.to_i)
       end << sensor.send(method, (t+1).to_i, to.to_i)
     end
 

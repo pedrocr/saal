@@ -151,7 +151,7 @@ class TestDINRelay < Test::Unit::TestCase
 
   # Test that the cache times out
   def test_cache_invalidation
-    sensors = SAAL::Sensors.new(@test_sensors_dinrelay_file, TEST_DBCONF)
+    _sensors = SAAL::Sensors.new(@test_sensors_dinrelay_file, TEST_DBCONF)
     @og.cache_timeout = 0.1
     with_webrick(:html=>create_index_html(@vals)) do |feedback|
       @og.state(1)

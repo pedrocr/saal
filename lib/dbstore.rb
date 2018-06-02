@@ -48,7 +48,7 @@ module SAAL
                   ORDER BY date DESC LIMIT 1" do |r|
         row = r.first
         if row
-          date, value = [row["date"].to_i, row["value"].to_f]
+          _date, value = [row["date"].to_i, row["value"].to_f]
           value
         else
           nil

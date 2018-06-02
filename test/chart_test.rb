@@ -16,7 +16,6 @@ class TestChart < Test::Unit::TestCase
 
   def test_average
     name = 'week'
-    defs = @defs[name]
     chart = @charts.find(name)    
     assert_equal ['Fri','Sat','Sun','Mon','Tue','Wed','Thu'], chart.periodnames
     chart.sensors.each {|s| s.mock_set(:average => 1)}
@@ -31,7 +30,6 @@ class TestChart < Test::Unit::TestCase
 
   def test_min_max_avg_1arity
     name = 'week'
-    defs = @defs[name]
     chart = @charts.find(name)    
     assert_equal ['Fri','Sat','Sun','Mon','Tue','Wed','Thu'], chart.periodnames
     v = {:minimum => 1.0, :maximum => 2.0, :average => 1.5}
@@ -43,7 +41,6 @@ class TestChart < Test::Unit::TestCase
   
   def test_min_max_0arity
     name = 'week'
-    defs = @defs[name]
     chart = @charts.find(name)    
     assert_equal ['Fri','Sat','Sun','Mon','Tue','Wed','Thu'], chart.periodnames
     v = {:minimum => 1.0, :maximum => 2.0, :average => 1.5}

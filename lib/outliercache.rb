@@ -41,7 +41,7 @@ module SAAL
     def valid_cache
       @compcache.sort!
       central = @compcache[1..(@compcache.size-2)]
-      sum = central.inject(0.0){|sum,el| sum+el}
+      sum = central.inject(0.0){|csum,el| csum+el}
       return false if sum == 0.0
       average = sum/central.size
       central.each do |el|
