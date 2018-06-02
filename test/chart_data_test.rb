@@ -78,7 +78,7 @@ class TestChartData < Test::Unit::TestCase
                                         Time.utc(2012, 3, 25, 23, 59, 59),
                             ["0"]+(2..23).map{|s| s.to_s}+["0"], 
                             Time.utc(2012, 3, 25, 23, 59, 59),
-                            "_changing_timezone_test","Europe/Lisbon")
+                            "_changing_timezone_test2","Europe/Lisbon")
 
   assert_alignment_interval(24, :hours, Time.utc(2010, 12, 29, 16, 0, 0),
                                         Time.utc(2010, 12, 30, 15, 59, 59),
