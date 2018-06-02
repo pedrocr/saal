@@ -9,8 +9,11 @@ class TestFileStore < Test::Unit::TestCase
     @dbstore.write(:test_sensor, test_time, test_value)
     
     db_test_query("SELECT * FROM sensor_reads") do |res|
-      assert_equal 1, res.num_rows
-      assert_equal ["test_sensor", test_time.to_s, test_value.to_s], res.fetch_row
+      assert_equal 1, res.count
+      row = res.first
+      assert_equal "test_sensor", row["sensor"]
+      assert_equal test_time, row["date"].to_i
+      assert_equal test_value, row["value"].to_f
     end
   end
 

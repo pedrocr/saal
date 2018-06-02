@@ -46,54 +46,51 @@ module SAAL
                   WHERE sensor = '#{db_quote(sensor.to_s)}'
                   AND date > '#{Time.now.utc.to_i - MAX_LAST_VAL_AGE}'
                   ORDER BY date DESC LIMIT 1" do |r|
-        if r.num_rows == 0
-          return nil
+        row = r.first
+        if row
+          date, value = [row["date"].to_i, row["value"].to_f]
+          value
         else
-          row = r.fetch_row
-          date, value = [row[0].to_i, row[1].to_f]
-          return value
+          nil
         end
       end
     end
 
     def each
       db_query "SELECT sensor,date,value FROM sensor_reads" do |r|
-        r.num_rows.times do
-          row = r.fetch_row
-          yield [row[0],row[1].to_i, row[2].to_f]
+        r.each do |row|
+          yield [row["sensor"],row["date"].to_i, row["value"].to_f]
         end
       end
     end
     
     private
     def db_range(function, sensor, from, to)
-      db_query "SELECT #{function}(value) AS average FROM sensor_reads
+      db_query "SELECT #{function}(value) AS func FROM sensor_reads
                        WHERE sensor = '#{db_quote(sensor.to_s)}' 
                          AND date >= #{from.to_s} 
                          AND date <= #{to.to_s}" do |r|
-        if r.num_rows == 0 
-          nil
+        row = r.first
+        if row && row["func"]
+          row["func"].to_f
         else
-          row = r.fetch_row
-          row[0] ? row[0].to_f : nil
+          nil
         end
       end
     end
 
     def db_quote(text)
-      Mysql.quote(text)
+      Mysql2::Client.escape(text)
     end
 
     def db_query(query, opts={})
       db = nil
       begin
         # connect to the MySQL server
-        db = Mysql.new(@dbopts['host'],@dbopts['user'],@dbopts['pass'],
-                       @dbopts['db'],@dbopts['port'],@dbopts['socket'],
-                       @dbopts['flags'])
+        db = Mysql2::Client.new(@dbopts)
         res = db.query(query)
         yield res if block_given?
-      rescue Mysql::Error => e
+      rescue Mysql2::Error => e
         $stderr.puts "MySQL Error #{e.errno}: #{e.error}" if !(e.errno == opts[:ignoreerr])
       ensure
         db.close if db

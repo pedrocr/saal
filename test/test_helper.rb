@@ -29,8 +29,7 @@ class Test::Unit::TestCase
   end
 
   def db_test_query(query)  
-    db = Mysql.new(TEST_DBOPTS['host'],TEST_DBOPTS['user'],
-                   TEST_DBOPTS['pass'],TEST_DBOPTS['db'])
+    db = Mysql2::Client.new(TEST_DBOPTS)
     res = db.query(query)
     yield res
     db.close

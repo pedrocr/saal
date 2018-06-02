@@ -1,4 +1,4 @@
 host: localhost
-user: sensor_reads
-pass: password
-db: sensor_reads_test
+username: sensor_reads
+password: password
+database: sensor_reads_test

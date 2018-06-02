@@ -67,11 +67,11 @@ class TestSensors < Test::Unit::TestCase
     end
 
     db_test_query("SELECT * FROM sensor_reads") do |res|
-      assert_equal 1, res.num_rows
-      row = res.fetch_row
-      assert_equal "fake_temp", row[0]
-      assert_in_delta Time.now.utc.to_i, row[1].to_i, 100
-      assert_instance_of Float, row[2].to_f
+      assert_equal 1, res.count
+      row = res.first
+      assert_equal "fake_temp", row["sensor"]
+      assert_in_delta Time.now.utc.to_i, row["date"].to_i, 100
+      assert_instance_of Float, row["value"].to_f
     end
   end  
 end

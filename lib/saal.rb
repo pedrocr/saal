@@ -1,5 +1,5 @@
 require 'yaml'
-require "mysql"
+require "mysql2"
 require 'ownet'
 require 'nokogiri'
 require 'erb'
