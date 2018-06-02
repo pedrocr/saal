@@ -42,6 +42,7 @@ module SAAL
         @cache_timeout = opts[:cache_timeout] || opts['cache_timeout'] || DEFAULT_CACHE_TIMEOUT
         @cache = nil
         @cachehit = nil
+        @cachetime = nil
       end
 
       def state(num)
