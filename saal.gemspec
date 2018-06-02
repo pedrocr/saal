@@ -28,9 +28,9 @@ EOF
 
   s.executables = Dir.glob("bin/*").map{|f| f.gsub('bin/','')}
 
-  s.add_dependency('ownet', [">= 0.2.1"])
-  s.add_dependency('nokogiri')
-  s.add_dependency('mysql')
+  s.add_runtime_dependency 'ownet', "~>0.2"
+  s.add_runtime_dependency 'mysql2', "~>0.5"
+  s.add_runtime_dependency 'nokogiri', '~>1.8'
 
   # = MANIFEST =
   s.files = %w[
