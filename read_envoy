@@ -1,0 +1,113 @@
+#!/usr/bin/env ruby
+
+require File.dirname(__FILE__)+'/lib/saal.rb'
+
+if ARGV.size != 1
+  $stderr.puts "USAGE: read_envoy <host>"
+  exit(1)
+end
+
+envoy = SAAL::Envoy::new("server" => ARGV[0])
+outputs = envoy.read_all
+if !outputs
+  exit 2
+end
+
+puts "VOLTAGES (net-consumption, total-consumption, production)"
+puts "Total: \
+#{'%10.0f' % outputs["consumption-net"]["rmsVoltage"]} \
+#{'%10.0f' %outputs["consumption-total"]["rmsVoltage"]} \
+#{'%10.0f' %outputs["production-total"]["rmsVoltage"]} \
+"
+puts "Line1: \
+#{'%10.0f' %outputs["consumption-net-phase1"]["rmsVoltage"]} \
+#{'%10.0f' %outputs["consumption-total-phase1"]["rmsVoltage"]} \
+#{'%10.0f' %outputs["production-phase1"]["rmsVoltage"]} \
+"
+puts "Line2: \
+#{'%10.0f' %outputs["consumption-net-phase2"]["rmsVoltage"]} \
+#{'%10.0f' %outputs["consumption-total-phase2"]["rmsVoltage"]} \
+#{'%10.0f' %outputs["production-phase2"]["rmsVoltage"]} \
+"
+puts "Line3: \
+#{'%10.0f' %outputs["consumption-net-phase3"]["rmsVoltage"]} \
+#{'%10.0f' %outputs["consumption-total-phase3"]["rmsVoltage"]} \
+#{'%10.0f' %outputs["production-phase3"]["rmsVoltage"]} \
+"
+
+puts ""
+puts "POWERS (net-consumption, total-consumption, production, diff)"
+puts "Total: \
+#{'%10.0f' %outputs["consumption-net"]["wNow"]} \
+#{'%10.0f' %outputs["consumption-total"]["wNow"]} \
+#{'%10.0f' %outputs["production-total"]["wNow"]} \
+#{'%10.0f' %(outputs["consumption-total"]["wNow"]-outputs["production-total"]["wNow"])} \
+"
+puts "Line1: \
+#{'%10.0f' %outputs["consumption-net-phase1"]["wNow"]} \
+#{'%10.0f' %outputs["consumption-total-phase1"]["wNow"]} \
+#{'%10.0f' %outputs["production-phase1"]["wNow"]} \
+#{'%10.0f' %(outputs["consumption-total-phase1"]["wNow"]-outputs["production-phase1"]["wNow"])} \
+"
+puts "Line2: \
+#{'%10.0f' %outputs["consumption-net-phase2"]["wNow"]} \
+#{'%10.0f' %outputs["consumption-total-phase2"]["wNow"]} \
+#{'%10.0f' %outputs["production-phase2"]["wNow"]} \
+#{'%10.0f' %(outputs["consumption-total-phase2"]["wNow"]-outputs["production-phase2"]["wNow"])} \
+"
+puts "Line3: \
+#{'%10.0f' %outputs["consumption-net-phase3"]["wNow"]} \
+#{'%10.0f' %outputs["consumption-total-phase3"]["wNow"]} \
+#{'%10.0f' %outputs["production-phase3"]["wNow"]} \
+#{'%10.0f' %(outputs["consumption-total-phase3"]["wNow"]-outputs["production-phase3"]["wNow"])} \
+"
+
+puts ""
+puts "ENERGIES (net-consumption, total-consumption, production, diff)"
+puts "Total: \
+#{'%10.0f' %outputs["consumption-net"]["whLifetime"]} \
+#{'%10.0f' %outputs["consumption-total"]["whLifetime"]} \
+#{'%10.0f' %outputs["production-total"]["whLifetime"]} \
+#{'%10.0f' %(outputs["consumption-total"]["whLifetime"]-outputs["production-total"]["whLifetime"])} \
+"
+puts "Line1: \
+#{'%10.0f' %outputs["consumption-net-phase1"]["whLifetime"]} \
+#{'%10.0f' %outputs["consumption-total-phase1"]["whLifetime"]} \
+#{'%10.0f' %outputs["production-phase1"]["whLifetime"]} \
+#{'%10.0f' %(outputs["consumption-total-phase1"]["whLifetime"]-outputs["production-phase1"]["whLifetime"])} \
+"
+puts "Line2: \
+#{'%10.0f' %outputs["consumption-net-phase2"]["whLifetime"]} \
+#{'%10.0f' %outputs["consumption-total-phase2"]["whLifetime"]} \
+#{'%10.0f' %outputs["production-phase2"]["whLifetime"]} \
+#{'%10.0f' %(outputs["consumption-total-phase2"]["whLifetime"]-outputs["production-phase2"]["whLifetime"])} \
+"
+puts "Line3: \
+#{'%10.0f' %outputs["consumption-net-phase3"]["whLifetime"]} \
+#{'%10.0f' %outputs["consumption-total-phase3"]["whLifetime"]} \
+#{'%10.0f' %outputs["production-phase3"]["whLifetime"]} \
+#{'%10.0f' %(outputs["consumption-total-phase3"]["whLifetime"]-outputs["production-phase3"]["whLifetime"])} \
+"
+
+puts ""
+puts "POWER FACTORS (net-consumption, total-consumption, production)"
+puts "Total: \
+#{'%10.2f' %outputs["consumption-net"]["pwrFactor"]} \
+#{'%10.2f' %outputs["consumption-total"]["pwrFactor"]} \
+#{'%10.2f' %outputs["production-total"]["pwrFactor"]} \
+"
+puts "Line1: \
+#{'%10.2f' %outputs["consumption-net-phase1"]["pwrFactor"]} \
+#{'%10.2f' %outputs["consumption-total-phase1"]["pwrFactor"]} \
+#{'%10.2f' %outputs["production-phase1"]["pwrFactor"]} \
+"
+puts "Line2: \
+#{'%10.2f' %outputs["consumption-net-phase2"]["pwrFactor"]} \
+#{'%10.2f' %outputs["consumption-total-phase2"]["pwrFactor"]} \
+#{'%10.2f' %outputs["production-phase2"]["pwrFactor"]} \
+"
+puts "Line3: \
+#{'%10.2f' %outputs["consumption-net-phase3"]["pwrFactor"]} \
+#{'%10.2f' %outputs["consumption-total-phase3"]["pwrFactor"]} \
+#{'%10.2f' %outputs["production-phase3"]["pwrFactor"]} \
+"
