@@ -1,21 +1,19 @@
 require 'json'
-require 'open-uri'
 
 module SAAL
   class Envoy
+    DEFAULT_TIMEOUT = 2
+
     def initialize(defs, opts={})
       @server = defs['server']
+      @timeout = opts[:timeout] || opts['timeout'] || DEFAULT_TIMEOUT
     end
   
     def read_production
-      begin
-        json = URI.open("http://#{@server}/production.json").read
-      rescue StandardError
-        $stderr.puts "ERROR: ENVOY: Couldn't connect to `#{@server}`"
-        return nil
-      end
+      response = SAAL::do_http_get(@server, 80, "/production.json", nil, nil, @timeout)
+      return nil if !response
 
-      values = JSON.parse(json)
+      values = JSON.parse(response.body)
       outputs = {}
 
       values["production"].each do |source|
@@ -51,14 +49,10 @@ module SAAL
     end
 
     def read_inverters
-      begin
-        json = URI.open("http://#{@server}/api/v1/production/inverters").read
-      rescue StandardError
-        $stderr.puts "ERROR: ENVOY: Couldn't connect to `#{@server}`"
-        return nil
-      end
+      response = SAAL::do_http_get(@server, 80, "/api/v1/production/inverters", nil, nil, @timeout)
+      return nil if !response
 
-      values = JSON.parse(json)
+      values = JSON.parse(response.body)
       inverters = {}
       values.each do |inverter|
         inverters[inverter["serialNumber"]] = inverter
