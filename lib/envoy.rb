@@ -7,7 +7,7 @@ module SAAL
       @server = defs['server']
     end
   
-    def read_all
+    def read_production
       begin
         json = URI.open("http://#{@server}/production.json").read
       rescue StandardError
@@ -48,6 +48,23 @@ module SAAL
       end
       
       outputs
+    end
+
+    def read_inverters
+      begin
+        json = URI.open("http://#{@server}/api/v1/production/inverters").read
+      rescue StandardError
+        $stderr.puts "ERROR: ENVOY: Couldn't connect to `#{@server}`"
+        return nil
+      end
+
+      values = JSON.parse(json)
+      inverters = {}
+      values.each do |inverter|
+        inverters[inverter["serialNumber"]] = inverter
+      end
+
+      inverters
     end
   end
 end

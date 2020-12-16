@@ -8,7 +8,7 @@ if ARGV.size != 1
 end
 
 envoy = SAAL::Envoy::new("server" => ARGV[0])
-outputs = envoy.read_all
+outputs = envoy.read_production
 if !outputs
   exit 2
 end
@@ -111,3 +111,14 @@ puts "Line3: \
 #{'%10.2f' %outputs["consumption-total-phase3"]["pwrFactor"]} \
 #{'%10.2f' %outputs["production-phase3"]["pwrFactor"]} \
 "
+
+inverters = envoy.read_inverters
+if !inverters
+  exit 2
+end
+
+puts ""
+
+inverters.each do |serial, data|
+  puts "INVERTER: #{serial} date:#{data["lastReportDate"]} lastWatts:#{data["lastReportWatts"]} maxWatts:#{data["maxReportWatts"]}"
+end
