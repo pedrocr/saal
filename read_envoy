@@ -7,118 +7,114 @@ if ARGV.size != 1
   exit(1)
 end
 
-envoy = SAAL::Envoy::new("server" => ARGV[0])
-outputs = envoy.read_production
-if !outputs
-  exit 2
-end
+production = SAAL::EnvoyProduction::new("server" => ARGV[0])
 
 puts "VOLTAGES (net-consumption, total-consumption, production)"
 puts "Total: \
-#{'%10.0f' % outputs["consumption-net"]["rmsVoltage"]} \
-#{'%10.0f' %outputs["consumption-total"]["rmsVoltage"]} \
-#{'%10.0f' %outputs["production-total"]["rmsVoltage"]} \
+#{'%10.0f' % production.read_val("consumption_net_rms_voltage")} \
+#{'%10.0f' % production.read_val("consumption_total_rms_voltage")} \
+#{'%10.0f' % production.read_val("production_total_rms_voltage")} \
 "
 puts "Line1: \
-#{'%10.0f' %outputs["consumption-net-phase1"]["rmsVoltage"]} \
-#{'%10.0f' %outputs["consumption-total-phase1"]["rmsVoltage"]} \
-#{'%10.0f' %outputs["production-phase1"]["rmsVoltage"]} \
+#{'%10.0f' % production.read_val("consumption_net_phase1_rms_voltage")} \
+#{'%10.0f' % production.read_val("consumption_total_phase1_rms_voltage")} \
+#{'%10.0f' % production.read_val("production_phase1_rms_voltage")} \
 "
 puts "Line2: \
-#{'%10.0f' %outputs["consumption-net-phase2"]["rmsVoltage"]} \
-#{'%10.0f' %outputs["consumption-total-phase2"]["rmsVoltage"]} \
-#{'%10.0f' %outputs["production-phase2"]["rmsVoltage"]} \
+#{'%10.0f' % production.read_val("consumption_net_phase2_rms_voltage")} \
+#{'%10.0f' % production.read_val("consumption_total_phase2_rms_voltage")} \
+#{'%10.0f' % production.read_val("production_phase2_rms_voltage")} \
 "
 puts "Line3: \
-#{'%10.0f' %outputs["consumption-net-phase3"]["rmsVoltage"]} \
-#{'%10.0f' %outputs["consumption-total-phase3"]["rmsVoltage"]} \
-#{'%10.0f' %outputs["production-phase3"]["rmsVoltage"]} \
+#{'%10.0f' % production.read_val("consumption_net_phase3_rms_voltage")} \
+#{'%10.0f' % production.read_val("consumption_total_phase3_rms_voltage")} \
+#{'%10.0f' % production.read_val("production_phase3_rms_voltage")} \
 "
 
 puts ""
 puts "POWERS (net-consumption, total-consumption, production, diff)"
 puts "Total: \
-#{'%10.0f' %outputs["consumption-net"]["wNow"]} \
-#{'%10.0f' %outputs["consumption-total"]["wNow"]} \
-#{'%10.0f' %outputs["production-total"]["wNow"]} \
-#{'%10.0f' %(outputs["consumption-total"]["wNow"]-outputs["production-total"]["wNow"])} \
+#{'%10.0f' % production.read_val("consumption_net_watts_now")} \
+#{'%10.0f' % production.read_val("consumption_total_watts_now")} \
+#{'%10.0f' % production.read_val("production_total_watts_now")} \
+#{'%10.0f' %(production.read_val("consumption_total_watts_now")-production.read_val("production_total_watts_now"))} \
 "
 puts "Line1: \
-#{'%10.0f' %outputs["consumption-net-phase1"]["wNow"]} \
-#{'%10.0f' %outputs["consumption-total-phase1"]["wNow"]} \
-#{'%10.0f' %outputs["production-phase1"]["wNow"]} \
-#{'%10.0f' %(outputs["consumption-total-phase1"]["wNow"]-outputs["production-phase1"]["wNow"])} \
+#{'%10.0f' % production.read_val("consumption_net_phase1_watts_now")} \
+#{'%10.0f' % production.read_val("consumption_total_phase1_watts_now")} \
+#{'%10.0f' % production.read_val("production_phase1_watts_now")} \
+#{'%10.0f' %(production.read_val("consumption_total_phase1_watts_now")-production.read_val("production_phase1_watts_now"))} \
 "
 puts "Line2: \
-#{'%10.0f' %outputs["consumption-net-phase2"]["wNow"]} \
-#{'%10.0f' %outputs["consumption-total-phase2"]["wNow"]} \
-#{'%10.0f' %outputs["production-phase2"]["wNow"]} \
-#{'%10.0f' %(outputs["consumption-total-phase2"]["wNow"]-outputs["production-phase2"]["wNow"])} \
+#{'%10.0f' % production.read_val("consumption_net_phase2_watts_now")} \
+#{'%10.0f' % production.read_val("consumption_total_phase2_watts_now")} \
+#{'%10.0f' % production.read_val("production_phase2_watts_now")} \
+#{'%10.0f' %(production.read_val("consumption_total_phase2_watts_now")-production.read_val("production_phase2_watts_now"))} \
 "
 puts "Line3: \
-#{'%10.0f' %outputs["consumption-net-phase3"]["wNow"]} \
-#{'%10.0f' %outputs["consumption-total-phase3"]["wNow"]} \
-#{'%10.0f' %outputs["production-phase3"]["wNow"]} \
-#{'%10.0f' %(outputs["consumption-total-phase3"]["wNow"]-outputs["production-phase3"]["wNow"])} \
+#{'%10.0f' % production.read_val("consumption_net_phase3_watts_now")} \
+#{'%10.0f' % production.read_val("consumption_total_phase3_watts_now")} \
+#{'%10.0f' % production.read_val("production_phase3_watts_now")} \
+#{'%10.0f' %(production.read_val("consumption_total_phase3_watts_now")-production.read_val("production_phase3_watts_now"))} \
 "
 
 puts ""
-puts "ENERGIES (net-consumption, total-consumption, production, diff)"
+puts "ENERGIES (net-consumption, total-consumption, production, diff, inverters)"
 puts "Total: \
-#{'%10.0f' %outputs["consumption-net"]["whLifetime"]} \
-#{'%10.0f' %outputs["consumption-total"]["whLifetime"]} \
-#{'%10.0f' %outputs["production-total"]["whLifetime"]} \
-#{'%10.0f' %(outputs["consumption-total"]["whLifetime"]-outputs["production-total"]["whLifetime"])} \
+#{'%10.0f' % production.read_val("consumption_net_watt_hours_lifetime")} \
+#{'%10.0f' % production.read_val("consumption_total_watt_hours_lifetime")} \
+#{'%10.0f' % production.read_val("production_total_watt_hours_lifetime")} \
+#{'%10.0f' %(production.read_val("consumption_total_watt_hours_lifetime")-production.read_val("production_total_watt_hours_lifetime"))} \
+#{'%10.0f' % production.read_val("production_inverters_watt_hours_lifetime")} \
 "
 puts "Line1: \
-#{'%10.0f' %outputs["consumption-net-phase1"]["whLifetime"]} \
-#{'%10.0f' %outputs["consumption-total-phase1"]["whLifetime"]} \
-#{'%10.0f' %outputs["production-phase1"]["whLifetime"]} \
-#{'%10.0f' %(outputs["consumption-total-phase1"]["whLifetime"]-outputs["production-phase1"]["whLifetime"])} \
+#{'%10.0f' % production.read_val("consumption_net_phase1_watt_hours_lifetime")} \
+#{'%10.0f' % production.read_val("consumption_total_phase1_watt_hours_lifetime")} \
+#{'%10.0f' % production.read_val("production_phase1_watt_hours_lifetime")} \
+#{'%10.0f' %(production.read_val("consumption_total_phase1_watt_hours_lifetime")-production.read_val("production_phase1_watt_hours_lifetime"))} \
 "
 puts "Line2: \
-#{'%10.0f' %outputs["consumption-net-phase2"]["whLifetime"]} \
-#{'%10.0f' %outputs["consumption-total-phase2"]["whLifetime"]} \
-#{'%10.0f' %outputs["production-phase2"]["whLifetime"]} \
-#{'%10.0f' %(outputs["consumption-total-phase2"]["whLifetime"]-outputs["production-phase2"]["whLifetime"])} \
+#{'%10.0f' % production.read_val("consumption_net_phase2_watt_hours_lifetime")} \
+#{'%10.0f' % production.read_val("consumption_total_phase2_watt_hours_lifetime")} \
+#{'%10.0f' % production.read_val("production_phase2_watt_hours_lifetime")} \
+#{'%10.0f' %(production.read_val("consumption_total_phase2_watt_hours_lifetime")-production.read_val("production_phase2_watt_hours_lifetime"))} \
 "
 puts "Line3: \
-#{'%10.0f' %outputs["consumption-net-phase3"]["whLifetime"]} \
-#{'%10.0f' %outputs["consumption-total-phase3"]["whLifetime"]} \
-#{'%10.0f' %outputs["production-phase3"]["whLifetime"]} \
-#{'%10.0f' %(outputs["consumption-total-phase3"]["whLifetime"]-outputs["production-phase3"]["whLifetime"])} \
+#{'%10.0f' % production.read_val("consumption_net_phase3_watt_hours_lifetime")} \
+#{'%10.0f' % production.read_val("consumption_total_phase3_watt_hours_lifetime")} \
+#{'%10.0f' % production.read_val("production_phase3_watt_hours_lifetime")} \
+#{'%10.0f' %(production.read_val("consumption_total_phase3_watt_hours_lifetime")-production.read_val("production_phase3_watt_hours_lifetime"))} \
 "
 
 puts ""
 puts "POWER FACTORS (net-consumption, total-consumption, production)"
 puts "Total: \
-#{'%10.2f' %outputs["consumption-net"]["pwrFactor"]} \
-#{'%10.2f' %outputs["consumption-total"]["pwrFactor"]} \
-#{'%10.2f' %outputs["production-total"]["pwrFactor"]} \
+#{'%10.2f' % production.read_val("consumption_net_power_factor")} \
+#{'%10.2f' % production.read_val("consumption_total_power_factor")} \
+#{'%10.2f' % production.read_val("production_total_power_factor")} \
 "
 puts "Line1: \
-#{'%10.2f' %outputs["consumption-net-phase1"]["pwrFactor"]} \
-#{'%10.2f' %outputs["consumption-total-phase1"]["pwrFactor"]} \
-#{'%10.2f' %outputs["production-phase1"]["pwrFactor"]} \
+#{'%10.2f' % production.read_val("consumption_net_phase1_power_factor")} \
+#{'%10.2f' % production.read_val("consumption_total_phase1_power_factor")} \
+#{'%10.2f' % production.read_val("production_phase1_power_factor")} \
 "
 puts "Line2: \
-#{'%10.2f' %outputs["consumption-net-phase2"]["pwrFactor"]} \
-#{'%10.2f' %outputs["consumption-total-phase2"]["pwrFactor"]} \
-#{'%10.2f' %outputs["production-phase2"]["pwrFactor"]} \
+#{'%10.2f' % production.read_val("consumption_net_phase2_power_factor")} \
+#{'%10.2f' % production.read_val("consumption_total_phase2_power_factor")} \
+#{'%10.2f' % production.read_val("production_phase2_power_factor")} \
 "
 puts "Line3: \
-#{'%10.2f' %outputs["consumption-net-phase3"]["pwrFactor"]} \
-#{'%10.2f' %outputs["consumption-total-phase3"]["pwrFactor"]} \
-#{'%10.2f' %outputs["production-phase3"]["pwrFactor"]} \
+#{'%10.2f' % production.read_val("consumption_net_phase3_power_factor")} \
+#{'%10.2f' % production.read_val("consumption_total_phase3_power_factor")} \
+#{'%10.2f' % production.read_val("production_phase3_power_factor")} \
 "
 
-inverters = envoy.read_inverters
-if !inverters
-  exit 2
-end
-
 puts ""
-
-inverters.each do |serial, data|
-  puts "INVERTER: #{serial} date:#{data["lastReportDate"]} lastWatts:#{data["lastReportWatts"]} maxWatts:#{data["maxReportWatts"]}"
+inverters = SAAL::EnvoyInverters::new("server" => ARGV[0])
+inverters.enumerate.each do |serial|
+  puts "INVERTER: #{serial} \
+date:#{inverters.read_val("inverter_#{serial}_last_report_date")} \
+lastWatts:#{inverters.read_val("inverter_#{serial}_watts_now")} \
+maxWatts:#{inverters.read_val("inverter_#{serial}_watts_max")} \
+"
 end
