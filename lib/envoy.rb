@@ -13,7 +13,7 @@ module SAAL
       end
     end
 
-    class Production
+    class Power
       DEFAULT_HOST = "envoy.local"
       DEFAULT_TIMEOUT = 2
       DEFAULT_CACHE_TIMEOUT = 50
@@ -24,7 +24,7 @@ module SAAL
         "consumption_total_phase1", "consumption_total_phase2", "consumption_total_phase3", "consumption_total",
       ]
       DEFAULT_TYPES = [
-        "rms_voltage", "watts_now", "watt_hours_lifetime", "power_factor",
+        "w_now", "wh_lifetime", "va_now", "vah_lifetime",
       ]
 
       def initialize(defs, opts={})
@@ -56,10 +56,11 @@ module SAAL
 
       private
       def save_vals(dest, name, source)
-        {"rmsVoltage" => "rms_voltage",
-         "wNow" => "watts_now",
-         "whLifetime" => "watt_hours_lifetime",
-         "pwrFactor" => "power_factor",
+        {
+         "wNow" => "w_now",
+         "apprntPwr" => "va_now",
+         "whLifetime" => "wh_lifetime",
+         "vahLifetime" => "vah_lifetime",
         }.each do |type, label|
           dest["#{name}_#{label}"] = source[type]
         end
