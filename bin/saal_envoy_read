@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
-require File.dirname(__FILE__)+'/lib/saal.rb'
+require File.dirname(__FILE__)+'/../lib/saal.rb'
 
 if ARGV.size != 1
-  $stderr.puts "USAGE: read_envoy <host>"
+  $stderr.puts "USAGE: saal_envoy_read <host>"
   exit(1)
 end
 
