@@ -31,152 +31,76 @@ def fdisp_dec(val)
   end
 end
 
-def fdisp_diff(val1, val2)
-  if val1 && val2
-    fdisp(val1 - val2)
-  else
-    "n/a"
-  end
-end
-
-def fdispk_diff(val1, val2)
-  if val1 && val2
-    fdispk((val1 - val2))
-  else
-    "n/a"
-  end
-end
-
 ac_quality = SAAL::Envoy::ACQuality::new(:host => ARGV[0]).create_sensors
 
-puts "AC QUALITY (voltage, frequency)"
-puts "Total: \
-#{fdisp_dec(ac_quality["total_voltage"].read)} \
-#{fdisp_dec(ac_quality["total_frequency"].read)} \
+puts " AC QUALITY"
+puts "        voltage (V)  freq (Hz)"
+def qual_line(vals,name, type)
+  puts " #{name} \
+#{fdisp_dec(vals["#{type}_voltage"].read)} \
+#{fdisp_dec(vals["#{type}_frequency"].read)} \
 "
-puts "Line1: \
-#{fdisp_dec(ac_quality["phase1_voltage"].read)} \
-#{fdisp_dec(ac_quality["phase1_frequency"].read)} \
-"
-puts "Line2: \
-#{fdisp_dec(ac_quality["phase2_voltage"].read)} \
-#{fdisp_dec(ac_quality["phase2_frequency"].read)} \
-"
-puts "Line3: \
-#{fdisp_dec(ac_quality["phase3_voltage"].read)} \
-#{fdisp_dec(ac_quality["phase3_frequency"].read)} \
-"
+end
+qual_line(ac_quality, "Total: ", "total")
+qual_line(ac_quality, "Phase1:", "phase1")
+qual_line(ac_quality, "Phase2:", "phase2")
+qual_line(ac_quality, "Phase3:", "phase3")
 
 production = SAAL::Envoy::PowerEnergy::new(:host => ARGV[0]).create_sensors
 
 puts ""
-puts "TRUE POWER (W) (net-consumption, total-consumption, production, diff)"
-puts "Total: \
-#{fdisp(production["consumption_net_w_now"].read)} \
-#{fdisp(production["consumption_total_w_now"].read)} \
-#{fdisp(production["production_w_now"].read)} \
-#{fdisp_diff(production["consumption_total_w_now"].read, production["production_w_now"].read)} \
+puts " TRUE POWER (W)"
+puts "        consumption production        net"
+def p_line(vals, name, type, metric)
+  puts " #{name} \
+#{fdisp(vals["consumption_total#{type}_#{metric}"].read)} \
+#{fdisp(vals["production#{type}_#{metric}"].read)} \
+#{fdisp(vals["consumption_net#{type}_#{metric}"].read)} \
 "
-puts "Line1: \
-#{fdisp(production["consumption_net_phase1_w_now"].read)} \
-#{fdisp(production["consumption_total_phase1_w_now"].read)} \
-#{fdisp(production["production_phase1_w_now"].read)} \
-#{fdisp_diff(production["consumption_total_phase1_w_now"].read, production["production_phase1_w_now"].read)} \
-"
-puts "Line2: \
-#{fdisp(production["consumption_net_phase2_w_now"].read)} \
-#{fdisp(production["consumption_total_phase2_w_now"].read)} \
-#{fdisp(production["production_phase2_w_now"].read)} \
-#{fdisp_diff(production["consumption_total_phase2_w_now"].read, production["production_phase2_w_now"].read)} \
-"
-puts "Line3: \
-#{fdisp(production["consumption_net_phase3_w_now"].read)} \
-#{fdisp(production["consumption_total_phase3_w_now"].read)} \
-#{fdisp(production["production_phase3_w_now"].read)} \
-#{fdisp_diff(production["consumption_total_phase3_w_now"].read, production["production_phase3_w_now"].read)} \
+end
+p_line(production, "Total: ", "", "w_now")
+p_line(production, "Phase1:", "_phase1", "w_now")
+p_line(production, "Phase2:", "_phase2", "w_now")
+p_line(production, "Phase3:", "_phase3", "w_now")
+puts " Total Inverters:   \
+#{fdisp(production["production_inverters_w_now"].read)} \
 "
 
-puts ""
-puts "APPARENT POWER (VA) (net-consumption, total-consumption, production, diff)"
-puts "Total: \
-#{fdisp(production["consumption_net_va_now"].read)} \
-#{fdisp(production["consumption_total_va_now"].read)} \
-#{fdisp(production["production_va_now"].read)} \
-#{fdisp_diff(production["consumption_total_va_now"].read, production["production_va_now"].read)} \
-"
-puts "Line1: \
-#{fdisp(production["consumption_net_phase1_va_now"].read)} \
-#{fdisp(production["consumption_total_phase1_va_now"].read)} \
-#{fdisp(production["production_phase1_va_now"].read)} \
-#{fdisp_diff(production["consumption_total_phase1_va_now"].read, production["production_phase1_va_now"].read)} \
-"
-puts "Line2: \
-#{fdisp(production["consumption_net_phase2_va_now"].read)} \
-#{fdisp(production["consumption_total_phase2_va_now"].read)} \
-#{fdisp(production["production_phase2_va_now"].read)} \
-#{fdisp_diff(production["consumption_total_phase2_va_now"].read, production["production_phase2_va_now"].read)} \
-"
-puts "Line3: \
-#{fdisp(production["consumption_net_phase3_va_now"].read)} \
-#{fdisp(production["consumption_total_phase3_va_now"].read)} \
-#{fdisp(production["production_phase3_va_now"].read)} \
-#{fdisp_diff(production["consumption_total_phase3_va_now"].read, production["production_phase3_va_now"].read)} \
-"
 
 puts ""
-puts "TRUE ENERGY (kWh) (net-consumption, total-consumption, production, diff, inverters)"
-puts "Total: \
-#{fdispk(production["consumption_net_wh_lifetime"].read)} \
-#{fdispk(production["consumption_total_wh_lifetime"].read)} \
-#{fdispk(production["production_wh_lifetime"].read)} \
-#{fdispk_diff(production["consumption_total_wh_lifetime"].read, production["production_wh_lifetime"].read)} \
+puts " APPARENT POWER (VA)"
+puts "        consumption production        net"
+p_line(production, "Total: ", "", "va_now")
+p_line(production, "Phase1:", "_phase1", "va_now")
+p_line(production, "Phase2:", "_phase2", "va_now")
+p_line(production, "Phase3:", "_phase3", "va_now")
+
+puts ""
+puts " TRUE ENERGY (kWh)"
+puts "        consumption production        net"
+def e_line(vals, name, type, metric)
+  puts " #{name} \
+#{fdispk(vals["consumption_total#{type}_#{metric}"].read)} \
+#{fdispk(vals["production#{type}_#{metric}"].read)} \
+#{fdispk(vals["consumption_net#{type}_#{metric}"].read)} \
+"
+end
+e_line(production, "Total: ", "", "wh_lifetime")
+e_line(production, "Phase1:", "_phase1", "wh_lifetime")
+e_line(production, "Phase2:", "_phase2", "wh_lifetime")
+e_line(production, "Phase3:", "_phase3", "wh_lifetime")
+puts " Total Inverters:              \
 #{fdispk(production["production_inverters_wh_lifetime"].read)} \
 "
-puts "Line1: \
-#{fdispk(production["consumption_net_phase1_wh_lifetime"].read)} \
-#{fdispk(production["consumption_total_phase1_wh_lifetime"].read)} \
-#{fdispk(production["production_phase1_wh_lifetime"].read)} \
-#{fdispk_diff(production["consumption_total_phase1_wh_lifetime"].read, production["production_phase1_wh_lifetime"].read)} \
-"
-puts "Line2: \
-#{fdispk(production["consumption_net_phase2_wh_lifetime"].read)} \
-#{fdispk(production["consumption_total_phase2_wh_lifetime"].read)} \
-#{fdispk(production["production_phase2_wh_lifetime"].read)} \
-#{fdispk_diff(production["consumption_total_phase2_wh_lifetime"].read, production["production_phase2_wh_lifetime"].read)} \
-"
-puts "Line3: \
-#{fdispk(production["consumption_net_phase3_wh_lifetime"].read)} \
-#{fdispk(production["consumption_total_phase3_wh_lifetime"].read)} \
-#{fdispk(production["production_phase3_wh_lifetime"].read)} \
-#{fdispk_diff(production["consumption_total_phase3_wh_lifetime"].read, production["production_phase3_wh_lifetime"].read)} \
-"
 
 puts ""
-puts "APPARENT ENERGY (kVAh) (net-consumption, total-consumption, production, diff)"
-puts "Total: \
-#{fdispk(production["consumption_net_vah_lifetime"].read)} \
-#{fdispk(production["consumption_total_vah_lifetime"].read)} \
-#{fdispk(production["production_vah_lifetime"].read)} \
-#{fdispk_diff(production["consumption_total_vah_lifetime"].read, production["production_vah_lifetime"].read)} \
-"
-puts "Line1: \
-#{fdispk(production["consumption_net_phase1_vah_lifetime"].read)} \
-#{fdispk(production["consumption_total_phase1_vah_lifetime"].read)} \
-#{fdispk(production["production_phase1_vah_lifetime"].read)} \
-#{fdispk_diff(production["consumption_total_phase1_vah_lifetime"].read, production["production_phase1_vah_lifetime"].read)} \
-"
-puts "Line2: \
-#{fdispk(production["consumption_net_phase2_vah_lifetime"].read)} \
-#{fdispk(production["consumption_total_phase2_vah_lifetime"].read)} \
-#{fdispk(production["production_phase2_vah_lifetime"].read)} \
-#{fdispk_diff(production["consumption_total_phase2_vah_lifetime"].read, production["production_phase2_vah_lifetime"].read)} \
-"
-puts "Line3: \
-#{fdispk(production["consumption_net_phase3_vah_lifetime"].read)} \
-#{fdispk(production["consumption_total_phase3_vah_lifetime"].read)} \
-#{fdispk(production["production_phase3_vah_lifetime"].read)} \
-#{fdispk_diff(production["consumption_total_phase3_vah_lifetime"].read, production["production_phase3_vah_lifetime"].read)} \
-"
+puts " APPARENT ENERGY (kVAh)"
+puts "        consumption production        net"
+e_line(production, "Total: ", "", "vah_lifetime")
+e_line(production, "Phase1:", "_phase1", "vah_lifetime")
+e_line(production, "Phase2:", "_phase2", "vah_lifetime")
+e_line(production, "Phase3:", "_phase3", "vah_lifetime")
+
 
 puts ""
 envoy = SAAL::Envoy::Inverters::new(
