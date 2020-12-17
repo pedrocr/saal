@@ -7,8 +7,6 @@ if ARGV.size != 3
   exit(1)
 end
 
-production = SAAL::Envoy::PowerEnergy::new(:host => ARGV[0]).create_sensors
-
 def fdisp(val)
   if val
     '%10.0f' % val
@@ -49,27 +47,27 @@ def fdispk_diff(val1, val2)
   end
 end
 
-#puts "VOLTAGES (net-consumption, total-consumption, production)"
-#puts "Total: \
-##{fdisp(production["consumption_net_rms_voltage"].read)} \
-##{fdisp(production["consumption_total_rms_voltage"].read)} \
-##{fdisp(production["production_rms_voltage"].read)} \
-#"
-#puts "Line1: \
-##{fdisp(production["consumption_net_phase1_rms_voltage"].read)} \
-##{fdisp(production["consumption_total_phase1_rms_voltage"].read)} \
-##{fdisp(production["production_phase1_rms_voltage"].read)} \
-#"
-#puts "Line2: \
-##{fdisp(production["consumption_net_phase2_rms_voltage"].read)} \
-##{fdisp(production["consumption_total_phase2_rms_voltage"].read)} \
-##{fdisp(production["production_phase2_rms_voltage"].read)} \
-#"
-#puts "Line3: \
-##{fdisp(production["consumption_net_phase3_rms_voltage"].read)} \
-##{fdisp(production["consumption_total_phase3_rms_voltage"].read)} \
-##{fdisp(production["production_phase3_rms_voltage"].read)} \
-#"
+ac_quality = SAAL::Envoy::ACQuality::new(:host => ARGV[0]).create_sensors
+
+puts "AC QUALITY (voltage, frequency)"
+puts "Total: \
+#{fdisp_dec(ac_quality["total_voltage"].read)} \
+#{fdisp_dec(ac_quality["total_frequency"].read)} \
+"
+puts "Line1: \
+#{fdisp_dec(ac_quality["phase1_voltage"].read)} \
+#{fdisp_dec(ac_quality["phase1_frequency"].read)} \
+"
+puts "Line2: \
+#{fdisp_dec(ac_quality["phase2_voltage"].read)} \
+#{fdisp_dec(ac_quality["phase2_frequency"].read)} \
+"
+puts "Line3: \
+#{fdisp_dec(ac_quality["phase3_voltage"].read)} \
+#{fdisp_dec(ac_quality["phase3_frequency"].read)} \
+"
+
+production = SAAL::Envoy::PowerEnergy::new(:host => ARGV[0]).create_sensors
 
 puts ""
 puts "TRUE POWER (W) (net-consumption, total-consumption, production, diff)"

@@ -108,6 +108,79 @@ module SAAL
       end
     end
 
+    class ACQualityUnderlying < SensorUnderlying
+      def initialize(key, production)
+        @key = key
+        @production = production
+      end
+
+      def read(uncached = false)
+        @production.read_val(@key)
+      end
+    end
+
+    class ACQuality
+      DEFAULT_HOST = "envoy.local"
+      DEFAULT_TIMEOUT = 2
+      DEFAULT_CACHE_TIMEOUT = 50
+      DEFAULT_SOURCES = ["total","phase1","phase2","phase3",]
+      DEFAULT_TYPES = ["frequency","voltage"]
+
+      def initialize(defs, opts={})
+        @host = defs[:host] || defs['host'] || DEFAULT_HOST
+        @timeout = opts[:timeout] || opts['timeout'] || DEFAULT_TIMEOUT
+        @cache_timeout = opts[:cache_timeout] || opts['cache_timeout'] || DEFAULT_CACHE_TIMEOUT
+        @cache = nil
+        @cachetime = nil
+        @sources = defs[:sources] || defs['source'] || DEFAULT_SOURCES
+        @types = defs[:types] || defs['types'] || DEFAULT_TYPES
+      end
+
+      def read_val(name)
+        if !@cachetime or @cachetime < Time.now - @cache_timeout
+          @cache = read_all()
+          @cachetime = Time.now
+        end
+        return @cache ? @cache[name] : nil
+      end
+
+      def create_sensors
+        sensors = {}
+        @sources.product(@types).each do |source, type|
+          key = "#{source}_#{type}"
+          sensors[key] = ACQualityUnderlying.new(key, self)
+        end
+        sensors
+      end
+
+      private
+      def save_vals(dest, name, source)
+        {
+         "voltage" => "voltage",
+         "freq" => "frequency",
+        }.each do |type, label|
+          dest["#{name}_#{label}"] = source[type]
+        end
+      end
+
+      def read_all
+        response = SAAL::do_http_get(@host, 80, "/ivp/meters/readings", nil, nil, @timeout)
+        return nil if !response
+
+        values = JSON.parse(response.body)
+        outputs = {}
+        source = values[0]
+        save_vals(outputs, "total", source)
+        if source["channels"]
+          save_vals(outputs, "phase1", source["channels"][0])
+          save_vals(outputs, "phase2", source["channels"][1])
+          save_vals(outputs, "phase3", source["channels"][2])
+        end
+
+        outputs
+      end
+    end
+
     class InverterUnderlying < SensorUnderlying
       def initialize(key, inverters)
         @key = key
