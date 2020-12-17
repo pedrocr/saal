@@ -64,6 +64,22 @@ module SAAL
         }.each do |type, label|
           dest["#{name}_#{label}"] = source[type]
         end
+
+        # Hack around the fact that apprntPwr is broken on the total consumption
+        # calculation for the three-phase sum at least
+        # In those cases it seems to be missing a divide by three, so when the
+        # calculation for voltage and current alone is close do the extra divide
+        va_now = dest["#{name}_va_now"]
+        if va_now && !name.include?("phase")
+          voltage = source["rmsVoltage"]
+          current = source["rmsCurrent"]
+          if voltage && current
+            va_alt = voltage * current
+            if ((va_alt / va_now) - 1.0).abs < 0.05
+              dest["#{name}_va_now"] = va_now / 3.0
+            end
+          end
+        end
       end
 
       def read_all
