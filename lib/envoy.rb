@@ -123,10 +123,14 @@ module SAAL
       DEFAULT_CACHE_TIMEOUT = 50
       DEFAULT_SOURCES = []
       DEFAULT_TYPES = ["last_report_date", "watts_now", "watts_max"]
+      DEFAULT_USER = nil
+      DEFAULT_PASSWORD = nil
       attr_reader :inverters
 
       def initialize(defs, opts={})
         @host = defs[:host] || defs['host'] || DEFAULT_HOST
+        @user = defs[:user] || defs['user'] || DEFAULT_USER
+        @password = defs[:password] || defs['password'] || DEFAULT_PASSWORD
         @timeout = opts[:timeout] || opts['timeout'] || DEFAULT_TIMEOUT
         @cache_timeout = opts[:cache_timeout] || opts['cache_timeout'] || DEFAULT_CACHE_TIMEOUT
         @cache = nil
@@ -164,7 +168,7 @@ module SAAL
 
       private
       def read_all
-        response = SAAL::do_http_get(@host, 80, "/api/v1/production/inverters", nil, nil, @timeout)
+        response = SAAL::do_http_get_digest(@host, 80, "/api/v1/production/inverters", @user, @password, @timeout)
         return nil if !response
 
         values = JSON.parse(response.body)

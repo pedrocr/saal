@@ -32,6 +32,7 @@ EOF
   s.add_runtime_dependency 'ownet', "~>0.2"
   s.add_runtime_dependency 'mysql2', "~>0.5"
   s.add_runtime_dependency 'nokogiri', '~>1.8'
+  s.add_runtime_dependency 'net-http-digest_auth', '~>1.4'
 
   # = MANIFEST =
   s.files = %w[

@@ -2,8 +2,8 @@
 
 require File.dirname(__FILE__)+'/../lib/saal.rb'
 
-if ARGV.size != 1
-  $stderr.puts "USAGE: saal_envoy_read <host>"
+if ARGV.size != 3
+  $stderr.puts "USAGE: saal_envoy_read <host> <user> <password>"
   exit(1)
 end
 
@@ -134,7 +134,11 @@ puts "Line3: \
 "
 
 puts ""
-envoy = SAAL::Envoy::Inverters::new(:host => ARGV[0])
+envoy = SAAL::Envoy::Inverters::new(
+  :host => ARGV[0],
+  :user => ARGV[1],
+  :password => ARGV[2],
+)
 envoy.set_all_inverters!
 inverters = envoy.create_sensors
 puts "Found #{envoy.inverters.size} inverters"
