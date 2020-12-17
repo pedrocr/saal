@@ -9,110 +9,135 @@ end
 
 production = SAAL::Envoy::Production::new(:host => ARGV[0]).create_sensors
 
+def fdisp(val)
+  if val
+    '%10.0f' % val
+  else
+    "n/a"
+  end
+end
+
+def fdisp_dec(val)
+  if val
+    '%10.2f' % val
+  else
+    "n/a"
+  end
+end
+
+def fdisp_diff(val1, val2)
+  if val1 && val2
+    fdisp(val1 - val2)
+  else
+    "n/a"
+  end
+end
+
 puts "VOLTAGES (net-consumption, total-consumption, production)"
 puts "Total: \
-#{'%10.0f' % production["consumption_net_rms_voltage"].read} \
-#{'%10.0f' % production["consumption_total_rms_voltage"].read} \
-#{'%10.0f' % production["production_rms_voltage"].read} \
+#{fdisp(production["consumption_net_rms_voltage"].read)} \
+#{fdisp(production["consumption_total_rms_voltage"].read)} \
+#{fdisp(production["production_rms_voltage"].read)} \
 "
 puts "Line1: \
-#{'%10.0f' % production["consumption_net_phase1_rms_voltage"].read} \
-#{'%10.0f' % production["consumption_total_phase1_rms_voltage"].read} \
-#{'%10.0f' % production["production_phase1_rms_voltage"].read} \
+#{fdisp(production["consumption_net_phase1_rms_voltage"].read)} \
+#{fdisp(production["consumption_total_phase1_rms_voltage"].read)} \
+#{fdisp(production["production_phase1_rms_voltage"].read)} \
 "
 puts "Line2: \
-#{'%10.0f' % production["consumption_net_phase2_rms_voltage"].read} \
-#{'%10.0f' % production["consumption_total_phase2_rms_voltage"].read} \
-#{'%10.0f' % production["production_phase2_rms_voltage"].read} \
+#{fdisp(production["consumption_net_phase2_rms_voltage"].read)} \
+#{fdisp(production["consumption_total_phase2_rms_voltage"].read)} \
+#{fdisp(production["production_phase2_rms_voltage"].read)} \
 "
 puts "Line3: \
-#{'%10.0f' % production["consumption_net_phase3_rms_voltage"].read} \
-#{'%10.0f' % production["consumption_total_phase3_rms_voltage"].read} \
-#{'%10.0f' % production["production_phase3_rms_voltage"].read} \
+#{fdisp(production["consumption_net_phase3_rms_voltage"].read)} \
+#{fdisp(production["consumption_total_phase3_rms_voltage"].read)} \
+#{fdisp(production["production_phase3_rms_voltage"].read)} \
 "
 
 puts ""
 puts "POWERS (net-consumption, total-consumption, production, diff)"
 puts "Total: \
-#{'%10.0f' % production["consumption_net_watts_now"].read} \
-#{'%10.0f' % production["consumption_total_watts_now"].read} \
-#{'%10.0f' % production["production_watts_now"].read} \
-#{'%10.0f' %(production["consumption_total_watts_now"].read - production["production_watts_now"].read)} \
+#{fdisp(production["consumption_net_watts_now"].read)} \
+#{fdisp(production["consumption_total_watts_now"].read)} \
+#{fdisp(production["production_watts_now"].read)} \
+#{fdisp_diff(production["consumption_total_watts_now"].read, production["production_watts_now"].read)} \
 "
 puts "Line1: \
-#{'%10.0f' % production["consumption_net_phase1_watts_now"].read} \
-#{'%10.0f' % production["consumption_total_phase1_watts_now"].read} \
-#{'%10.0f' % production["production_phase1_watts_now"].read} \
-#{'%10.0f' %(production["consumption_total_phase1_watts_now"].read-production["production_phase1_watts_now"].read)} \
+#{fdisp(production["consumption_net_phase1_watts_now"].read)} \
+#{fdisp(production["consumption_total_phase1_watts_now"].read)} \
+#{fdisp(production["production_phase1_watts_now"].read)} \
+#{fdisp_diff(production["consumption_total_phase1_watts_now"].read, production["production_phase1_watts_now"].read)} \
 "
 puts "Line2: \
-#{'%10.0f' % production["consumption_net_phase2_watts_now"].read} \
-#{'%10.0f' % production["consumption_total_phase2_watts_now"].read} \
-#{'%10.0f' % production["production_phase2_watts_now"].read} \
-#{'%10.0f' %(production["consumption_total_phase2_watts_now"].read - production["production_phase2_watts_now"].read)} \
+#{fdisp(production["consumption_net_phase2_watts_now"].read)} \
+#{fdisp(production["consumption_total_phase2_watts_now"].read)} \
+#{fdisp(production["production_phase2_watts_now"].read)} \
+#{fdisp_diff(production["consumption_total_phase2_watts_now"].read, production["production_phase2_watts_now"].read)} \
 "
 puts "Line3: \
-#{'%10.0f' % production["consumption_net_phase3_watts_now"].read} \
-#{'%10.0f' % production["consumption_total_phase3_watts_now"].read} \
-#{'%10.0f' % production["production_phase3_watts_now"].read} \
-#{'%10.0f' %(production["consumption_total_phase3_watts_now"].read - production["production_phase3_watts_now"].read)} \
+#{fdisp(production["consumption_net_phase3_watts_now"].read)} \
+#{fdisp(production["consumption_total_phase3_watts_now"].read)} \
+#{fdisp(production["production_phase3_watts_now"].read)} \
+#{fdisp_diff(production["consumption_total_phase3_watts_now"].read, production["production_phase3_watts_now"].read)} \
 "
 
 puts ""
 puts "ENERGIES (net-consumption, total-consumption, production, diff, inverters)"
 puts "Total: \
-#{'%10.0f' % production["consumption_net_watt_hours_lifetime"].read} \
-#{'%10.0f' % production["consumption_total_watt_hours_lifetime"].read} \
-#{'%10.0f' % production["production_watt_hours_lifetime"].read} \
-#{'%10.0f' %(production["consumption_total_watt_hours_lifetime"].read-production["production_watt_hours_lifetime"].read)} \
-#{'%10.0f' % production["production_inverters_watt_hours_lifetime"].read} \
+#{fdisp(production["consumption_net_watt_hours_lifetime"].read)} \
+#{fdisp(production["consumption_total_watt_hours_lifetime"].read)} \
+#{fdisp(production["production_watt_hours_lifetime"].read)} \
+#{fdisp_diff(production["consumption_total_watt_hours_lifetime"].read, production["production_watt_hours_lifetime"].read)} \
+#{fdisp(production["production_inverters_watt_hours_lifetime"].read)} \
 "
 puts "Line1: \
-#{'%10.0f' % production["consumption_net_phase1_watt_hours_lifetime"].read} \
-#{'%10.0f' % production["consumption_total_phase1_watt_hours_lifetime"].read} \
-#{'%10.0f' % production["production_phase1_watt_hours_lifetime"].read} \
-#{'%10.0f' %(production["consumption_total_phase1_watt_hours_lifetime"].read-production["production_phase1_watt_hours_lifetime"].read)} \
+#{fdisp(production["consumption_net_phase1_watt_hours_lifetime"].read)} \
+#{fdisp(production["consumption_total_phase1_watt_hours_lifetime"].read)} \
+#{fdisp(production["production_phase1_watt_hours_lifetime"].read)} \
+#{fdisp_diff(production["consumption_total_phase1_watt_hours_lifetime"].read, production["production_phase1_watt_hours_lifetime"].read)} \
 "
 puts "Line2: \
-#{'%10.0f' % production["consumption_net_phase2_watt_hours_lifetime"].read} \
-#{'%10.0f' % production["consumption_total_phase2_watt_hours_lifetime"].read} \
-#{'%10.0f' % production["production_phase2_watt_hours_lifetime"].read} \
-#{'%10.0f' %(production["consumption_total_phase2_watt_hours_lifetime"].read-production["production_phase2_watt_hours_lifetime"].read)} \
+#{fdisp(production["consumption_net_phase2_watt_hours_lifetime"].read)} \
+#{fdisp(production["consumption_total_phase2_watt_hours_lifetime"].read)} \
+#{fdisp(production["production_phase2_watt_hours_lifetime"].read)} \
+#{fdisp_diff(production["consumption_total_phase2_watt_hours_lifetime"].read, production["production_phase2_watt_hours_lifetime"].read)} \
 "
 puts "Line3: \
-#{'%10.0f' % production["consumption_net_phase3_watt_hours_lifetime"].read} \
-#{'%10.0f' % production["consumption_total_phase3_watt_hours_lifetime"].read} \
-#{'%10.0f' % production["production_phase3_watt_hours_lifetime"].read} \
-#{'%10.0f' %(production["consumption_total_phase3_watt_hours_lifetime"].read-production["production_phase3_watt_hours_lifetime"].read)} \
+#{fdisp(production["consumption_net_phase3_watt_hours_lifetime"].read)} \
+#{fdisp(production["consumption_total_phase3_watt_hours_lifetime"].read)} \
+#{fdisp(production["production_phase3_watt_hours_lifetime"].read)} \
+#{fdisp_diff(production["consumption_total_phase3_watt_hours_lifetime"].read, production["production_phase3_watt_hours_lifetime"].read)} \
 "
 
 puts ""
 puts "POWER FACTORS (net-consumption, total-consumption, production)"
 puts "Total: \
-#{'%10.2f' % production["consumption_net_power_factor"].read} \
-#{'%10.2f' % production["consumption_total_power_factor"].read} \
-#{'%10.2f' % production["production_power_factor"].read} \
+#{fdisp_dec(production["consumption_net_power_factor"].read)} \
+#{fdisp_dec(production["consumption_total_power_factor"].read)} \
+#{fdisp_dec(production["production_power_factor"].read)} \
 "
 puts "Line1: \
-#{'%10.2f' % production["consumption_net_phase1_power_factor"].read} \
-#{'%10.2f' % production["consumption_total_phase1_power_factor"].read} \
-#{'%10.2f' % production["production_phase1_power_factor"].read} \
+#{fdisp_dec(production["consumption_net_phase1_power_factor"].read)} \
+#{fdisp_dec(production["consumption_total_phase1_power_factor"].read)} \
+#{fdisp_dec(production["production_phase1_power_factor"].read)} \
 "
 puts "Line2: \
-#{'%10.2f' % production["consumption_net_phase2_power_factor"].read} \
-#{'%10.2f' % production["consumption_total_phase2_power_factor"].read} \
-#{'%10.2f' % production["production_phase2_power_factor"].read} \
+#{fdisp_dec(production["consumption_net_phase2_power_factor"].read)} \
+#{fdisp_dec(production["consumption_total_phase2_power_factor"].read)} \
+#{fdisp_dec(production["production_phase2_power_factor"].read)} \
 "
 puts "Line3: \
-#{'%10.2f' % production["consumption_net_phase3_power_factor"].read} \
-#{'%10.2f' % production["consumption_total_phase3_power_factor"].read} \
-#{'%10.2f' % production["production_phase3_power_factor"].read} \
+#{fdisp_dec(production["consumption_net_phase3_power_factor"].read)} \
+#{fdisp_dec(production["consumption_total_phase3_power_factor"].read)} \
+#{fdisp_dec(production["production_phase3_power_factor"].read)} \
 "
 
 puts ""
 envoy = SAAL::Envoy::Inverters::new(:host => ARGV[0])
 envoy.set_all_inverters!
 inverters = envoy.create_sensors
+puts "Found #{envoy.inverters.size} inverters"
 envoy.inverters.each do |serial|
   puts "INVERTER: #{serial} \
 date:#{inverters["inverter_#{serial}_last_report_date"].read} \

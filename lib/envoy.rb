@@ -78,9 +78,11 @@ module SAAL
           when "inverters"
             save_vals(outputs, "production_inverters", source)
           when "eim"
-            save_vals(outputs, "production_phase1", source["lines"][0])
-            save_vals(outputs, "production_phase2", source["lines"][1])
-            save_vals(outputs, "production_phase3", source["lines"][2])
+            if source["lines"]
+              save_vals(outputs, "production_phase1", source["lines"][0])
+              save_vals(outputs, "production_phase2", source["lines"][1])
+              save_vals(outputs, "production_phase3", source["lines"][2])
+            end
             save_vals(outputs, "production", source)
           else
             $stderr.puts "WARNING: ENVOY: don't know source type #{'%10.0f' %type}"
@@ -93,9 +95,11 @@ module SAAL
             "net-consumption" => "net",
           }[source["measurementType"]] || "unknown";
 
-          save_vals(outputs, "consumption_#{type}_phase1", source["lines"][0])
-          save_vals(outputs, "consumption_#{type}_phase2", source["lines"][1])
-          save_vals(outputs, "consumption_#{type}_phase3", source["lines"][2])
+          if source["lines"]
+            save_vals(outputs, "consumption_#{type}_phase1", source["lines"][0])
+            save_vals(outputs, "consumption_#{type}_phase2", source["lines"][1])
+            save_vals(outputs, "consumption_#{type}_phase3", source["lines"][2])
+          end
           save_vals(outputs, "consumption_#{type}", source)
         end
 
