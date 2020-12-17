@@ -154,13 +154,12 @@ puts "Line3: \
 "
 
 puts ""
-puts "APPARENT POWER CONSUMPTION (kVAh) (net-consumption, total-consumption, production, diff, inverters)"
+puts "APPARENT POWER CONSUMPTION (kVAh) (net-consumption, total-consumption, production, diff)"
 puts "Total: \
 #{fdispk(production["consumption_net_vah_lifetime"].read)} \
 #{fdispk(production["consumption_total_vah_lifetime"].read)} \
 #{fdispk(production["production_vah_lifetime"].read)} \
 #{fdispk_diff(production["consumption_total_vah_lifetime"].read, production["production_vah_lifetime"].read)} \
-#{fdispk(production["production_inverters_vah_lifetime"].read)} \
 "
 puts "Line1: \
 #{fdispk(production["consumption_net_phase1_vah_lifetime"].read)} \
