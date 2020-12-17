@@ -7,7 +7,7 @@ if ARGV.size != 3
   exit(1)
 end
 
-production = SAAL::Envoy::Power::new(:host => ARGV[0]).create_sensors
+production = SAAL::Envoy::PowerEnergy::new(:host => ARGV[0]).create_sensors
 
 def fdisp(val)
   if val
@@ -126,7 +126,7 @@ puts "Line3: \
 "
 
 puts ""
-puts "TRUE POWER CONSUMPTION (kWh) (net-consumption, total-consumption, production, diff, inverters)"
+puts "TRUE ENERGY (kWh) (net-consumption, total-consumption, production, diff, inverters)"
 puts "Total: \
 #{fdispk(production["consumption_net_wh_lifetime"].read)} \
 #{fdispk(production["consumption_total_wh_lifetime"].read)} \
@@ -154,7 +154,7 @@ puts "Line3: \
 "
 
 puts ""
-puts "APPARENT POWER CONSUMPTION (kVAh) (net-consumption, total-consumption, production, diff)"
+puts "APPARENT ENERGY (kVAh) (net-consumption, total-consumption, production, diff)"
 puts "Total: \
 #{fdispk(production["consumption_net_vah_lifetime"].read)} \
 #{fdispk(production["consumption_total_vah_lifetime"].read)} \

@@ -2,7 +2,7 @@ require 'json'
 
 module SAAL
   module Envoy
-    class ProductionUnderlying < SensorUnderlying
+    class PowerEnergyUnderlying < SensorUnderlying
       def initialize(key, production)
         @key = key
         @production = production
@@ -13,7 +13,7 @@ module SAAL
       end
     end
 
-    class Power
+    class PowerEnergy
       DEFAULT_HOST = "envoy.local"
       DEFAULT_TIMEOUT = 2
       DEFAULT_CACHE_TIMEOUT = 50
@@ -49,7 +49,7 @@ module SAAL
         sensors = {}
         @sources.product(@types).each do |source, type|
           key = "#{source}_#{type}"
-          sensors[key] = ProductionUnderlying.new(key, self)
+          sensors[key] = PowerEnergyUnderlying.new(key, self)
         end
         sensors
       end
