@@ -45,7 +45,7 @@ def SAAL::do_http_get_digest(host, port, path, user, pass, timeout)
       return nil
     end
     return response
-  rescue Exception => error
+  rescue Exception
     return nil
   end
 end

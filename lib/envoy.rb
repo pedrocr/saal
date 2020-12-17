@@ -85,7 +85,7 @@ module SAAL
             end
             save_vals(outputs, "production", source)
           else
-            $stderr.puts "WARNING: ENVOY: don't know source type #{'%10.0f' %type}"
+            $stderr.puts "WARNING: ENVOY: don't know source type #{type}"
           end
         end
 
