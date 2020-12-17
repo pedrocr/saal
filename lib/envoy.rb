@@ -66,7 +66,7 @@ module SAAL
       end
 
       def read_all
-        response = SAAL::do_http_get(@host, 80, "/production.json", nil, nil, @timeout)
+        response = SAAL::do_http_get(@host, 80, "/production.json?details=1", nil, nil, @timeout)
         return nil if !response
 
         values = JSON.parse(response.body)
