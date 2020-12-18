@@ -40,9 +40,23 @@ module SAAL
           defs.merge!('name' => outlet_descriptions[num])
           Sensor.new(dbstore, oname, DINRelay::Outlet.new(num.to_i, og), defs, opts)
         end
+      elsif defs['envoy_power_energy']
+        defs = defs['envoy_power_energy'].merge('prefix' => name)
+        pe = SAAL::Envoy::PowerEnergy::new(defs)
+        sensors = pe.create_sensors
+        return sensors.map do |name, underlying|
+          Sensor.new(dbstore, name, underlying, defs, opts)
+        end
+      elsif defs['envoy_ac_quality']
+        defs = defs['envoy_ac_quality'].merge('prefix' => name)
+        pe = SAAL::Envoy::ACQuality::new(defs)
+        sensors = pe.create_sensors
+        return sensors.map do |name, underlying|
+          Sensor.new(dbstore, name, underlying, defs, opts)
+        end
       else
-        raise UnknownSensorType, "Couldn't figure out a valid sensor type "
-                                 "from the configuration for #{name}"
+        p defs, name
+        raise UnknownSensorType, "Couldn't figure out a valid sensor type for #{name}"
       end
     end
   end
