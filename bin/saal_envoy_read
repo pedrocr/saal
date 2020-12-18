@@ -11,7 +11,7 @@ def fdisp(val)
   if val
     '%10.0f' % val
   else
-    "n/a"
+    "       n/a"
   end
 end
 
@@ -19,7 +19,7 @@ def fdispk(val)
   if val
     '%10.2f' % (val / 1000.0)
   else
-    "n/a"
+    "       n/a"
   end
 end
 
@@ -27,7 +27,7 @@ def fdisp_dec(val)
   if val
     '%10.2f' % val
   else
-    "n/a"
+    "       n/a"
   end
 end
 
