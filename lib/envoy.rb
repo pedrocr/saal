@@ -26,6 +26,7 @@ module SAAL
       DEFAULT_TYPES = [
         "w_now", "wh_lifetime", "va_now", "vah_lifetime",
       ]
+      DEFAULT_PREFIX = "pv"
 
       def initialize(defs, opts={})
         @host = defs[:host] || defs['host'] || DEFAULT_HOST
@@ -35,6 +36,7 @@ module SAAL
         @cachetime = nil
         @sources = defs[:sources] || defs['source'] || DEFAULT_SOURCES
         @types = defs[:types] || defs['types'] || DEFAULT_TYPES
+        @prefix = defs[:prefix] || defs['prefix'] || DEFAULT_PREFIX
       end
 
       def read_val(name)
@@ -48,7 +50,7 @@ module SAAL
       def create_sensors
         sensors = {}
         @sources.product(@types).each do |source, type|
-          key = "#{source}_#{type}"
+          key = "#{@prefix}_#{source}_#{type}"
           sensors[key] = PowerEnergyUnderlying.new(key, self)
         end
         sensors
@@ -62,21 +64,21 @@ module SAAL
          "whLifetime" => "wh_lifetime",
          "vahLifetime" => "vah_lifetime",
         }.each do |type, label|
-          dest["#{name}_#{label}"] = source[type]
+          dest["#{@prefix}_#{name}_#{label}"] = source[type]
         end
 
         # Hack around the fact that apprntPwr is broken on the total consumption
         # calculation for the three-phase sum at least
         # In those cases it seems to be missing a divide by three, so when the
         # calculation for voltage and current alone is close do the extra divide
-        va_now = dest["#{name}_va_now"]
+        va_now = dest["#{@prefix}_#{name}_va_now"]
         if va_now && !name.include?("phase")
           voltage = source["rmsVoltage"]
           current = source["rmsCurrent"]
           if voltage && current
             va_alt = voltage * current
             if ((va_alt / va_now) - 1.0).abs < 0.05
-              dest["#{name}_va_now"] = va_now / 3.0
+              dest["#{@prefix}_#{name}_va_now"] = va_now / 3.0
             end
           end
         end
@@ -141,6 +143,7 @@ module SAAL
       DEFAULT_CACHE_TIMEOUT = 50
       DEFAULT_SOURCES = ["total","phase1","phase2","phase3",]
       DEFAULT_TYPES = ["frequency","voltage"]
+      DEFAULT_PREFIX = "ac"
 
       def initialize(defs, opts={})
         @host = defs[:host] || defs['host'] || DEFAULT_HOST
@@ -150,6 +153,7 @@ module SAAL
         @cachetime = nil
         @sources = defs[:sources] || defs['source'] || DEFAULT_SOURCES
         @types = defs[:types] || defs['types'] || DEFAULT_TYPES
+        @prefix = defs[:prefix] || defs['prefix'] || DEFAULT_PREFIX
       end
 
       def read_val(name)
@@ -163,7 +167,7 @@ module SAAL
       def create_sensors
         sensors = {}
         @sources.product(@types).each do |source, type|
-          key = "#{source}_#{type}"
+          key = "#{@prefix}_#{source}_#{type}"
           sensors[key] = ACQualityUnderlying.new(key, self)
         end
         sensors
@@ -175,7 +179,7 @@ module SAAL
          "voltage" => "voltage",
          "freq" => "frequency",
         }.each do |type, label|
-          dest["#{name}_#{label}"] = source[type]
+          dest["#{@prefix}_#{name}_#{label}"] = source[type]
         end
       end
 

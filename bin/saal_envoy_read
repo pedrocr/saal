@@ -37,8 +37,8 @@ puts " ========= AC QUALITY ========"
 puts "        voltage (V)  freq (Hz)"
 def qual_line(vals,name, type)
   puts " #{name} \
-#{fdisp_dec(vals["#{type}_voltage"].read)} \
-#{fdisp_dec(vals["#{type}_frequency"].read)} \
+#{fdisp_dec(vals["ac_#{type}_voltage"].read)} \
+#{fdisp_dec(vals["ac_#{type}_frequency"].read)} \
 "
 end
 qual_line(ac_quality, "Total: ", "total")
@@ -53,9 +53,9 @@ puts " ============ TRUE POWER (W) ============"
 puts "        consumption production        net"
 def p_line(vals, name, type, metric)
   puts " #{name} \
-#{fdisp(vals["total_consumption_#{type}_#{metric}"].read)} \
-#{fdisp(vals["production_#{type}_#{metric}"].read)} \
-#{fdisp(vals["net_consumption_#{type}_#{metric}"].read)} \
+#{fdisp(vals["pv_total_consumption_#{type}_#{metric}"].read)} \
+#{fdisp(vals["pv_production_#{type}_#{metric}"].read)} \
+#{fdisp(vals["pv_net_consumption_#{type}_#{metric}"].read)} \
 "
 end
 p_line(production, "Total: ", "total", "w_now")
@@ -63,7 +63,7 @@ p_line(production, "Phase1:", "phase1", "w_now")
 p_line(production, "Phase2:", "phase2", "w_now")
 p_line(production, "Phase3:", "phase3", "w_now")
 puts " Total Inverters:   \
-#{fdisp(production["production_inverters_w_now"].read)} \
+#{fdisp(production["pv_production_inverters_w_now"].read)} \
 "
 
 
@@ -80,9 +80,9 @@ puts " ========== TRUE ENERGY (kWh) ==========="
 puts "        consumption production        net"
 def e_line(vals, name, type, metric)
   puts " #{name} \
-#{fdispk(vals["total_consumption_#{type}_#{metric}"].read)} \
-#{fdispk(vals["production_#{type}_#{metric}"].read)} \
-#{fdispk(vals["net_consumption_#{type}_#{metric}"].read)} \
+#{fdispk(vals["pv_total_consumption_#{type}_#{metric}"].read)} \
+#{fdispk(vals["pv_production_#{type}_#{metric}"].read)} \
+#{fdispk(vals["pv_net_consumption_#{type}_#{metric}"].read)} \
 "
 end
 e_line(production, "Total: ", "total", "wh_lifetime")
@@ -90,7 +90,7 @@ e_line(production, "Phase1:", "phase1", "wh_lifetime")
 e_line(production, "Phase2:", "phase2", "wh_lifetime")
 e_line(production, "Phase3:", "phase3", "wh_lifetime")
 puts " Total Inverters:              \
-#{fdispk(production["production_inverters_wh_lifetime"].read)} \
+#{fdispk(production["pv_production_inverters_wh_lifetime"].read)} \
 "
 
 puts ""
