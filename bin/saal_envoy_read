@@ -31,14 +31,33 @@ def fdisp_dec(val)
   end
 end
 
+def l(vals, name)
+  sensor = vals[name]
+  if sensor
+    sensor.read
+  else
+    nil
+  end
+end
+
+def lratio(vals, name1, name2)
+  v1 = l(vals, name1)
+  v2 = l(vals, name2)
+  if v1 && v2
+    v1 / v2
+  else
+    nil
+  end
+end
+
 ac_quality = SAAL::Envoy::ACQuality::new(:host => ARGV[0]).create_sensors
 
 puts " ========= AC QUALITY ========"
 puts "        voltage (V)  freq (Hz)"
 def qual_line(vals,name, type)
   puts " #{name} \
-#{fdisp_dec(vals["ac_#{type}_voltage"].read)} \
-#{fdisp_dec(vals["ac_#{type}_frequency"].read)} \
+#{fdisp_dec(l(vals,"ac_#{type}_voltage"))} \
+#{fdisp_dec(l(vals,"ac_#{type}_frequency"))} \
 "
 end
 qual_line(ac_quality, "Total: ", "total")
@@ -53,12 +72,12 @@ puts " ============ TRUE POWER (W) ============  ======= TRUE ENERGY (kWh) =====
 puts "        consumption production        net  consumption production        net"
 def p_line(vals, name, type, metric)
   puts " #{name} \
-#{fdisp(vals["pv_total_consumption_#{type}_#{metric}_now"].read)} \
-#{fdisp(vals["pv_production_#{type}_#{metric}_now"].read)} \
-#{fdisp(vals["pv_net_consumption_#{type}_#{metric}_now"].read)}   \
-#{fdispk(vals["pv_total_consumption_#{type}_#{metric}h_lifetime"].read)} \
-#{fdispk(vals["pv_production_#{type}_#{metric}h_lifetime"].read)} \
-#{fdispk(vals["pv_net_consumption_#{type}_#{metric}h_lifetime"].read)} \
+#{fdisp(l(vals,"pv_total_consumption_#{type}_#{metric}_now"))} \
+#{fdisp(l(vals,"pv_production_#{type}_#{metric}_now"))} \
+#{fdisp(l(vals,"pv_net_consumption_#{type}_#{metric}_now"))}   \
+#{fdispk(l(vals,"pv_total_consumption_#{type}_#{metric}h_lifetime"))} \
+#{fdispk(l(vals,"pv_production_#{type}_#{metric}h_lifetime"))} \
+#{fdispk(l(vals,"pv_net_consumption_#{type}_#{metric}h_lifetime"))} \
 "
 end
 p_line(production, "Total: ", "total", "w")
@@ -66,9 +85,9 @@ p_line(production, "Phase1:", "phase1", "w")
 p_line(production, "Phase2:", "phase2", "w")
 p_line(production, "Phase3:", "phase3", "w")
 puts " Total Inverters:   \
-#{fdisp(production["pv_production_inverters_w_now"].read)} \
+#{fdisp(l(production,"pv_production_inverters_w_now"))} \
                         \
-#{fdispk(production["pv_production_inverters_wh_lifetime"].read)} \
+#{fdispk(l(production,"pv_production_inverters_wh_lifetime"))} \
 "
 
 puts ""
@@ -80,13 +99,13 @@ p_line(production, "Phase2:", "phase2", "va")
 p_line(production, "Phase3:", "phase3", "va")
 
 def pf_line(vals, name, type, metric)
-  pf_total_consumption_instant = vals["pv_total_consumption_#{type}_w_now"].read / vals["pv_total_consumption_#{type}_va_now"].read
-  pf_total_production_instant = vals["pv_production_#{type}_w_now"].read / vals["pv_production_#{type}_va_now"].read
-  pf_net_production_instant = vals["pv_net_consumption_#{type}_w_now"].read / vals["pv_net_consumption_#{type}_va_now"].read
+  pf_total_consumption_instant = lratio(vals,"pv_total_consumption_#{type}_w_now","pv_total_consumption_#{type}_va_now")
+  pf_total_production_instant = lratio(vals,"pv_production_#{type}_w_now","pv_production_#{type}_va_now")
+  pf_net_production_instant = lratio(vals,"pv_net_consumption_#{type}_w_now","pv_net_consumption_#{type}_va_now")
 
-  pf_total_consumption_lifetime = vals["pv_total_consumption_#{type}_wh_lifetime"].read / vals["pv_total_consumption_#{type}_vah_lifetime"].read
-  pf_total_production_lifetime = vals["pv_production_#{type}_wh_lifetime"].read / vals["pv_production_#{type}_vah_lifetime"].read
-  pf_net_production_lifetime = vals["pv_net_consumption_#{type}_wh_lifetime"].read / vals["pv_net_consumption_#{type}_vah_lifetime"].read
+  pf_total_consumption_lifetime = lratio(vals,"pv_total_consumption_#{type}_wh_lifetime","pv_total_consumption_#{type}_vah_lifetime")
+  pf_total_production_lifetime = lratio(vals,"pv_production_#{type}_wh_lifetime","pv_production_#{type}_vah_lifetime")
+  pf_net_production_lifetime = lratio(vals,"pv_net_consumption_#{type}_wh_lifetime","pv_net_consumption_#{type}_vah_lifetime")
 
   puts " #{name} \
 #{fdisp_dec(pf_total_consumption_instant)} \
@@ -117,8 +136,8 @@ inverters = envoy.create_sensors
 puts "Found #{envoy.inverters.size} inverters"
 envoy.inverters.each do |serial|
   puts "INVERTER: #{serial} \
-date:#{inverters["inverter_#{serial}_last_report_date"].read} \
-lastWatts:#{inverters["inverter_#{serial}_w_now"].read} \
-maxWatts:#{inverters["inverter_#{serial}_w_max"].read} \
+date:#{l(inverters,"inverter_#{serial}_last_report_date")} \
+lastWatts:#{l(inverters,"inverter_#{serial}_w_now")} \
+maxWatts:#{l(inverters,"inverter_#{serial}_w_max")} \
 "
 end
