@@ -19,9 +19,9 @@ module SAAL
       DEFAULT_CACHE_TIMEOUT = 50
       DEFAULT_SOURCES = [
         "production_inverters",
-        "production_phase1", "production_phase2", "production_phase3", "production",
-        "consumption_net_phase1", "consumption_net_phase2", "consumption_net_phase3", "consumption_net",
-        "consumption_total_phase1", "consumption_total_phase2", "consumption_total_phase3", "consumption_total",
+        "production_phase1", "production_phase2", "production_phase3", "production_total",
+        "net_consumption_phase1", "net_consumption_phase2", "net_consumption_phase3", "net_consumption_total",
+        "total_consumption_phase1", "total_consumption_phase2", "total_consumption_phase3", "total_consumption_total",
       ]
       DEFAULT_TYPES = [
         "w_now", "wh_lifetime", "va_now", "vah_lifetime",
@@ -100,7 +100,7 @@ module SAAL
               save_vals(outputs, "production_phase2", source["lines"][1])
               save_vals(outputs, "production_phase3", source["lines"][2])
             end
-            save_vals(outputs, "production", source)
+            save_vals(outputs, "production_total", source)
           else
             $stderr.puts "WARNING: ENVOY: don't know source type #{type}"
           end
@@ -113,11 +113,11 @@ module SAAL
           }[source["measurementType"]] || "unknown";
 
           if source["lines"]
-            save_vals(outputs, "consumption_#{type}_phase1", source["lines"][0])
-            save_vals(outputs, "consumption_#{type}_phase2", source["lines"][1])
-            save_vals(outputs, "consumption_#{type}_phase3", source["lines"][2])
+            save_vals(outputs, "#{type}_consumption_phase1", source["lines"][0])
+            save_vals(outputs, "#{type}_consumption_phase2", source["lines"][1])
+            save_vals(outputs, "#{type}_consumption_phase3", source["lines"][2])
           end
-          save_vals(outputs, "consumption_#{type}", source)
+          save_vals(outputs, "#{type}_consumption_total", source)
         end
 
         outputs

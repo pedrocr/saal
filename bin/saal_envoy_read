@@ -53,15 +53,15 @@ puts " ============ TRUE POWER (W) ============"
 puts "        consumption production        net"
 def p_line(vals, name, type, metric)
   puts " #{name} \
-#{fdisp(vals["consumption_total#{type}_#{metric}"].read)} \
-#{fdisp(vals["production#{type}_#{metric}"].read)} \
-#{fdisp(vals["consumption_net#{type}_#{metric}"].read)} \
+#{fdisp(vals["total_consumption_#{type}_#{metric}"].read)} \
+#{fdisp(vals["production_#{type}_#{metric}"].read)} \
+#{fdisp(vals["net_consumption_#{type}_#{metric}"].read)} \
 "
 end
-p_line(production, "Total: ", "", "w_now")
-p_line(production, "Phase1:", "_phase1", "w_now")
-p_line(production, "Phase2:", "_phase2", "w_now")
-p_line(production, "Phase3:", "_phase3", "w_now")
+p_line(production, "Total: ", "total", "w_now")
+p_line(production, "Phase1:", "phase1", "w_now")
+p_line(production, "Phase2:", "phase2", "w_now")
+p_line(production, "Phase3:", "phase3", "w_now")
 puts " Total Inverters:   \
 #{fdisp(production["production_inverters_w_now"].read)} \
 "
@@ -70,25 +70,25 @@ puts " Total Inverters:   \
 puts ""
 puts " ========== APPARENT POWER (VA) ========="
 puts "        consumption production        net"
-p_line(production, "Total: ", "", "va_now")
-p_line(production, "Phase1:", "_phase1", "va_now")
-p_line(production, "Phase2:", "_phase2", "va_now")
-p_line(production, "Phase3:", "_phase3", "va_now")
+p_line(production, "Total: ", "total", "va_now")
+p_line(production, "Phase1:", "phase1", "va_now")
+p_line(production, "Phase2:", "phase2", "va_now")
+p_line(production, "Phase3:", "phase3", "va_now")
 
 puts ""
 puts " ========== TRUE ENERGY (kWh) ==========="
 puts "        consumption production        net"
 def e_line(vals, name, type, metric)
   puts " #{name} \
-#{fdispk(vals["consumption_total#{type}_#{metric}"].read)} \
-#{fdispk(vals["production#{type}_#{metric}"].read)} \
-#{fdispk(vals["consumption_net#{type}_#{metric}"].read)} \
+#{fdispk(vals["total_consumption_#{type}_#{metric}"].read)} \
+#{fdispk(vals["production_#{type}_#{metric}"].read)} \
+#{fdispk(vals["net_consumption_#{type}_#{metric}"].read)} \
 "
 end
-e_line(production, "Total: ", "", "wh_lifetime")
-e_line(production, "Phase1:", "_phase1", "wh_lifetime")
-e_line(production, "Phase2:", "_phase2", "wh_lifetime")
-e_line(production, "Phase3:", "_phase3", "wh_lifetime")
+e_line(production, "Total: ", "total", "wh_lifetime")
+e_line(production, "Phase1:", "phase1", "wh_lifetime")
+e_line(production, "Phase2:", "phase2", "wh_lifetime")
+e_line(production, "Phase3:", "phase3", "wh_lifetime")
 puts " Total Inverters:              \
 #{fdispk(production["production_inverters_wh_lifetime"].read)} \
 "
@@ -96,10 +96,10 @@ puts " Total Inverters:              \
 puts ""
 puts " ======== APPARENT ENERGY (kVAh) ========"
 puts "        consumption production        net"
-e_line(production, "Total: ", "", "vah_lifetime")
-e_line(production, "Phase1:", "_phase1", "vah_lifetime")
-e_line(production, "Phase2:", "_phase2", "vah_lifetime")
-e_line(production, "Phase3:", "_phase3", "vah_lifetime")
+e_line(production, "Total: ", "total", "vah_lifetime")
+e_line(production, "Phase1:", "phase1", "vah_lifetime")
+e_line(production, "Phase2:", "phase2", "vah_lifetime")
+e_line(production, "Phase3:", "phase3", "vah_lifetime")
 
 
 puts ""
