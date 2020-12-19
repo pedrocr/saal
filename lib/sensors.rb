@@ -55,7 +55,6 @@ module SAAL
           Sensor.new(dbstore, name, underlying, defs, opts)
         end
       else
-        p defs, name
         raise UnknownSensorType, "Couldn't figure out a valid sensor type for #{name}"
       end
     end
