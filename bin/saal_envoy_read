@@ -133,9 +133,9 @@ envoy = SAAL::Envoy::Inverters::new(
 )
 envoy.set_all_inverters!
 inverters = envoy.create_sensors
-puts "Found #{envoy.inverters.size} inverters"
+puts " Found #{envoy.inverters.size} inverters"
 envoy.inverters.each do |serial|
-  puts "INVERTER: #{serial} \
+  puts " INVERTER: #{serial} \
 date:#{l(inverters,"inverter_#{serial}_last_report_date")} \
 lastWatts:#{l(inverters,"inverter_#{serial}_w_now")} \
 maxWatts:#{l(inverters,"inverter_#{serial}_w_max")} \

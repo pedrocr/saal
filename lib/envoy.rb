@@ -216,7 +216,7 @@ module SAAL
       DEFAULT_TIMEOUT = 2
       DEFAULT_CACHE_TIMEOUT = 50
       DEFAULT_SOURCES = []
-      DEFAULT_TYPES = ["last_report_date", "watts_now", "watts_max"]
+      DEFAULT_TYPES = ["last_report_date", "w_now", "w_max"]
       DEFAULT_USER = nil
       DEFAULT_PASSWORD = nil
       attr_reader :inverters
@@ -268,12 +268,13 @@ module SAAL
         values = JSON.parse(response.body)
         inverters = {}
         values.each do |inverter|
+          serial = inverter["serialNumber"]
+          @inverters_list[serial] = true
           {"lastReportDate" => "last_report_date",
-           "lastReportWatts" => "watts_now",
-           "maxReportWatts" => "watts_max",
+           "lastReportWatts" => "w_now",
+           "maxReportWatts" => "w_max",
           }.each do |type, label|
-            inverters["inverter_#{inverter["serialNumber"]}_#{label}"] = inverter[type]
-            @inverters_list[inverter["serialNumber"]] = true
+            inverters["inverter_#{serial}_#{label}"] = inverter[type]
           end
         end
 
