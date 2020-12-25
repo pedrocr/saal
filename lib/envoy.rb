@@ -216,7 +216,7 @@ module SAAL
       DEFAULT_TIMEOUT = 2
       DEFAULT_CACHE_TIMEOUT = 50
       DEFAULT_SOURCES = []
-      DEFAULT_TYPES = ["last_report_date", "w_now", "w_max"]
+      DEFAULT_TYPES = ["w_now"] # "last_report_date", "w_max"
       DEFAULT_USER = nil
       DEFAULT_PASSWORD = nil
       attr_reader :inverters

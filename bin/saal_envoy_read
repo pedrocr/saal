@@ -130,6 +130,7 @@ envoy = SAAL::Envoy::Inverters::new(
   :host => ARGV[0],
   :user => ARGV[1],
   :password => ARGV[2],
+  :types => ["w_now", "last_report_date", "w_max"],
 )
 envoy.set_all_inverters!
 inverters = envoy.create_sensors
