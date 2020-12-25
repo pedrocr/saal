@@ -62,7 +62,7 @@ module SAAL
           Sensor.new(dbstore, name, underlying, defs, opts)
         end
       else
-        raise UnknownSensorType, "Couldn't figure out a valid sensor type for #{name}"
+        $stderror.puts "WARNING: Couldn't figure out a valid sensor type for #{name}"
       end
     end
   end
