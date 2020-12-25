@@ -219,6 +219,7 @@ module SAAL
       DEFAULT_TYPES = ["w_now"] # "last_report_date", "w_max"
       DEFAULT_USER = nil
       DEFAULT_PASSWORD = nil
+      DEFAULT_PREFIX = "inverters"
       attr_reader :inverters
 
       def initialize(defs, opts={})
@@ -232,6 +233,7 @@ module SAAL
         @inverters_list = {}
         @inverters = defs[:inverters] || defs['inverters'] || DEFAULT_SOURCES
         @types = defs[:types] || defs['types'] || DEFAULT_TYPES
+        @prefix = defs[:prefix] || defs['prefix'] || DEFAULT_PREFIX
       end
 
       def read_val(name)
@@ -254,7 +256,7 @@ module SAAL
       def create_sensors
         sensors = {}
         @inverters.product(@types).each do |source, type|
-          key = "inverter_#{source}_#{type}"
+          key = "#{@prefix}_#{source}_#{type}"
           sensors[key] = InverterUnderlying.new(key, self)
         end
         sensors
@@ -274,7 +276,7 @@ module SAAL
            "lastReportWatts" => "w_now",
            "maxReportWatts" => "w_max",
           }.each do |type, label|
-            inverters["inverter_#{serial}_#{label}"] = inverter[type]
+            inverters["#{@prefix}_#{serial}_#{label}"] = inverter[type]
           end
         end
 

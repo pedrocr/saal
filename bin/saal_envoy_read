@@ -137,8 +137,8 @@ inverters = envoy.create_sensors
 puts " Found #{envoy.inverters.size} inverters"
 envoy.inverters.each do |serial|
   puts " INVERTER: #{serial} \
-date:#{l(inverters,"inverter_#{serial}_last_report_date")} \
-lastWatts:#{l(inverters,"inverter_#{serial}_w_now")} \
-maxWatts:#{l(inverters,"inverter_#{serial}_w_max")} \
+date:#{l(inverters,"inverters_#{serial}_last_report_date")} \
+lastWatts:#{l(inverters,"inverters_#{serial}_w_now")} \
+maxWatts:#{l(inverters,"inverters_#{serial}_w_max")} \
 "
 end

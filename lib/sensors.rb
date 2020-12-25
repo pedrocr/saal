@@ -54,6 +54,13 @@ module SAAL
         return sensors.map do |name, underlying|
           Sensor.new(dbstore, name, underlying, defs, opts)
         end
+      elsif defs['envoy_inverters']
+        defs = defs['envoy_inverters'].merge('prefix' => name)
+        pe = SAAL::Envoy::Inverters::new(defs)
+        sensors = pe.create_sensors
+        return sensors.map do |name, underlying|
+          Sensor.new(dbstore, name, underlying, defs, opts)
+        end
       else
         raise UnknownSensorType, "Couldn't figure out a valid sensor type for #{name}"
       end
