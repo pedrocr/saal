@@ -1,0 +1,39 @@
+group1:
+  denkovi:
+    host: localhost
+    port: 33333
+    pass: somepass
+    outlets:
+      1: name01
+      2: name02
+      3: name03
+      4: name04
+      5: name05
+      6: name06
+      7: name07
+      8: name08
+      9: name09
+      10: name10
+      11: name11
+      12: name12
+      13: name13
+      14: name14
+      15: name15
+      16: name16
+    descriptions:
+      1: description01
+      2: description02
+      3: description03
+      4: description04
+      5: description05
+      6: description06
+      7: description07
+      8: description08
+      9: description09
+      10: description10
+      11: description11
+      12: description12
+      13: description13
+      14: description14
+      15: description15
+      16: description16

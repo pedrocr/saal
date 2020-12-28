@@ -61,6 +61,15 @@ module SAAL
         return sensors.map do |name, underlying|
           Sensor.new(dbstore, name, underlying, defs, opts)
         end
+      elsif defs['denkovi']
+        defs = defs['denkovi'].merge('prefix' => name)
+        denkovi = SAAL::Denkovi::OutletGroup::new(defs)
+        sensors = denkovi.create_sensors
+        return sensors.map do |name, vals|
+          underlying, description = vals
+          defs.merge!('name' => description)
+          Sensor.new(dbstore, name, underlying, defs, opts)
+        end
       else
         $stderror.puts "WARNING: Couldn't figure out a valid sensor type for #{name}"
       end

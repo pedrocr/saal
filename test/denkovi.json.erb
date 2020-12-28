@@ -1,0 +1,39 @@
+{
+
+  "CurrentState": {
+
+    "Output": [
+
+<% (1..16).each do |num| %>
+<% state = outlets[num] %>
+<% val = state == "ON" ? "1" : "0" %>
+<% if num < 16 %>
+      {"Name": "RELAY<%= num %>", "Value": "<%= val %>"},
+<% else %>
+      {"Name": "RELAY<%= num %>", "Value": "<%= val %>"}
+<% end %>
+<% end %>
+
+    ],
+
+    "Auto-reboot": {
+
+      "RebootsNumber": "0",
+
+      "LastReboot": "-"
+
+    },
+
+    "Device": {
+
+      "Name": "SMARTDEN_IP-16R",
+
+      "MAC": "E8:EA:DA:AA:AA:AA"
+
+    }
+
+  }
+
+}
+
+

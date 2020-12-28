@@ -20,7 +20,7 @@ module SAAL
       end
 
       def write(value)
-        newstate = {1.0 => '1', 0.0 => '0'}[value]
+        newstate = {1.0 => 'ON', 0.0 => 'OFF'}[value]
         if newstate
           @og.set_state(@num,newstate)
           value
@@ -31,6 +31,8 @@ module SAAL
     class OutletGroup
       DEFAULT_TIMEOUT = 2
       DEFAULT_CACHE_TIMEOUT = 60
+      DEFAULT_OUTLETS = {}
+      DEFAULT_DESCRIPTIONS = {}
 
       attr_accessor :host, :port, :pass, :timeout, :cache_timeout
 
@@ -40,6 +42,8 @@ module SAAL
         @pass = opts[:pass] || opts['pass'] || 'admin'
         @timeout = opts[:timeout] || opts['timeout'] || DEFAULT_TIMEOUT
         @cache_timeout = opts[:cache_timeout] || opts['cache_timeout'] || DEFAULT_CACHE_TIMEOUT
+        @outlets = opts[:outlets] || opts["outlets"] || DEFAULT_OUTLETS
+        @descriptions = opts[:descriptions] || opts["descriptions"] || DEFAULT_DESCRIPTIONS
         @cache = nil
         @cachehit = nil
         @cachetime = nil
@@ -59,7 +63,7 @@ module SAAL
            json["CurrentState"]["Output"][num] &&
            json["CurrentState"]["Output"][num]["Value"]
            val = json["CurrentState"]["Output"][num]["Value"]
-           {"1" => 1.0, "0" => 0.0}[val]
+           {"1" => "ON", "0" => "OFF"}[val]
         else
           nil
         end
@@ -67,13 +71,25 @@ module SAAL
 
       def set_state(num, state)
         @cachetime = nil
-        val = {1.0 => "1", 0.0 => "0"}[state]
+        val = {"ON" => "1", "OFF" => "0"}[state]
         if val
           response = do_get("/current_state.json?pw=#{@pass}&Relay#{num}=#{val}")
           response != nil
         else
           false
         end
+      end
+
+      def create_sensors
+        sensors = {}
+        (1..16).each do |num|
+          name = @outlets[num]
+          if name
+            description = @descriptions[num] || ""
+            sensors[name] = [Outlet.new(num, self), description]
+          end
+        end
+        sensors
       end
 
       private

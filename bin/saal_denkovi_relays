@@ -18,18 +18,17 @@ denkovi = SAAL::Denkovi::OutletGroup::new(
 
 if ARGV.size == 3
   num = ARGV[1].to_i
-  state = {"ON" => 1.0, "OFF" => 0.0}[ARGV[2]]
-  if !state
-    $stderr.puts "ERROR: Unknown state '#{ARGV[2]}'"
+  newstate = ARGV[2]
+  if !["ON","OFF"].include? newstate
+    $stderr.puts "ERROR: Unknown state '#{newstate}'"
     usage()
     exit(1)
   end
-  puts "Setting Relay #{num} to #{ARGV[2]}"
-  denkovi.set_state(num, state)
+  puts "Setting Relay #{num} to #{newstate}"
+  denkovi.set_state(num, newstate)
 end
 
 (1..16).each do |num|
-  state = {1.0 => "ON", 0.0 => "OFF"}[denkovi.state(num)] || "UNKNOWN"
-  puts "Relay #{num} is #{state}"
+  puts "Relay #{num} is #{denkovi.state(num)}"
 end
 
