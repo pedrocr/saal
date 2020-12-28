@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
 
   s.name              = 'saal'
-  s.version           = '0.3.2'
-  s.date              = '2020-12-25'
+  s.version           = '0.3.3'
+  s.date              = '2020-12-28'
 
   s.summary     = "Thin abstraction layer for interfacing and recording sensors (currently onewire) and actuators (currently dinrelay)"
   s.description = <<EOF
@@ -45,6 +45,7 @@ EOF
     bin/dinrelaystatus
     bin/saal_chart
     bin/saal_daemon
+    bin/saal_denkovi_relays
     bin/saal_dump_database
     bin/saal_envoy_generate_config
     bin/saal_envoy_read
@@ -55,6 +56,7 @@ EOF
     lib/charts.rb
     lib/daemon.rb
     lib/dbstore.rb
+    lib/denkovi.rb
     lib/dinrelay.rb
     lib/envoy.rb
     lib/http.rb
@@ -69,6 +71,8 @@ EOF
     test/charts_test.rb
     test/daemon_test.rb
     test/dbstore_test.rb
+    test/denkovi.json.erb
+    test/denkovi_test.rb
     test/dinrelay.html.erb
     test/dinrelay_test.rb
     test/nonexistant_sensor.yml
@@ -77,6 +81,7 @@ EOF
     test/sensors_test.rb
     test/test_charts.yml
     test/test_db.yml
+    test/test_denkovi_sensors.yml
     test/test_dinrelay_sensors.yml
     test/test_helper.rb
     test/test_sensor_cleanups.yml
