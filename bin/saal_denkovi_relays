@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+require File.dirname(__FILE__)+'/../lib/saal.rb'
+
+def usage
+  $stderr.puts "USAGE: saal_denkovi_relays <host>"
+  $stderr.puts "USAGE: saal_denkovi_relays <host> <num> <ON/OFF>"
+end
+
+if ARGV.size != 1 && ARGV.size != 3
+  usage()
+  exit(1)
+end
+
+denkovi = SAAL::Denkovi::OutletGroup::new(
+  :host => ARGV[0],
+)
+
+if ARGV.size == 3
+  num = ARGV[1].to_i
+  state = {"ON" => 1.0, "OFF" => 0.0}[ARGV[2]]
+  if !state
+    $stderr.puts "ERROR: Unknown state '#{ARGV[2]}'"
+    usage()
+    exit(1)
+  end
+  puts "Setting Relay #{num} to #{ARGV[2]}"
+  denkovi.set_state(num, state)
+end
+
+(1..16).each do |num|
+  state = {1.0 => "ON", 0.0 => "OFF"}[denkovi.state(num)] || "UNKNOWN"
+  puts "Relay #{num} is #{state}"
+end
+

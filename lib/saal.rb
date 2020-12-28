@@ -25,4 +25,5 @@ require File.dirname(__FILE__)+'/outliercache.rb'
 require File.dirname(__FILE__)+'/dinrelay.rb'
 require File.dirname(__FILE__)+'/envoy.rb'
 require File.dirname(__FILE__)+'/http.rb'
+require File.dirname(__FILE__)+'/denkovi.rb'
   
