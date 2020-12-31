@@ -31,6 +31,14 @@ def fdisp_dec(val)
   end
 end
 
+def fdispd(val)
+  if val
+    Time.at(val.to_i).strftime("%Y-%m-%d %k:%M:%S")
+  else
+    "n/a"
+  end
+end
+
 def l(vals, name)
   sensor = vals[name]
   if sensor
@@ -137,7 +145,7 @@ inverters = envoy.create_sensors
 puts " Found #{envoy.inverters.size} inverters"
 envoy.inverters.each do |serial|
   puts " INVERTER: #{serial} \
-date:#{l(inverters,"inverters_#{serial}_last_report_date")} \
+date:#{fdispd(l(inverters,"inverters_#{serial}_last_report_date"))} \
 lastWatts:#{l(inverters,"inverters_#{serial}_w_now")} \
 maxWatts:#{l(inverters,"inverters_#{serial}_w_max")} \
 "
