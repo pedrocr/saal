@@ -30,7 +30,7 @@ module SAAL
 
     class OutletGroup
       DEFAULT_TIMEOUT = 2
-      DEFAULT_CACHE_TIMEOUT = 60
+      DEFAULT_CACHE_TIMEOUT = 5
       DEFAULT_OUTLETS = {}
       DEFAULT_DESCRIPTIONS = {}
 

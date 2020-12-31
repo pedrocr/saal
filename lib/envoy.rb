@@ -16,7 +16,7 @@ module SAAL
     class PowerEnergy
       DEFAULT_HOST = "envoy.local"
       DEFAULT_TIMEOUT = 2
-      DEFAULT_CACHE_TIMEOUT = 50
+      DEFAULT_CACHE_TIMEOUT = 5
       DEFAULT_SOURCES = [
         "production_inverters",
         "production_phase1", "production_phase2", "production_phase3", "production_total",
@@ -140,7 +140,7 @@ module SAAL
     class ACQuality
       DEFAULT_HOST = "envoy.local"
       DEFAULT_TIMEOUT = 2
-      DEFAULT_CACHE_TIMEOUT = 50
+      DEFAULT_CACHE_TIMEOUT = 5
       DEFAULT_SOURCES = ["total","phase1","phase2","phase3",]
       DEFAULT_TYPES = ["frequency","voltage"]
       DEFAULT_PREFIX = "ac"
