@@ -31,6 +31,9 @@ class MockDBStore
   def average(sensor, from, to)
     @value
   end
+  def weighted_average(sensor, from, to)
+    @value
+  end
   def minimum(sensor, from, to)
     @value
   end
@@ -112,6 +115,7 @@ class TestSensor < Test::Unit::TestCase
     assert_equal corrected, sensor.minimum(0,100)
     assert_equal corrected, sensor.maximum(0,100)
     assert_equal corrected, sensor.average(0,100)
+    assert_equal corrected, sensor.weighted_average(0,100)
   end
 
   def test_linear_correction
@@ -125,6 +129,7 @@ class TestSensor < Test::Unit::TestCase
     assert_equal corrected, sensor.minimum(0,100)
     assert_equal corrected, sensor.maximum(0,100)
     assert_equal corrected, sensor.average(0,100)
+    assert_equal corrected, sensor.weighted_average(0,100)
   end
 
   def test_sensor_type
@@ -145,9 +150,10 @@ class TestSensor < Test::Unit::TestCase
     assert_equal 2.0, @mockable.read
     @mockable.write(3.0)
     assert_equal 3.0, @mockable.read
-    @mockable.mock_set(:minimum => 1.0, :average => 2.0, :maximum => 3.0, :last_value => 5.0)
+    @mockable.mock_set(:minimum => 1.0, :average => 2.0, :weighted_average => 2.5, :maximum => 3.0, :last_value => 5.0)
     assert_equal 1.0, @mockable.minimum(0,100)
     assert_equal 2.0, @mockable.average(0,100)
+    assert_equal 2.5, @mockable.weighted_average(0,100)
     assert_equal 3.0, @mockable.maximum(0,100)
     assert_equal 5.0, @mockable.last_value
     assert_equal 3.0, @mockable.read

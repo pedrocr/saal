@@ -72,6 +72,11 @@ module SAAL
       apply_offset @dbstore.average(@name, from, to)
     end
 
+    def weighted_average(from, to)
+      return @mock_opts[:weighted_average] if @mock_opts[:weighted_average]
+      apply_offset @dbstore.weighted_average(@name, from, to)
+    end
+
     def minimum(from, to)
       return @mock_opts[:minimum] if @mock_opts[:minimum]
       apply_offset @dbstore.minimum(@name, from, to)

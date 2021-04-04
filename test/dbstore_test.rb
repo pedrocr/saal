@@ -42,6 +42,21 @@ class TestFileStore < Test::Unit::TestCase
     assert_nil @dbstore.average(:test_sensor, 50, 60)
   end
 
+  def test_weighted_average
+    db_setup
+    test_values = [[10, 7.323],[12, 5.432],[23, -2.125], [44, 0.123]]
+    test_average = ((12-10)*7.323+(23-12)*5.432+(44-23)*(-2.125)) / (44-10)
+    test_values.each do |values|
+      @dbstore.write(:test_sensor, *values)
+    end
+
+    assert_instance_of Float, @dbstore.average(:test_sensor, 10, 44)
+    assert_in_delta test_average, @dbstore.weighted_average(:test_sensor, 10, 44), 0.001
+
+    # when there are no points it's nil
+    assert_nil @dbstore.weighted_average(:test_sensor, 50, 60)
+  end
+
   def test_min_max
     db_setup
     test_values = [[10, 7.323],[12, 5.432],[23, -2.125], [44, 0.123]]

@@ -35,6 +35,32 @@ module SAAL
       db_range("AVG", sensor, from, to)
     end
 
+    def weighted_average(sensor, from, to)
+      total_time = 0
+      total_value = 0.0
+      previous_value = nil
+      start_time = nil
+      initialized = false
+      db_query "SELECT date,value FROM sensor_reads
+                       WHERE sensor = '#{db_quote(sensor.to_s)}'
+                         AND date >= #{from.to_s}
+                         AND date <= #{to.to_s}" do |r|
+        r.each do |row|
+          date = row["date"].to_i
+          value = row["value"].to_f
+          if start_time
+            elapsed = date - start_time
+            total_value += elapsed * previous_value
+            total_time += elapsed
+            initialized = true
+          end
+          start_time = date
+          previous_value = value
+        end
+      end
+      initialized ? total_value / total_time : nil
+    end
+
     def minimum(sensor, from, to)     
       db_range("MIN", sensor, from, to)
     end
