@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
 
   s.name              = 'saal'
-  s.version           = '0.3.3'
-  s.date              = '2020-12-28'
+  s.version           = '0.3.4'
+  s.date              = '2021-04-04'
 
   s.summary     = "Thin abstraction layer for interfacing and recording sensors (currently onewire) and actuators (currently dinrelay)"
   s.description = <<EOF
