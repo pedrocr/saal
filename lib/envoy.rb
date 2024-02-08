@@ -15,6 +15,7 @@ module SAAL
 
     class PowerEnergy
       DEFAULT_HOST = "envoy.local"
+      DEFAULT_TOKEN = ""
       DEFAULT_TIMEOUT = 2
       DEFAULT_CACHE_TIMEOUT = 5
       DEFAULT_SOURCES = [
@@ -30,6 +31,7 @@ module SAAL
 
       def initialize(defs, opts={})
         @host = defs[:host] || defs['host'] || DEFAULT_HOST
+        @token = defs[:token] || defs['token'] || DEFAULT_TOKEN
         @timeout = opts[:timeout] || opts['timeout'] || DEFAULT_TIMEOUT
         @cache_timeout = opts[:cache_timeout] || opts['cache_timeout'] || DEFAULT_CACHE_TIMEOUT
         @cache = nil
@@ -85,7 +87,7 @@ module SAAL
       end
 
       def read_all
-        response = SAAL::do_http_get(@host, 80, "/production.json?details=1", nil, nil, @timeout)
+        response = SAAL::do_https_get_token(@host, "/production.json?details=1", @token, @timeout)
         return nil if !response
 
         values = JSON.parse(response.body)
@@ -139,6 +141,7 @@ module SAAL
 
     class ACQuality
       DEFAULT_HOST = "envoy.local"
+      DEFAULT_TOKEN = ""
       DEFAULT_TIMEOUT = 2
       DEFAULT_CACHE_TIMEOUT = 5
       DEFAULT_SOURCES = ["total","phase1","phase2","phase3",]
@@ -147,6 +150,7 @@ module SAAL
 
       def initialize(defs, opts={})
         @host = defs[:host] || defs['host'] || DEFAULT_HOST
+        @token = defs[:token] || defs['token'] || DEFAULT_TOKEN
         @timeout = opts[:timeout] || opts['timeout'] || DEFAULT_TIMEOUT
         @cache_timeout = opts[:cache_timeout] || opts['cache_timeout'] || DEFAULT_CACHE_TIMEOUT
         @cache = nil
@@ -184,7 +188,7 @@ module SAAL
       end
 
       def read_all
-        response = SAAL::do_http_get(@host, 80, "/ivp/meters/readings", nil, nil, @timeout)
+        response = SAAL::do_https_get_token(@host, "/ivp/meters/readings", @token, @timeout)
         return nil if !response
 
         values = JSON.parse(response.body)
@@ -213,19 +217,18 @@ module SAAL
     end
 
     class Inverters
+      DEFAULT_HOST = "envoy.local"
+      DEFAULT_TOKEN = nil
       DEFAULT_TIMEOUT = 2
       DEFAULT_CACHE_TIMEOUT = 50
       DEFAULT_SOURCES = []
       DEFAULT_TYPES = ["w_now"] # "last_report_date", "w_max"
-      DEFAULT_USER = nil
-      DEFAULT_PASSWORD = nil
       DEFAULT_PREFIX = "inverters"
       attr_reader :inverters
 
       def initialize(defs, opts={})
         @host = defs[:host] || defs['host'] || DEFAULT_HOST
-        @user = defs[:user] || defs['user'] || DEFAULT_USER
-        @password = defs[:password] || defs['password'] || DEFAULT_PASSWORD
+        @token = defs[:token] || defs['token'] || DEFAULT_TOKEN
         @timeout = opts[:timeout] || opts['timeout'] || DEFAULT_TIMEOUT
         @cache_timeout = opts[:cache_timeout] || opts['cache_timeout'] || DEFAULT_CACHE_TIMEOUT
         @cache = nil
@@ -264,7 +267,7 @@ module SAAL
 
       private
       def read_all
-        response = SAAL::do_http_get_digest(@host, 80, "/api/v1/production/inverters", @user, @password, @timeout)
+        response = SAAL::do_https_get_token(@host, "/api/v1/production/inverters", @token, @timeout)
         return nil if !response
 
         values = JSON.parse(response.body)

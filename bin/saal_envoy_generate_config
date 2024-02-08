@@ -2,51 +2,35 @@
 
 require File.dirname(__FILE__)+'/../lib/saal.rb'
 
-if ARGV.size != 1 && ARGV.size != 3
-  $stderr.puts "USAGE: saal_envoy_generate_config <host> [<user> <password>]"
+if ARGV.size != 2
+  $stderr.puts "USAGE: saal_envoy_generate_config <host> <token>"
   exit(1)
+end
+
+envoy = SAAL::Envoy::Inverters::new(
+  :host => ARGV[0],
+  :token => ARGV[1],
+)
+envoy.set_all_inverters!
+if envoy.inverters.size <= 0
+  $stderr.puts "ERROR: Couldn't find any inverters!"
+  exit 0
 end
 
 puts "power:"
 puts "  envoy_power_energy:"
 puts "    host: \"#{ARGV[0]}\""
+puts "    token: \"#{ARGV[1]}\""
 puts
 puts "ac:"
 puts "  envoy_ac_quality:"
 puts "    host: \"#{ARGV[0]}\""
-
-user = "envoy"
-password = nil
-
-if ARGV[2]
-  user = ARGV[1]
-  password = ARGV[2]
-else
-  Net::HTTP.get(ARGV[0], '/home').split("\n").each do |line|
-    if line.include?("serial:")
-      password = line.split('"')[1][-6..-1]
-    end
-  end
-  if !password
-    $stderr.puts "Couldn't find serial number for envoy"
-    exit 2
-  end
-end
-
-envoy = SAAL::Envoy::Inverters::new(
-  :host => ARGV[0],
-  :user => user,
-  :password => password,
-)
-envoy.set_all_inverters!
-exit 0 if envoy.inverters.size <= 0
-
+puts "    token: \"#{ARGV[1]}\""
 puts
 puts "inverters:"
 puts "  envoy_inverters:"
 puts "    host: \"#{ARGV[0]}\""
-puts "    user: \"#{user}\""
-puts "    password: \"#{password}\""
+puts "    token: \"#{ARGV[1]}\""
 puts "    inverters:"
 envoy.inverters.each do |serial|
   puts "    - #{serial}"
