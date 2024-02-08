@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
 
   s.name              = 'saal'
-  s.version           = '0.3.4'
-  s.date              = '2021-04-04'
+  s.version           = '0.3.6'
+  s.date              = '2024-02-08'
 
   s.summary     = "Thin abstraction layer for interfacing and recording sensors (currently onewire) and actuators (currently dinrelay)"
   s.description = <<EOF
@@ -32,7 +32,7 @@ EOF
   s.add_runtime_dependency 'ownet', "~>0.2"
   s.add_runtime_dependency 'mysql2', "~>0.5"
   s.add_runtime_dependency 'nokogiri', '~>1.8'
-  s.add_runtime_dependency 'net-http-digest_auth', '~>1.4'
+  s.add_runtime_dependency 'openssl', '~>2'
 
   # = MANIFEST =
   s.files = %w[
